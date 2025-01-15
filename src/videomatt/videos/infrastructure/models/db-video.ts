@@ -2,14 +2,14 @@ import { DataTypes, Model, Sequelize } from 'sequelize';
 
 const VIDEO_TABLE_NAME = 'videos';
 
-export class Video extends Model {
+export class DBVideo extends Model {
     public id!: string;
     public title!: string;
     public description!: string;
     public url!: string;
 
-    public static initModel(sequelize: Sequelize) {
-        Video.init(
+    public static initModel(sequelize: Sequelize): typeof DBVideo {
+        return DBVideo.init(
             {
                 id: {
                     type: DataTypes.UUIDV4,
@@ -31,5 +31,14 @@ export class Video extends Model {
             },
             { sequelize, modelName: VIDEO_TABLE_NAME }
         );
+    }
+
+    toPrimitives() {
+        return {
+            id: this.id,
+            title: this.title,
+            description: this.description,
+            url: this.url,
+        };
     }
 }
