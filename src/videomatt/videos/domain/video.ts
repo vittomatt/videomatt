@@ -1,9 +1,9 @@
-import { AggregateRoot } from '@shared/domain/AggregateRoot';
+import { AggregateRoot } from '@shared/domain/aggregate-root';
 
-import { VideoDescription } from './VideoDescription';
-import { VideoId } from './VideoId';
-import { VideoTitle } from './VideoTitle';
-import { VideoURL } from './VideoURL';
+import { VideoDescription } from './video-description';
+import { VideoId } from './video-id';
+import { VideoTitle } from './video-title';
+import { VideoURL } from './video-url';
 
 export class Video extends AggregateRoot {
     constructor(

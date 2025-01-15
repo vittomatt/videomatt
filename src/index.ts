@@ -1,9 +1,13 @@
 import express, { Request, Response } from 'express';
-import { sendSnsMessage } from './mooc/videos/infrastructure/broker/sns';
-import { receiveMessages } from './mooc/videos/infrastructure/broker/sqs';
+
+import { sendSnsMessage } from '@videomatt/videos/infrastructure/broker/sns';
+import { receiveMessages } from '@videomatt/videos/infrastructure/broker/sqs';
+import { getEnvs, initEnvs } from '@config/init-envs';
+
+initEnvs();
 
 const app = express();
-const port = 3000;
+const port = getEnvs().PORT;
 
 app.use(express.json());
 
