@@ -1,4 +1,4 @@
-import { AggregateRoot } from '@shared/domain/aggregate-root';
+import { AggregateRoot } from '@videomatt/shared/domain/aggregate-root';
 
 import { VideoDescription } from './video-description';
 import { VideoId } from './video-id';
