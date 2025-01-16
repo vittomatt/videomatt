@@ -12,8 +12,7 @@ export class DBVideo extends Model {
         return DBVideo.init(
             {
                 id: {
-                    type: DataTypes.UUIDV4,
-                    autoIncrement: true,
+                    type: DataTypes.UUID,
                     primaryKey: true,
                 },
                 title: {

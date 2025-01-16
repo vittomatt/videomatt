@@ -1,11 +1,11 @@
 import express from 'express';
 import helmet from 'helmet';
+import { v4 as uuidv4 } from 'uuid';
 
 import { getEnvs, initEnvs } from '@config/init-envs';
 import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/postgres';
 import { CreateVideo } from '@videomatt/videos/application/create-video';
 import { DBVideoRepository } from '@videomatt/videos/infrastructure/repositories/db-video-repository';
-import { DBVideo } from '@videomatt/videos/infrastructure/models/db-video';
 
 initEnvs();
 
@@ -21,10 +21,15 @@ db.initDb();
 app.use('/api/videos', async (req, res) => {
     const dbVideo = db.getVideoModel();
     const videoRepository = new DBVideoRepository(dbVideo);
-    await new CreateVideo(videoRepository);
+    const videoCreator = new CreateVideo(videoRepository);
+
+    const uuid = uuidv4();
+    await videoCreator.execute(uuid, 'Video 1', 'Description 1', 'https://www.google.com');
+
     res.send('Hello World');
 });
 
 app.listen(port, async () => {
+    await db.syncDb();
     console.log(`Server running on http://localhost:${port}`);
 });

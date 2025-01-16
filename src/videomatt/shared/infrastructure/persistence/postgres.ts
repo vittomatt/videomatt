@@ -24,6 +24,15 @@ export class PostgresDB implements DB, DBModel {
         this.videoModel = DBVideo.initModel(this.sequelize);
     }
 
+    public async syncDb() {
+        try {
+            await this.sequelize.sync();
+            console.log('✅ Database synchronized successfully');
+        } catch (error) {
+            console.error('❌ Error synchronizing database:', error);
+        }
+    }
+
     public getDb(): Sequelize {
         if (!this.sequelize) {
             throw new Error('Database not initialized');
