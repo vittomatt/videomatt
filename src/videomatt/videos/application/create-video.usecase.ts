@@ -9,7 +9,7 @@ import { VideoURL } from '@videomatt/videos/domain/models/video-url';
 import { TOKEN } from '@videomatt/shared/di/tokens';
 
 @injectable()
-export class CreateVideo {
+export class CreateVideoUseCase {
     constructor(@inject(TOKEN.VIDEO_REPOSITORY) private videoRepository: VideoRepository<Video>) {}
 
     async execute(videoId: string, videoTitle: string, videoDescription: string, videoUrl: string) {
