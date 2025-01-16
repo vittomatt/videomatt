@@ -21,7 +21,9 @@
     "helmet": "^8.0.0",
     "pg": "^8.13.1",
     "pg-hstore": "^2.3.4",
+    "reflect-metadata": "^0.2.2",
     "sequelize": "^6.37.5",
+    "tsyringe": "^4.8.0",
     "uuid": "^11.0.5",
     "zod": "^3.24.1"
   },

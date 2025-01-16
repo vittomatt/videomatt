@@ -1,15 +1,15 @@
+import { inject, injectable } from 'tsyringe';
+
 import { Criteria } from '@videomatt/shared/infrastructure/repositories/criteria';
 import { SequelizeCriteriaConverter } from '@videomatt/shared/infrastructure/repositories/db-criteria-converter';
 import { VideoRepository } from '@videomatt/videos/domain/repositories/video-repository';
 import { Video } from '@videomatt/videos/domain/models/video';
 import { DBVideo } from '@videomatt/videos/infrastructure/models/db-video';
+import { TOKEN } from '@videomatt/shared/di/tokens';
 
+@injectable()
 export class DBVideoRepository implements VideoRepository<Video> {
-    private readonly dbVideo: typeof DBVideo;
-
-    constructor(dbVideo: typeof DBVideo) {
-        this.dbVideo = dbVideo;
-    }
+    constructor(@inject(TOKEN.DB_VIDEO) private readonly dbVideo: typeof DBVideo) {}
 
     async add(video: Video): Promise<void> {
         const videoPrimitives = video.toPrimitives();
