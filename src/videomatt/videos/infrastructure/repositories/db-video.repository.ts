@@ -5,7 +5,7 @@ import { SequelizeCriteriaConverter } from '@videomatt/shared/infrastructure/rep
 import { VideoRepository } from '@videomatt/videos/domain/repositories/video-repository';
 import { Video } from '@videomatt/videos/domain/models/video';
 import { DBVideo } from '@videomatt/videos/infrastructure/models/db-video';
-import { TOKEN } from '@videomatt/shared/di/tokens';
+import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 
 @injectable()
 export class DBVideoRepository implements VideoRepository<Video> {

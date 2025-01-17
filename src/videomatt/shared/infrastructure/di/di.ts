@@ -3,7 +3,7 @@ import { container } from 'tsyringe';
 import { TOKEN } from './tokens';
 import { DBModel } from '@videomatt/shared/infrastructure/persistence/db';
 import { DBVideoRepository } from '@videomatt/videos/infrastructure/repositories/db-video.repository';
-import { CreateVideoController } from '@videomatt/videos/infrastructure/controllers/create-video.controller';
+import { CreateVideoController } from '@videomatt/videos/infrastructure/controllers/create-video/create-video.controller';
 import { CreateVideoUseCase } from '@videomatt/videos/application/create-video.usecase';
 
 export class DI {

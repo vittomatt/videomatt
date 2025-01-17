@@ -6,7 +6,7 @@ import { VideoId } from '@videomatt/videos/domain/models/video-id';
 import { VideoTitle } from '@videomatt/videos/domain/models/video-title';
 import { VideoDescription } from '@videomatt/videos/domain/models/video-description';
 import { VideoURL } from '@videomatt/videos/domain/models/video-url';
-import { TOKEN } from '@videomatt/shared/di/tokens';
+import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 
 @injectable()
 export class CreateVideoUseCase {

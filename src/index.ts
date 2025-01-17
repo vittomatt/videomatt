@@ -5,7 +5,7 @@ import helmet from 'helmet';
 import { container } from 'tsyringe';
 
 import { getEnvs, initEnvs } from '@config/init-envs';
-import { DI } from '@videomatt/shared/di/di';
+import { DI } from '@videomatt/shared/infrastructure/di/di';
 import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/postgres';
 import { VideoRoutes } from '@videomatt/videos/infrastructure/routes/routes';
 
