@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { inject, injectable } from 'tsyringe';
 
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
-import { CreateVideoUseCase } from '@videomatt/videos/application/create-video.usecase';
+import { CreateVideoUseCase } from '@videomatt/videos/application/create-video.use-case';
 
 @injectable()
 export class CreateVideoController {

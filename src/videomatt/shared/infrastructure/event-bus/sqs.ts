@@ -2,6 +2,7 @@ import AWS from 'aws-sdk';
 
 const sqs = new AWS.SQS({ region: process.env.AWS_REGION || 'us-east-1' });
 
+// fitu use this?
 export async function receiveMessages(queueUrl: string) {
     try {
         const params: AWS.SQS.ReceiveMessageRequest = {

@@ -1,10 +1,10 @@
 import { inject, injectable } from 'tsyringe';
 
 import { Criteria } from '@videomatt/shared/infrastructure/repositories/criteria';
-import { SequelizeCriteriaConverter } from '@videomatt/shared/infrastructure/repositories/db-criteria-converter';
-import { VideoRepository } from '@videomatt/videos/domain/repositories/video-repository';
+import { SequelizeCriteriaConverter } from '@videomatt/shared/infrastructure/repositories/db-criteria.converter';
+import { VideoRepository } from '@videomatt/videos/domain/repositories/video.repository';
 import { Video } from '@videomatt/videos/domain/models/video';
-import { DBVideo } from '@videomatt/videos/infrastructure/models/db-video';
+import { DBVideo } from '@videomatt/videos/infrastructure/models/db-video.model';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 
 @injectable()
@@ -12,23 +12,40 @@ export class DBVideoRepository implements VideoRepository<Video> {
     constructor(@inject(TOKEN.DB_VIDEO) private readonly dbVideo: typeof DBVideo) {}
 
     async add(video: Video): Promise<void> {
-        const videoPrimitives = video.toPrimitives();
-        this.dbVideo.create(videoPrimitives);
+        try {
+            const videoPrimitives = video.toPrimitives();
+            this.dbVideo.create(videoPrimitives);
+        } catch (error) {
+            console.error('Error adding video:', error);
+        }
     }
 
     async remove(video: Video): Promise<void> {
         const id = video.id.value;
-        this.dbVideo.destroy({ where: { id } });
+        try {
+            this.dbVideo.destroy({ where: { id } });
+        } catch (error) {
+            console.error('Error removing video:', error);
+        }
     }
 
     async update(video: Video): Promise<void> {
         const videoPrimitives = video.toPrimitives();
-        this.dbVideo.update({ videoPrimitives }, { where: { id: videoPrimitives.id } });
+        try {
+            this.dbVideo.update({ videoPrimitives }, { where: { id: videoPrimitives.id } });
+        } catch (error) {
+            console.error('Error updating video:', error);
+        }
     }
 
     async search(criteria: Criteria): Promise<Video[]> {
-        const videos = await this.convert(criteria);
-        return videos;
+        try {
+            const videos = await this.convert(criteria);
+            return videos;
+        } catch (error) {
+            console.error('Error searching videos:', error);
+            return [];
+        }
     }
 
     private async convert(criteria: Criteria): Promise<Video[]> {

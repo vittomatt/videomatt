@@ -1,5 +1,6 @@
 import { AggregateRoot } from '@videomatt/shared/domain/aggregate-root';
 
+import { VideoCreatedEvent } from '@videomatt/videos/domain/events/video-created.event';
 import { VideoDescription } from './video-description';
 import { VideoId } from './video-id';
 import { VideoTitle } from './video-title';
@@ -13,6 +14,20 @@ export class Video extends AggregateRoot {
         public readonly url: VideoURL
     ) {
         super();
+    }
+
+    static create(id: string, title: string, description: string, url: string) {
+        const video = new Video(
+            new VideoId(id),
+            new VideoTitle(title),
+            new VideoDescription(description),
+            new VideoURL(url)
+        );
+
+        const event = new VideoCreatedEvent(video);
+        video.record(event);
+
+        return video;
     }
 
     static fromPrimitives(primitives: { id: string; title: string; description: string; url: string }) {
