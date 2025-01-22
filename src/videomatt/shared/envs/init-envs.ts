@@ -1,4 +1,3 @@
-import path from 'path';
 import { z } from 'zod';
 import { config as dotenvSafeConfig } from 'dotenv-safe';
 import dotenv from 'dotenv';
@@ -8,7 +7,11 @@ const envSchema = z.object({
     DB_USER: z.string(),
     DB_PASSWORD: z.string(),
     DB_NAME: z.string(),
-
+    SNS_VIDEO_TOPIC_ARN: z.string(),
+    SNS_USER_TOPIC_ARN: z.string(),
+    SQS_USER_QUEUE_URL: z.string(),
+    SQS_VIDEO_QUEUE_URL: z.string(),
+    AWS_REGION: z.string(),
     PORT: z.coerce.number().default(3000),
 });
 
@@ -19,8 +22,8 @@ let envConfig: EnvVars | null = null;
 export function initEnvs() {
     if (process.env.NODE_ENV !== 'production') {
         dotenvSafeConfig({
-            path: path.join(__dirname, '.env'),
-            example: path.join(__dirname, '.env.example'),
+            path: '.env',
+            example: '.env.example',
             allowEmptyValues: false,
         });
     }

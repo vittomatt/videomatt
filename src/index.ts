@@ -4,7 +4,7 @@ import express from 'express';
 import helmet from 'helmet';
 import { container } from 'tsyringe';
 
-import { getEnvs, initEnvs } from '@config/init-envs';
+import { getEnvs, initEnvs } from '@videomatt/shared/envs/init-envs';
 import { DI } from '@videomatt/shared/infrastructure/di/di';
 import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/postgres';
 import { VideoRoutes } from '@videomatt/videos/infrastructure/routes/video.routes';
@@ -37,5 +37,5 @@ app.use(errorController.execute.bind(errorController));
 
 app.listen(port, async () => {
     await db.syncDb();
-    console.log(`Server running on http://localhost:${port}`);
+    logger.info(`Server running on http://localhost:${port}`);
 });

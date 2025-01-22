@@ -1,13 +1,16 @@
 import { Sequelize } from 'sequelize';
 
-import { getEnvs } from '@config/init-envs';
+import { getEnvs } from '@videomatt/shared/envs/init-envs';
 import { DBVideo } from '@videomatt/videos/infrastructure/models/db-video.model';
+import { DBUser } from '@videomatt/users/infrastructure/models/db-user.model';
 
 import { DB, DBModel } from './db';
 
+// fitu use logger
 export class PostgresDB implements DB, DBModel {
     private instance: Sequelize;
     private videoModel!: typeof DBVideo;
+    private userModel!: typeof DBUser;
 
     constructor() {
         const envs = getEnvs();
@@ -22,6 +25,7 @@ export class PostgresDB implements DB, DBModel {
 
     public initDb() {
         this.videoModel = DBVideo.initModel(this.instance);
+        this.userModel = DBUser.initModel(this.instance);
     }
 
     public async syncDb() {
@@ -51,5 +55,12 @@ export class PostgresDB implements DB, DBModel {
             throw new Error('Video model not initialized');
         }
         return this.videoModel;
+    }
+
+    public getUserModel(): typeof DBUser {
+        if (!this.userModel) {
+            throw new Error('User model not initialized');
+        }
+        return this.userModel;
     }
 }

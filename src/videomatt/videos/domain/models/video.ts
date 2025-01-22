@@ -1,9 +1,10 @@
 import { AggregateRoot } from '@videomatt/shared/domain/aggregate-root';
-
 import { VideoCreatedEvent } from '@videomatt/videos/domain/events/video-created.event';
-import { VideoDescription } from './video-description';
+import { UserId } from '@videomatt/users/domain/models/user-id';
+
 import { VideoId } from './video-id';
 import { VideoTitle } from './video-title';
+import { VideoDescription } from './video-description';
 import { VideoURL } from './video-url';
 
 export class Video extends AggregateRoot {
@@ -24,7 +25,8 @@ export class Video extends AggregateRoot {
             new VideoURL(url)
         );
 
-        const event = new VideoCreatedEvent(video);
+        const userId = new UserId('acde070d-8c4c-4f0d-9d8a-162843c10333');
+        const event = new VideoCreatedEvent({ video, userId });
         video.record(event);
 
         return video;

@@ -8,8 +8,8 @@ import { Video } from '@videomatt/videos/domain/models/video';
 @injectable()
 export class CreateVideoUseCase {
     constructor(
-        @inject(TOKEN.VIDEO_REPOSITORY) private readonly videoRepository: VideoRepository<Video>,
-        @inject(TOKEN.EVENT_BUS) private readonly eventBus: EventBus
+        @inject(TOKEN.VIDEO.REPOSITORY) private readonly videoRepository: VideoRepository<Video>,
+        @inject(TOKEN.SHARED.EVENT_BUS) private readonly eventBus: EventBus
     ) {}
 
     async execute(videoId: string, videoTitle: string, videoDescription: string, videoUrl: string) {

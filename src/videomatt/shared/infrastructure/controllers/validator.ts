@@ -3,7 +3,7 @@ import { validate } from 'class-validator';
 import { Request, Response, NextFunction } from 'express';
 
 export const validateDto = (DtoClass: new () => object, from: 'body' | 'params' = 'body') => {
-    return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    return async (req: Request, res: Response, next: NextFunction) => {
         const dataToValidate = from === 'body' ? req.body : req.params;
         const dtoInstance = plainToInstance(DtoClass, dataToValidate);
         const errors = await validate(dtoInstance);

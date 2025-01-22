@@ -11,7 +11,9 @@ import {
 
 @injectable()
 export class VideoRoutes {
-    constructor(@inject(TOKEN.CREATE_VIDEO_CONTROLLER) private readonly createVideoController: CreateVideoController) {}
+    constructor(
+        @inject(TOKEN.VIDEO.CREATE_VIDEO_CONTROLLER) private readonly createVideoController: CreateVideoController
+    ) {}
 
     public initRoutes(app: Express) {
         app.put(

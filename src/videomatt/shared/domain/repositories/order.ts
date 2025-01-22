@@ -8,17 +8,9 @@ export enum OrderType {
 
 export class Order {
     constructor(
-        private orderBy: OrderBy | null = null,
-        private orderType: OrderType = OrderType.NONE
+        public orderBy: OrderBy | null = null,
+        public orderType: OrderType = OrderType.NONE
     ) {}
-
-    getOrderBy(): OrderBy | null {
-        return this.orderBy;
-    }
-
-    getOrderType(): OrderType {
-        return this.orderType;
-    }
 
     isNone(): boolean {
         return this.orderType === OrderType.NONE;

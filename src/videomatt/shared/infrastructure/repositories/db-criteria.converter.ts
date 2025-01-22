@@ -1,7 +1,8 @@
 import { Op, Order as SequelizeOrder } from 'sequelize';
-import { FilterOperator, Filters } from './filters';
-import { Order, OrderType } from './order';
-import { Criteria } from './criteria';
+
+import { FilterOperator, Filters } from '@videomatt/shared/domain/repositories/filters';
+import { Order, OrderType } from '@videomatt/shared/domain/repositories/order';
+import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 
 const operatorMap: Record<FilterOperator, symbol> = {
     [FilterOperator.EQUALS]: Op.eq,
@@ -18,10 +19,10 @@ export class SequelizeCriteriaConverter {
     private readonly limit: number | undefined;
 
     constructor(readonly criteria: Criteria) {
-        this.filters = criteria.getFilters();
-        this.order = criteria.getOrder();
-        this.offset = criteria.getOffset();
-        this.limit = criteria.getLimit();
+        this.filters = criteria.filters;
+        this.order = criteria.order;
+        this.offset = criteria.offset;
+        this.limit = criteria.limit;
     }
 
     public build(): {
@@ -42,9 +43,9 @@ export class SequelizeCriteriaConverter {
         const where: Record<string, any> = {};
 
         this.filters.forEach((filter) => {
-            const field = filter.getField();
-            const operator = filter.getOperator();
-            const value = filter.getValue();
+            const field = filter.field;
+            const operator = filter.operator;
+            const value = filter.value;
 
             if (!operatorMap[operator]) {
                 throw new Error(`Not supported operator: ${operator}`);
@@ -65,8 +66,8 @@ export class SequelizeCriteriaConverter {
             return undefined;
         }
 
-        const orderBy = this.order.getOrderBy();
-        const orderType = this.order.getOrderType();
+        const orderBy = this.order.orderBy;
+        const orderType = this.order.orderType;
 
         if (!orderBy || orderType === OrderType.NONE) {
             return undefined;

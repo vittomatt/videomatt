@@ -6,7 +6,7 @@ import { CreateVideoUseCase } from '@videomatt/videos/application/create-video.u
 
 @injectable()
 export class CreateVideoController {
-    constructor(@inject(TOKEN.CREATE_VIDEO_USE_CASE) private createVideo: CreateVideoUseCase) {}
+    constructor(@inject(TOKEN.VIDEO.CREATE_VIDEO_USE_CASE) private createVideo: CreateVideoUseCase) {}
 
     async execute(req: Request, res: Response) {
         const { id } = req.params;
