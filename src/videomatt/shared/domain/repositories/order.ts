@@ -7,10 +7,14 @@ export enum OrderType {
 }
 
 export class Order {
-    constructor(
+    private constructor(
         public orderBy: OrderBy | null = null,
         public orderType: OrderType = OrderType.NONE
     ) {}
+
+    static create(orderBy: OrderBy | null = null, orderType: OrderType = OrderType.NONE): Order {
+        return new Order(orderBy, orderType);
+    }
 
     isNone(): boolean {
         return this.orderType === OrderType.NONE;

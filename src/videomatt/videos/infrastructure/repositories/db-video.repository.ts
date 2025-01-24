@@ -36,7 +36,7 @@ export class DBVideoRepository implements VideoRepository<Video> {
     async update(video: Video) {
         const videoPrimitives = video.toPrimitives();
         try {
-            this.dbVideo.update({ videoPrimitives }, { where: { id: videoPrimitives.id } });
+            this.dbVideo.update(videoPrimitives, { where: { id: videoPrimitives.id } });
         } catch (error) {
             this.logger.error(`Error updating video: ${error}`);
         }

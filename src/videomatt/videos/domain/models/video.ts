@@ -1,5 +1,5 @@
 import { AggregateRoot } from '@videomatt/shared/domain/aggregate-root';
-import { VideoCreatedEvent } from '@videomatt/videos/domain/events/video-created.event';
+import { VideoPublishedEvent } from '@videomatt/videos/domain/events/video-published.event';
 import { UserId } from '@videomatt/users/domain/models/user-id';
 
 import { VideoId } from './video-id';
@@ -12,32 +12,35 @@ export class Video extends AggregateRoot {
         public readonly id: VideoId,
         public readonly title: VideoTitle,
         public readonly description: VideoDescription,
-        public readonly url: VideoURL
+        public readonly url: VideoURL,
+        public readonly userId: UserId
     ) {
         super();
     }
 
-    static create(id: string, title: string, description: string, url: string) {
+    static create(id: string, title: string, description: string, url: string, userId: string) {
+        const user = new UserId(userId);
         const video = new Video(
             new VideoId(id),
             new VideoTitle(title),
             new VideoDescription(description),
-            new VideoURL(url)
+            new VideoURL(url),
+            user
         );
 
-        const userId = new UserId('acde070d-8c4c-4f0d-9d8a-162843c10333');
-        const event = new VideoCreatedEvent({ video, userId });
+        const event = VideoPublishedEvent.create(user);
         video.record(event);
 
         return video;
     }
 
-    static fromPrimitives(primitives: { id: string; title: string; description: string; url: string }) {
+    static fromPrimitives(primitives: { id: string; title: string; description: string; url: string; userId: string }) {
         return new Video(
             new VideoId(primitives.id),
             new VideoTitle(primitives.title),
             new VideoDescription(primitives.description),
-            new VideoURL(primitives.url)
+            new VideoURL(primitives.url),
+            new UserId(primitives.userId)
         );
     }
 
@@ -47,6 +50,7 @@ export class Video extends AggregateRoot {
             title: this.title.value,
             description: this.description.value,
             url: this.url.value,
+            userId: this.userId.value,
         };
     }
 }

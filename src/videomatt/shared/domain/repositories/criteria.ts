@@ -2,9 +2,9 @@ import { Filters } from './filters';
 import { Order, OrderType } from './order';
 
 export class Criteria {
-    constructor(
+    private constructor(
         public filters: Filters[] = [],
-        public order: Order = new Order(OrderType.NONE),
+        public order: Order = Order.create(OrderType.NONE),
         public offset?: number,
         public limit?: number
     ) {}

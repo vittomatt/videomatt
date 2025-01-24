@@ -2,21 +2,20 @@ import { SQSClient, ReceiveMessageCommand, DeleteMessageCommand } from '@aws-sdk
 
 import { EventConsumer } from '@videomatt/shared/domain/broker/event.consumer';
 import { Handler } from '@videomatt/shared/domain/broker/handler';
-import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain-event';
 import { Logger } from '@videomatt/shared/domain/logger/logger';
 
 export class SQSEventConsumer implements EventConsumer {
-    constructor(
+    protected constructor(
         protected readonly sqsClient: SQSClient,
         protected readonly sqsUrl: string,
         protected readonly logger: Logger,
         protected readonly handler: Handler
     ) {}
 
-    async consume(queueUrl: string) {
+    async consume() {
         try {
             const params = new ReceiveMessageCommand({
-                QueueUrl: queueUrl,
+                QueueUrl: this.sqsUrl,
                 MaxNumberOfMessages: 1,
                 WaitTimeSeconds: 10,
                 VisibilityTimeout: 30,
@@ -30,14 +29,15 @@ export class SQSEventConsumer implements EventConsumer {
             }
 
             for (const message of response.Messages) {
-                this.logger.info(`Queue URL: ${queueUrl}`);
+                this.logger.info(`Queue URL: ${this.sqsUrl}`);
                 this.logger.info(`Message received: ${message.Body}`);
 
-                // fitu here
-                await this.handler.handle(message.Body as unknown as DomainEvent);
+                const parsedBody = JSON.parse(message.Body as string);
+                const parsedMessage = JSON.parse(parsedBody.Message as string);
+                await this.handler.handle(parsedMessage.payload);
 
                 if (message.ReceiptHandle) {
-                    await this.deleteMessage(queueUrl, message.ReceiptHandle);
+                    await this.deleteMessage(this.sqsUrl, message.ReceiptHandle);
                 }
             }
         } catch (error) {

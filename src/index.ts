@@ -7,9 +7,8 @@ import { container } from 'tsyringe';
 import { getEnvs, initEnvs } from '@videomatt/shared/envs/init-envs';
 import { DI } from '@videomatt/shared/infrastructure/di/di';
 import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/postgres';
-import { VideoRoutes } from '@videomatt/videos/infrastructure/routes/video.routes';
-import { ErrorController } from '@videomatt/shared/infrastructure/controllers/error.controller';
 import { PinoLogger } from '@videomatt/shared/infrastructure/logger/pino';
+import { initRoutes } from '@videomatt/shared/infrastructure/routes/init-routes';
 
 initEnvs();
 
@@ -28,12 +27,7 @@ di.initDi();
 const logger = container.resolve(PinoLogger);
 app.use(logger.getInstance());
 
-// Routes
-const videoRoutes = container.resolve(VideoRoutes);
-videoRoutes.initRoutes(app);
-
-const errorController = container.resolve(ErrorController);
-app.use(errorController.execute.bind(errorController));
+initRoutes(app);
 
 app.listen(port, async () => {
     await db.syncDb();

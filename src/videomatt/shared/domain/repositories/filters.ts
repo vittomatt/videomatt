@@ -11,9 +11,13 @@ export enum FilterOperator {
 }
 
 export class Filters {
-    constructor(
+    private constructor(
         public readonly field: FilterField,
         public readonly operator: FilterOperator,
         public readonly value: FilterValue
     ) {}
+
+    static create(field: FilterField, operator: FilterOperator, value: FilterValue): Filters {
+        return new Filters(field, operator, value);
+    }
 }

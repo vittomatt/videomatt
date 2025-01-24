@@ -11,7 +11,7 @@ export class IncreaseAmountOfVideosUseCase {
     constructor(@inject(TOKEN.USER.REPOSITORY) private readonly userRepository: UserRepository<User>) {}
 
     async execute(userId: string) {
-        const criteria = Criteria.create().addFilter(new Filters('id', FilterOperator.EQUALS, userId));
+        const criteria = Criteria.create().addFilter(Filters.create('id', FilterOperator.EQUALS, userId));
         const users = await this.userRepository.search(criteria);
         if (users.length === 0) {
             throw new Error('User not found');

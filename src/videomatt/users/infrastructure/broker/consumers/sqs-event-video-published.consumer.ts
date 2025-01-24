@@ -2,16 +2,18 @@ import { inject, injectable } from 'tsyringe';
 import { SQSClient } from '@aws-sdk/client-sqs';
 
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
-import { SQSEventConsumer } from '@videomatt/shared/infrastructure/broker/sqs-even.consumer';
+import { SQSEventConsumer } from '@videomatt/shared/infrastructure/broker/sqs-event.consumer';
 import { Logger } from '@videomatt/shared/domain/logger/logger';
-import { Handler } from '@videomatt/shared/domain/broker/handler';
+import { IncreaseAmountOfVideosOnVideoPublishedHandler } from '../../handlers/increase-amount-of-videos-on-video-published.handler';
+
 @injectable()
-export class SQSVideoEventConsumer extends SQSEventConsumer {
+export class SQSEventVideoPublishedConsumer extends SQSEventConsumer {
     constructor(
         @inject(TOKEN.SHARED.SQS_CLIENT) protected readonly sqsClient: SQSClient,
         @inject(TOKEN.VIDEO.SQS_QUEUE_URL) protected readonly queueUrl: string,
         @inject(TOKEN.SHARED.LOGGER) protected readonly logger: Logger,
-        @inject(TOKEN.VIDEO.HANDLER) protected readonly handler: Handler
+        @inject(TOKEN.USER.INCREASE_AMOUNT_OF_VIDEOS_ON_VIDEO_PUBLISHED_HANDLER)
+        protected readonly handler: IncreaseAmountOfVideosOnVideoPublishedHandler
     ) {
         super(sqsClient, queueUrl, logger, handler);
     }

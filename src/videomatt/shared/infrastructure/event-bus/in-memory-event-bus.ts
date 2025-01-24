@@ -7,15 +7,20 @@ import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 
 @injectable()
 export class InMemoryEventBus implements EventBus {
+    private readonly publishers: EventPublisher[] = [];
+
     constructor(
-        @inject(TOKEN.VIDEO.SNS_EVENT_PUBLISHER) private readonly videoPublisher: EventPublisher,
-        @inject(TOKEN.USER.SNS_EVENT_PUBLISHER) private readonly userPublisher: EventPublisher
-    ) {}
+        @inject(TOKEN.VIDEO.SNS_EVENT_PUBLISHER) readonly videoPublisher: EventPublisher,
+        @inject(TOKEN.USER.SNS_EVENT_PUBLISHER) readonly userPublisher: EventPublisher
+    ) {
+        this.publishers.push(userPublisher, videoPublisher);
+    }
 
     async publish(events: DomainEvent[]) {
         for (const event of events) {
-            await this.videoPublisher.publish(event);
-            await this.userPublisher.publish(event);
+            for (const publisher of this.publishers) {
+                publisher.publish(event);
+            }
         }
     }
 }

@@ -4,21 +4,22 @@ import { Logger } from '@videomatt/shared/domain/logger/logger';
 import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain-event';
 import { EventPublisher } from '@videomatt/shared/domain/broker/event.publisher';
 
-export class SNSEventPublisher implements EventPublisher {
-    constructor(
+export abstract class SNSEventPublisher implements EventPublisher {
+    protected constructor(
         protected readonly snsClient: SNSClient,
-        protected readonly topicArn: string,
         protected readonly logger: Logger
     ) {}
 
     async publish(event: DomainEvent) {
         try {
+            if (!this.isValidEvent(event)) {
+                return;
+            }
+
             const command = new PublishCommand({
-                TopicArn: this.topicArn,
+                TopicArn: this.getTopic(),
                 Message: JSON.stringify({
-                    eventName: event.eventName,
-                    occurredOn: event.occurredOn.toISOString(),
-                    payload: event,
+                    payload: { ...event, occurredOn: event.occurredOn.toISOString() },
                 }),
                 Subject: event.eventName,
             });
@@ -29,4 +30,8 @@ export class SNSEventPublisher implements EventPublisher {
             this.logger.error(`Error publishing event ${event.eventName}:`);
         }
     }
+
+    abstract getTopic(): string;
+
+    abstract isValidEvent(event: DomainEvent): boolean;
 }

@@ -6,15 +6,15 @@ import { VideoRepository } from '@videomatt/videos/domain/repositories/video.rep
 import { Video } from '@videomatt/videos/domain/models/video';
 
 @injectable()
-export class CreateVideoUseCase {
+export class PublishVideoUseCase {
     constructor(
-        @inject(TOKEN.VIDEO.REPOSITORY) private readonly videoRepository: VideoRepository<Video>,
+        @inject(TOKEN.VIDEO.REPOSITORY) private readonly repository: VideoRepository<Video>,
         @inject(TOKEN.SHARED.EVENT_BUS) private readonly eventBus: EventBus
     ) {}
 
-    async execute(videoId: string, videoTitle: string, videoDescription: string, videoUrl: string) {
-        const video = Video.create(videoId, videoTitle, videoDescription, videoUrl);
-        this.videoRepository.add(video);
+    async execute(videoId: string, videoTitle: string, videoDescription: string, videoUrl: string, userId: string) {
+        const video = Video.create(videoId, videoTitle, videoDescription, videoUrl, userId);
+        this.repository.add(video);
         this.eventBus.publish(video.pullDomainEvents());
     }
 }

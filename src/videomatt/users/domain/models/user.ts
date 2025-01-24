@@ -16,15 +16,15 @@ export class User extends AggregateRoot {
         super();
     }
 
-    static create(id: string, firstName: string, lastName: string, amountOfVideos: number) {
+    static create(id: string, firstName: string, lastName: string, amountOfVideos?: number) {
         const user = new User(
             new UserId(id),
             new UserFirstName(firstName),
             new UserLastName(lastName),
-            new UserAmountOfVideo(amountOfVideos)
+            new UserAmountOfVideo(amountOfVideos ?? 0)
         );
 
-        const event = new UserCreatedEvent(user);
+        const event = UserCreatedEvent.create(user);
         user.record(event);
 
         return user;
@@ -42,9 +42,9 @@ export class User extends AggregateRoot {
     toPrimitives() {
         return {
             id: this.id.value,
-            title: this.firstName.value,
-            description: this.lastName.value,
-            url: this.amountOfVideos.value,
+            firstName: this.firstName.value,
+            lastName: this.lastName.value,
+            amountOfVideos: this.amountOfVideos.value,
         };
     }
 

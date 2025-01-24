@@ -1,12 +1,12 @@
 import { IsString, IsNotEmpty, IsUUID } from 'class-validator';
 
-export class CreateVideoParamValidatorDto {
+export class PublishVideoParamValidatorDto {
     @IsUUID()
     @IsNotEmpty()
     id!: string;
 }
 
-export class CreateVideoBodyValidatorDto {
+export class PublishVideoBodyValidatorDto {
     @IsString()
     @IsNotEmpty()
     title!: string;
@@ -18,4 +18,8 @@ export class CreateVideoBodyValidatorDto {
     @IsString()
     @IsNotEmpty()
     url!: string;
+
+    @IsUUID()
+    @IsNotEmpty()
+    userId!: string;
 }

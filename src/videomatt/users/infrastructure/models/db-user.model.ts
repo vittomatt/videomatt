@@ -1,6 +1,6 @@
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
-const USER_TABLE_NAME = 'users';
+export const USER_TABLE_NAME = 'users';
 
 export class DBUser extends Model {
     public id!: string;
@@ -27,6 +27,16 @@ export class DBUser extends Model {
                     type: DataTypes.INTEGER,
                     allowNull: false,
                     defaultValue: 0,
+                },
+                createdAt: {
+                    type: DataTypes.DATE,
+                    allowNull: false,
+                    defaultValue: new Date().toISOString(),
+                },
+                updatedAt: {
+                    type: DataTypes.DATE,
+                    allowNull: false,
+                    defaultValue: new Date().toISOString(),
                 },
             },
             { sequelize, modelName: USER_TABLE_NAME }

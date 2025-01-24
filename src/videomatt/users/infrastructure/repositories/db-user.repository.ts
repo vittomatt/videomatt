@@ -36,7 +36,7 @@ export class DBUserRepository implements UserRepository<User> {
     async update(user: User) {
         const userPrimitives = user.toPrimitives();
         try {
-            this.dbUser.update({ userPrimitives }, { where: { id: userPrimitives.id } });
+            await this.dbUser.update(userPrimitives, { where: { id: userPrimitives.id } });
         } catch (error) {
             this.logger.error(`Error updating user:: ${error}`);
         }

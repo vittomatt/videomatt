@@ -6,7 +6,6 @@ import { DBUser } from '@videomatt/users/infrastructure/models/db-user.model';
 
 import { DB, DBModel } from './db';
 
-// fitu use logger
 export class PostgresDB implements DB, DBModel {
     private instance: Sequelize;
     private videoModel!: typeof DBVideo;

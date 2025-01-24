@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "lint": "eslint 'src/**/*.ts'",
     "lint:fix": "eslint 'src/**/*.ts' --fix",
     "format": "prettier --write 'src/**/*.ts'",
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "nodemon --watch 'src/**/*' --exec \"ts-node -r tsconfig-paths/register -P tsconfig.json\" src/index.ts"
+    "dev": "nodemon --watch 'src/**/*' --exec \"ts-node -r tsconfig-paths/register -P tsconfig.json\" src/index.ts",
+    "dev:worker": "nodemon --watch 'src/**/*' --exec \"ts-node -r tsconfig-paths/register -P tsconfig.json\" src/workers.ts"
   },
   "keywords": [],
   "author": "",
