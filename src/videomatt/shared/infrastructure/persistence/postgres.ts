@@ -13,9 +13,9 @@ export class PostgresDB implements DB, DBModel {
 
     constructor() {
         const envs = getEnvs();
-        const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = envs;
+        const { DB_HOST, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB } = envs;
 
-        this.instance = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
+        this.instance = new Sequelize(POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD, {
             host: DB_HOST,
             dialect: 'postgres',
             logging: false,

@@ -3,10 +3,11 @@ import { config as dotenvSafeConfig } from 'dotenv-safe';
 import dotenv from 'dotenv';
 
 const envSchema = z.object({
+    NODE_ENV: z.string(),
     DB_HOST: z.string(),
-    DB_USER: z.string(),
-    DB_PASSWORD: z.string(),
-    DB_NAME: z.string(),
+    POSTGRES_USER: z.string(),
+    POSTGRES_PASSWORD: z.string(),
+    POSTGRES_DB: z.string(),
     SNS_VIDEO_TOPIC_ARN: z.string(),
     SNS_USER_TOPIC_ARN: z.string(),
     SQS_USER_QUEUE_URL: z.string(),
