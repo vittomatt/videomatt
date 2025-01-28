@@ -1,6 +1,7 @@
+import { ParamsDictionary } from 'express-serve-static-core';
+import { NextFunction, Request, Response } from 'express';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
-import { Request, Response, NextFunction } from 'express';
 
 export const validateDto = (DtoClass: new () => object, from: 'body' | 'params' = 'body') => {
     return async (req: Request, res: Response, next: NextFunction) => {
@@ -22,7 +23,7 @@ export const validateDto = (DtoClass: new () => object, from: 'body' | 'params' 
         if (from === 'body') {
             req.body = dtoInstance;
         } else {
-            req.params = dtoInstance as any;
+            req.params = dtoInstance as unknown as ParamsDictionary;
         }
 
         next();

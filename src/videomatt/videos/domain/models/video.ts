@@ -1,11 +1,11 @@
-import { AggregateRoot } from '@videomatt/shared/domain/aggregate-root';
 import { VideoPublishedEvent } from '@videomatt/videos/domain/events/video-published.event';
+import { AggregateRoot } from '@videomatt/shared/domain/aggregate-root';
 import { UserId } from '@videomatt/users/domain/models/user-id';
 
-import { VideoId } from './video-id';
-import { VideoTitle } from './video-title';
 import { VideoDescription } from './video-description';
+import { VideoTitle } from './video-title';
 import { VideoURL } from './video-url';
+import { VideoId } from './video-id';
 
 export class Video extends AggregateRoot {
     constructor(

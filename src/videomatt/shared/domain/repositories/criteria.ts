@@ -1,5 +1,5 @@
-import { Filters } from './filters';
 import { Order, OrderType } from './order';
+import { Filters } from './filters';
 
 export class Criteria {
     private constructor(

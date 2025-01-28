@@ -7,6 +7,8 @@ services:
             dockerfile: docker/Dockerfile
         ports:
             - '3000:3000'
+        environment:
+            - DB_HOST=db
         env_file:
             - .env
         volumes:
@@ -22,6 +24,8 @@ services:
         build:
             context: .
             dockerfile: docker/Dockerfile.worker
+        environment:
+            - DB_HOST=db
         env_file:
             - .env
         volumes:

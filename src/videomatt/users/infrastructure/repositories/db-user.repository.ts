@@ -1,12 +1,11 @@
-import { inject, injectable } from 'tsyringe';
-
 import { SequelizeCriteriaConverter } from '@videomatt/shared/infrastructure/repositories/db-criteria.converter';
 import { UserRepository } from '@videomatt/users/domain/repositories/user.repository';
-import { User } from '@videomatt/users/domain/models/user';
-import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { DBUser } from '@videomatt/users/infrastructure/models/db-user.model';
-import { Logger } from '@videomatt/shared/domain/logger/logger';
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
+import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
+import { Logger } from '@videomatt/shared/domain/logger/logger';
+import { User } from '@videomatt/users/domain/models/user';
+import { inject, injectable } from 'tsyringe';
 
 @injectable()
 export class DBUserRepository implements UserRepository<User> {

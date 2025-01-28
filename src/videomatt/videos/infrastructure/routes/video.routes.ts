@@ -1,13 +1,12 @@
-import { Express } from 'express';
-import { inject, injectable } from 'tsyringe';
-
-import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
-import { validateDto } from '@videomatt/shared/infrastructure/controllers/validator';
-import { PublishVideoController } from '@videomatt/videos/infrastructure/controllers/publish-video/publish-video.controller';
 import {
     PublishVideoBodyValidatorDto,
     PublishVideoParamValidatorDto,
 } from '@videomatt/videos/infrastructure/controllers/publish-video/publish-video.validator';
+import { PublishVideoController } from '@videomatt/videos/infrastructure/controllers/publish-video/publish-video.controller';
+import { validateDto } from '@videomatt/shared/infrastructure/controllers/validator';
+import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
+import { inject, injectable } from 'tsyringe';
+import { Express } from 'express';
 
 @injectable()
 export class VideoRoutes {

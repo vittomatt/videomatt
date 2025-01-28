@@ -1,9 +1,8 @@
-import { inject, injectable } from 'tsyringe';
-
+import { EventPublisher } from '@videomatt/shared/domain/broker/event.publisher';
 import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain-event';
 import { EventBus } from '@videomatt/shared/domain/event-bus/event-bus';
-import { EventPublisher } from '@videomatt/shared/domain/broker/event.publisher';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
+import { inject, injectable } from 'tsyringe';
 
 @injectable()
 export class InMemoryEventBus implements EventBus {

@@ -1,9 +1,9 @@
-import { inject, injectable } from 'tsyringe';
-import { SQSClient } from '@aws-sdk/client-sqs';
-
-import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { SQSEventConsumer } from '@videomatt/shared/infrastructure/broker/sqs-event.consumer';
+import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { Logger } from '@videomatt/shared/domain/logger/logger';
+import { SQSClient } from '@aws-sdk/client-sqs';
+import { inject, injectable } from 'tsyringe';
+
 import { IncreaseAmountOfVideosOnVideoPublishedHandler } from '../../handlers/increase-amount-of-videos-on-video-published.handler';
 
 @injectable()

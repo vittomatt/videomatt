@@ -1,23 +1,23 @@
-import { container } from 'tsyringe';
-import { SNSClient } from '@aws-sdk/client-sns';
-import { SQSClient } from '@aws-sdk/client-sqs';
-
-import { getEnvs } from '@videomatt/shared/envs/init-envs';
-import { DBModel } from '@videomatt/shared/infrastructure/persistence/db';
-import { ErrorController } from '@videomatt/shared/infrastructure/controllers/error.controller';
-import { PinoLogger } from '@videomatt/shared/infrastructure/logger/pino';
-import { InMemoryEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-event-bus';
-import { DBVideoRepository } from '@videomatt/videos/infrastructure/repositories/db-video.repository';
-import { PublishVideoController } from '@videomatt/videos/infrastructure/controllers/publish-video/publish-video.controller';
-import { PublishVideoUseCase } from '@videomatt/videos/application/publish-video.use-case';
-import { DBUserRepository } from '@videomatt/users/infrastructure/repositories/db-user.repository';
-import { IncreaseAmountOfVideosUseCase } from '@videomatt/users/application/increase-amount-of-videos.use-case';
-import { SNSVideoEventPublisher } from '@videomatt/videos/infrastructure/broker/sns-video-event.publisher';
 import { IncreaseAmountOfVideosOnVideoPublishedHandler } from '@videomatt/users/infrastructure/handlers/increase-amount-of-videos-on-video-published.handler';
 import { SQSEventVideoPublishedConsumer } from '@videomatt/users/infrastructure/broker/consumers/sqs-event-video-published.consumer';
+import { PublishVideoController } from '@videomatt/videos/infrastructure/controllers/publish-video/publish-video.controller';
+import { IncreaseAmountOfVideosUseCase } from '@videomatt/users/application/increase-amount-of-videos.use-case';
+import { SNSVideoEventPublisher } from '@videomatt/videos/infrastructure/broker/sns-video-event.publisher';
 import { CreateUserController } from '@videomatt/users/infrastructure/controllers/create-user.controller';
-import { CreateUserUseCase } from '@videomatt/users/application/create-user.user-case';
 import { SNSUserEventPublisher } from '@videomatt/users/infrastructure/broker/sns-user-event.publisher';
+import { DBVideoRepository } from '@videomatt/videos/infrastructure/repositories/db-video.repository';
+import { DBUserRepository } from '@videomatt/users/infrastructure/repositories/db-user.repository';
+import { InMemoryEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-event-bus';
+import { ErrorController } from '@videomatt/shared/infrastructure/controllers/error.controller';
+import { PublishVideoUseCase } from '@videomatt/videos/application/publish-video.use-case';
+import { CreateUserUseCase } from '@videomatt/users/application/create-user.user-case';
+import { DBModel } from '@videomatt/shared/infrastructure/persistence/db';
+import { PinoLogger } from '@videomatt/shared/infrastructure/logger/pino';
+import { getEnvs } from '@videomatt/shared/envs/init-envs';
+import { SNSClient } from '@aws-sdk/client-sns';
+import { SQSClient } from '@aws-sdk/client-sqs';
+import { container } from 'tsyringe';
+
 import { TOKEN } from './tokens';
 
 export class DI {

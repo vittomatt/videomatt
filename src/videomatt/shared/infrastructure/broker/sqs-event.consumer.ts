@@ -1,5 +1,4 @@
-import { SQSClient, ReceiveMessageCommand, DeleteMessageCommand, Message } from '@aws-sdk/client-sqs';
-
+import { DeleteMessageCommand, Message, ReceiveMessageCommand, SQSClient } from '@aws-sdk/client-sqs';
 import { EventConsumer } from '@videomatt/shared/domain/broker/event.consumer';
 import { Handler } from '@videomatt/shared/domain/broker/handler';
 import { Logger } from '@videomatt/shared/domain/logger/logger';

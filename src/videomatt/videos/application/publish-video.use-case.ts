@@ -1,9 +1,8 @@
-import { inject, injectable } from 'tsyringe';
-
-import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
-import { EventBus } from '@videomatt/shared/domain/event-bus/event-bus';
 import { VideoRepository } from '@videomatt/videos/domain/repositories/video.repository';
+import { EventBus } from '@videomatt/shared/domain/event-bus/event-bus';
+import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { Video } from '@videomatt/videos/domain/models/video';
+import { inject, injectable } from 'tsyringe';
 
 @injectable()
 export class PublishVideoUseCase {

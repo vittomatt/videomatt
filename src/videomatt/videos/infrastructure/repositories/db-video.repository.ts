@@ -1,12 +1,11 @@
-import { inject, injectable } from 'tsyringe';
-
 import { SequelizeCriteriaConverter } from '@videomatt/shared/infrastructure/repositories/db-criteria.converter';
 import { VideoRepository } from '@videomatt/videos/domain/repositories/video.repository';
-import { Video } from '@videomatt/videos/domain/models/video';
 import { DBVideo } from '@videomatt/videos/infrastructure/models/db-video.model';
+import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { Logger } from '@videomatt/shared/domain/logger/logger';
-import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
+import { Video } from '@videomatt/videos/domain/models/video';
+import { inject, injectable } from 'tsyringe';
 
 @injectable()
 export class DBVideoRepository implements VideoRepository<Video> {

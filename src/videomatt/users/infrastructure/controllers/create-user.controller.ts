@@ -1,8 +1,7 @@
-import { Request, Response } from 'express';
-import { inject, injectable } from 'tsyringe';
-
-import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { CreateUserUseCase } from '@videomatt/users/application/create-user.user-case';
+import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
+import { inject, injectable } from 'tsyringe';
+import { Request, Response } from 'express';
 
 @injectable()
 export class CreateUserController {

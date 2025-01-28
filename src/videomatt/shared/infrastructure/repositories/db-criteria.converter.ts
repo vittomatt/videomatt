@@ -1,8 +1,11 @@
-import { Op, Order as SequelizeOrder } from 'sequelize';
-
 import { FilterOperator, Filters } from '@videomatt/shared/domain/repositories/filters';
 import { Order, OrderType } from '@videomatt/shared/domain/repositories/order';
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
+import { Op, Order as SequelizeOrder } from 'sequelize';
+
+type FilterValue = string | number | boolean;
+
+type WhereClause = Record<string, Record<symbol, FilterValue>>;
 
 const operatorMap: Record<FilterOperator, symbol> = {
     [FilterOperator.EQUALS]: Op.eq,
@@ -26,7 +29,7 @@ export class SequelizeCriteriaConverter {
     }
 
     public build(): {
-        where: Record<string, any>;
+        where: WhereClause;
         order: SequelizeOrder | undefined;
         offset: number | undefined;
         limit: number | undefined;
@@ -39,8 +42,8 @@ export class SequelizeCriteriaConverter {
         };
     }
 
-    private buildSequelizeWhere(): Record<string, any> {
-        const where: Record<string, any> = {};
+    private buildSequelizeWhere(): WhereClause {
+        const where: WhereClause = {};
 
         this.filters.forEach((filter) => {
             const field = filter.field;

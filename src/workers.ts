@@ -1,10 +1,10 @@
 import 'reflect-metadata';
-import { container } from 'tsyringe';
 
-import { initEnvs } from '@videomatt/shared/envs/init-envs';
-import { DI } from '@videomatt/shared/infrastructure/di/di';
 import { SQSEventVideoPublishedConsumer } from '@videomatt/users/infrastructure/broker/consumers/sqs-event-video-published.consumer';
 import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/postgres';
+import { DI } from '@videomatt/shared/infrastructure/di/di';
+import { initEnvs } from '@videomatt/shared/envs/init-envs';
+import { container } from 'tsyringe';
 
 async function startConsumers() {
     console.log('SQS Consumer Worker started');

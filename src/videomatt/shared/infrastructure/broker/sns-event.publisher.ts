@@ -1,8 +1,7 @@
-import { SNSClient, PublishCommand } from '@aws-sdk/client-sns';
-
-import { Logger } from '@videomatt/shared/domain/logger/logger';
-import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain-event';
 import { EventPublisher } from '@videomatt/shared/domain/broker/event.publisher';
+import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain-event';
+import { Logger } from '@videomatt/shared/domain/logger/logger';
+import { PublishCommand, SNSClient } from '@aws-sdk/client-sns';
 
 export abstract class SNSEventPublisher implements EventPublisher {
     protected constructor(

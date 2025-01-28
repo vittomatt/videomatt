@@ -1,8 +1,7 @@
-import { Sequelize } from 'sequelize';
-
-import { getEnvs } from '@videomatt/shared/envs/init-envs';
 import { DBVideo } from '@videomatt/videos/infrastructure/models/db-video.model';
 import { DBUser } from '@videomatt/users/infrastructure/models/db-user.model';
+import { getEnvs } from '@videomatt/shared/envs/init-envs';
+import { Sequelize } from 'sequelize';
 
 import { DB, DBModel } from './db';
 

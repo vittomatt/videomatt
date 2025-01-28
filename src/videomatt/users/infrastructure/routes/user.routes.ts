@@ -1,13 +1,12 @@
-import { Express } from 'express';
-import { inject, injectable } from 'tsyringe';
-
-import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
-import { validateDto } from '@videomatt/shared/infrastructure/controllers/validator';
-import { CreateUserController } from '@videomatt/users/infrastructure/controllers/create-user.controller';
 import {
     CreateUserBodyValidatorDto,
     CreateUserParamValidatorDto,
 } from '@videomatt/users/infrastructure/controllers/create-user.validator';
+import { CreateUserController } from '@videomatt/users/infrastructure/controllers/create-user.controller';
+import { validateDto } from '@videomatt/shared/infrastructure/controllers/validator';
+import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
+import { inject, injectable } from 'tsyringe';
+import { Express } from 'express';
 
 @injectable()
 export class UserRoutes {

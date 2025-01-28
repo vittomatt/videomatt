@@ -1,6 +1,6 @@
-import { z } from 'zod';
 import { config as dotenvSafeConfig } from 'dotenv-safe';
 import dotenv from 'dotenv';
+import { z } from 'zod';
 
 const envSchema = z.object({
     NODE_ENV: z.string(),

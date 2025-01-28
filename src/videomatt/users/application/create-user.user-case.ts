@@ -1,9 +1,8 @@
-import { inject, injectable } from 'tsyringe';
-
-import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
-import { EventBus } from '@videomatt/shared/domain/event-bus/event-bus';
 import { UserRepository } from '@videomatt/users/domain/repositories/user.repository';
+import { EventBus } from '@videomatt/shared/domain/event-bus/event-bus';
+import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { User } from '@videomatt/users/domain/models/user';
+import { inject, injectable } from 'tsyringe';
 
 @injectable()
 export class CreateUserUseCase {

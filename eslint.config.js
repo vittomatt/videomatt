@@ -5,6 +5,7 @@ import simpleImportSort from 'eslint-plugin-simple-import-sort';
 
 export default [
     {
+        files: ['**/*.ts'],
         languageOptions: {
             parser: tsParser,
             ecmaVersion: 'latest',
@@ -18,8 +19,7 @@ export default [
         rules: {
             ...tseslint.configs.recommended.rules,
             ...prettier.configs.recommended.rules,
-            'simple-import-sort/imports': 'error',
-            'simple-import-sort/exports': 'error',
+            '@typescript-eslint/no-unused-vars': 'off',
         },
     },
 ];

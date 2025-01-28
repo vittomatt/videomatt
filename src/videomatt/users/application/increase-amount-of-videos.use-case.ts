@@ -1,10 +1,9 @@
-import { inject, injectable } from 'tsyringe';
-
-import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
-import { UserRepository } from '@videomatt/users/domain/repositories/user.repository';
-import { User } from '@videomatt/users/domain/models/user';
 import { FilterOperator, Filters } from '@videomatt/shared/domain/repositories/filters';
+import { UserRepository } from '@videomatt/users/domain/repositories/user.repository';
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
+import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
+import { User } from '@videomatt/users/domain/models/user';
+import { inject, injectable } from 'tsyringe';
 
 @injectable()
 export class IncreaseAmountOfVideosUseCase {

@@ -1,14 +1,13 @@
 import 'reflect-metadata';
 
-import express from 'express';
-import helmet from 'helmet';
-import { container } from 'tsyringe';
-
+import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/postgres';
+import { initRoutes } from '@videomatt/shared/infrastructure/routes/init-routes';
+import { PinoLogger } from '@videomatt/shared/infrastructure/logger/pino';
 import { getEnvs, initEnvs } from '@videomatt/shared/envs/init-envs';
 import { DI } from '@videomatt/shared/infrastructure/di/di';
-import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/postgres';
-import { PinoLogger } from '@videomatt/shared/infrastructure/logger/pino';
-import { initRoutes } from '@videomatt/shared/infrastructure/routes/init-routes';
+import { container } from 'tsyringe';
+import express from 'express';
+import helmet from 'helmet';
 
 initEnvs();
 
