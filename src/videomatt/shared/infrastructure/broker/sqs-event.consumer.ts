@@ -3,6 +3,8 @@ import { EventConsumer } from '@videomatt/shared/domain/broker/event.consumer';
 import { Handler } from '@videomatt/shared/domain/broker/handler';
 import { Logger } from '@videomatt/shared/domain/logger/logger';
 
+const RETRY_QUEUE_SUFFIX = '_retry';
+
 export class SQSEventConsumer implements EventConsumer {
     protected constructor(
         protected readonly sqsClient: SQSClient,
@@ -12,9 +14,15 @@ export class SQSEventConsumer implements EventConsumer {
     ) {}
 
     async consume() {
+        const queues: string[] = [this.sqsUrl, `${this.sqsUrl}${RETRY_QUEUE_SUFFIX}`];
+        const promises = queues.map((queue) => this.handleQueue(queue));
+        await Promise.all(promises);
+    }
+
+    private async handleQueue(queueUrl: string) {
         try {
             const params = new ReceiveMessageCommand({
-                QueueUrl: this.sqsUrl,
+                QueueUrl: queueUrl,
                 MaxNumberOfMessages: 1,
                 WaitTimeSeconds: 10,
                 VisibilityTimeout: 30,

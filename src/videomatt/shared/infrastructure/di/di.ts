@@ -91,8 +91,11 @@ export class DI {
                 region: awsRegion,
             }),
         });
-        container.register(TOKEN.VIDEO.SQS_QUEUE_URL, {
-            useValue: getEnvs().SQS_VIDEO_QUEUE_URL,
+        container.register(TOKEN.VIDEO.SQS_VIDEO_PUBLISHED_QUEUE_URL, {
+            useValue: getEnvs().SQS_VIDEO_PUBLISHED_QUEUE_URL,
+        });
+        container.register(TOKEN.USER.SQS_USER_CREATED_QUEUE_URL, {
+            useValue: getEnvs().SQS_USER_CREATED_QUEUE_URL,
         });
         container.register(TOKEN.VIDEO.SQS_EVENT_PUBLISHED_CONSUMER, {
             useClass: SQSEventVideoPublishedConsumer,

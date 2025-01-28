@@ -10,7 +10,7 @@ import { IncreaseAmountOfVideosOnVideoPublishedHandler } from '../../handlers/in
 export class SQSEventVideoPublishedConsumer extends SQSEventConsumer {
     constructor(
         @inject(TOKEN.SHARED.SQS_CLIENT) protected readonly sqsClient: SQSClient,
-        @inject(TOKEN.VIDEO.SQS_QUEUE_URL) protected readonly queueUrl: string,
+        @inject(TOKEN.VIDEO.SQS_VIDEO_PUBLISHED_QUEUE_URL) protected readonly queueUrl: string,
         @inject(TOKEN.SHARED.LOGGER) protected readonly logger: Logger,
         @inject(TOKEN.USER.INCREASE_AMOUNT_OF_VIDEOS_ON_VIDEO_PUBLISHED_HANDLER)
         protected readonly handler: IncreaseAmountOfVideosOnVideoPublishedHandler
