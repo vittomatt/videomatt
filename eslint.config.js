@@ -1,9 +1,10 @@
-import tseslint from '@typescript-eslint/eslint-plugin';
-import tsParser from '@typescript-eslint/parser';
-import prettier from 'eslint-plugin-prettier';
-import simpleImportSort from 'eslint-plugin-simple-import-sort';
+// eslint.config.js (CommonJS style)
+const simpleImportSort = require('eslint-plugin-simple-import-sort');
+const tseslint = require('@typescript-eslint/eslint-plugin');
+const tsParser = require('@typescript-eslint/parser');
+const prettier = require('eslint-plugin-prettier');
 
-export default [
+module.exports = [
     {
         files: ['**/*.ts'],
         languageOptions: {
