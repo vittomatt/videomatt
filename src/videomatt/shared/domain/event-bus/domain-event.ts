@@ -20,7 +20,7 @@ export class DomainEvent {
      */
     public getEntity(): string {
         const eventParts = this.eventName.split('.');
-        const entity = eventParts[4];
-        return entity;
+        const service = eventParts[1];
+        return service;
     }
 }

@@ -3,7 +3,7 @@ import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
 export class CreateUserParamValidatorDto {
     @IsUUID()
     @IsNotEmpty()
-    id!: string;
+    userId!: string;
 }
 
 export class CreateUserBodyValidatorDto {

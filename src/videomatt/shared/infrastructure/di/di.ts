@@ -1,15 +1,19 @@
+import { AddCommentToVideoController } from '@videomatt/videos/video-comment/infrastructure/controllers/add-comment-to-video/add-comment-to-video.controller';
 import { IncreaseAmountOfVideosOnVideoPublishedHandler } from '@videomatt/users/infrastructure/handlers/increase-amount-of-videos-on-video-published.handler';
 import { SQSEventVideoPublishedConsumer } from '@videomatt/users/infrastructure/broker/consumers/sqs-event-video-published.consumer';
-import { PublishVideoController } from '@videomatt/videos/infrastructure/controllers/publish-video/publish-video.controller';
+import { PublishVideoController } from '@videomatt/videos/videos/infrastructure/controllers/publish-video/publish-video.controller';
+import { GetVideosController } from '@videomatt/videos/videos/infrastructure/controllers/get-videos/get-videos.controller';
+import { AddCommentToVideoUseCase } from '@videomatt/videos/video-comment/application/add-comment-to-video.use-case';
+import { SNSVideoEventPublisher } from '@videomatt/videos/videos/infrastructure/broker/sns-video-event.publisher';
 import { IncreaseAmountOfVideosUseCase } from '@videomatt/users/application/increase-amount-of-videos.use-case';
-import { SNSVideoEventPublisher } from '@videomatt/videos/infrastructure/broker/sns-video-event.publisher';
+import { DBVideoRepository } from '@videomatt/videos/videos/infrastructure/repositories/db-video.repository';
 import { CreateUserController } from '@videomatt/users/infrastructure/controllers/create-user.controller';
 import { SNSUserEventPublisher } from '@videomatt/users/infrastructure/broker/sns-user-event.publisher';
-import { DBVideoRepository } from '@videomatt/videos/infrastructure/repositories/db-video.repository';
 import { DBUserRepository } from '@videomatt/users/infrastructure/repositories/db-user.repository';
 import { InMemoryEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-event-bus';
+import { PublishVideoUseCase } from '@videomatt/videos/videos/application/publish-video.use-case';
 import { ErrorController } from '@videomatt/shared/infrastructure/controllers/error.controller';
-import { PublishVideoUseCase } from '@videomatt/videos/application/publish-video.use-case';
+import { GetVideosUseCase } from '@videomatt/videos/videos/application/get-videos.use-case';
 import { CreateUserUseCase } from '@videomatt/users/application/create-user.user-case';
 import { DBModel } from '@videomatt/shared/infrastructure/persistence/db';
 import { PinoLogger } from '@videomatt/shared/infrastructure/logger/pino';
@@ -17,7 +21,6 @@ import { getEnvs } from '@videomatt/shared/envs/init-envs';
 import { SNSClient } from '@aws-sdk/client-sns';
 import { SQSClient } from '@aws-sdk/client-sqs';
 import { container } from 'tsyringe';
-
 import { TOKEN } from './tokens';
 
 export class DI {
@@ -40,6 +43,9 @@ export class DI {
         container.register(TOKEN.VIDEO.DB_MODEL, {
             useValue: this.db.getVideoModel(),
         });
+        container.register(TOKEN.VIDEO.DB_MODEL_COMMENT, {
+            useValue: this.db.getVideoCommentModel(),
+        });
     }
 
     private initControllersDependencies() {
@@ -52,6 +58,12 @@ export class DI {
         container.register(TOKEN.VIDEO.PUBLISH_VIDEO_CONTROLLER, {
             useClass: PublishVideoController,
         });
+        container.register(TOKEN.VIDEO.ADD_COMMENT_TO_VIDEO_CONTROLLER, {
+            useClass: AddCommentToVideoController,
+        });
+        container.register(TOKEN.VIDEO.GET_VIDEOS_CONTROLLER, {
+            useClass: GetVideosController,
+        });
     }
 
     private initUseCasesDependencies() {
@@ -63,6 +75,12 @@ export class DI {
         });
         container.register(TOKEN.VIDEO.PUBLISH_VIDEO_USE_CASE, {
             useClass: PublishVideoUseCase,
+        });
+        container.register(TOKEN.VIDEO.ADD_COMMENT_TO_VIDEO_USE_CASE, {
+            useClass: AddCommentToVideoUseCase,
+        });
+        container.register(TOKEN.VIDEO.GET_VIDEOS_USE_CASE, {
+            useClass: GetVideosUseCase,
         });
     }
 

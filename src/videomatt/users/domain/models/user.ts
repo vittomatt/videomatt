@@ -16,7 +16,17 @@ export class User extends AggregateRoot {
         super();
     }
 
-    static create(id: string, firstName: string, lastName: string, amountOfVideos?: number) {
+    static create({
+        id,
+        firstName,
+        lastName,
+        amountOfVideos,
+    }: {
+        id: string;
+        firstName: string;
+        lastName: string;
+        amountOfVideos?: number;
+    }) {
         const user = new User(
             new UserId(id),
             new UserFirstName(firstName),
@@ -30,12 +40,22 @@ export class User extends AggregateRoot {
         return user;
     }
 
-    static fromPrimitives(primitives: { id: string; firstName: string; lastName: string; amountOfVideos: number }) {
+    static fromPrimitives({
+        id,
+        firstName,
+        lastName,
+        amountOfVideos,
+    }: {
+        id: string;
+        firstName: string;
+        lastName: string;
+        amountOfVideos: number;
+    }) {
         return new User(
-            new UserId(primitives.id),
-            new UserFirstName(primitives.firstName),
-            new UserLastName(primitives.lastName),
-            new UserAmountOfVideo(primitives.amountOfVideos)
+            new UserId(id),
+            new UserFirstName(firstName),
+            new UserLastName(lastName),
+            new UserAmountOfVideo(amountOfVideos)
         );
     }
 

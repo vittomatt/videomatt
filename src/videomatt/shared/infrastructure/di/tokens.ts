@@ -29,6 +29,7 @@ export const TOKEN = {
     VIDEO: {
         // Storage
         DB_MODEL: Symbol('VIDEO_DB_MODEL'),
+        DB_MODEL_COMMENT: Symbol('VIDEO_COMMENT_DB_MODEL'),
         REPOSITORY: Symbol('VIDEO_REPOSITORY'),
 
         // AWS
@@ -41,5 +42,9 @@ export const TOKEN = {
         // Application
         PUBLISH_VIDEO_CONTROLLER: Symbol('PUBLISH_VIDEO_CONTROLLER'),
         PUBLISH_VIDEO_USE_CASE: Symbol('PUBLISH_VIDEO_USE_CASE'),
+        GET_VIDEOS_CONTROLLER: Symbol('GET_VIDEOS_CONTROLLER'),
+        GET_VIDEOS_USE_CASE: Symbol('GET_VIDEOS_USE_CASE'),
+        ADD_COMMENT_TO_VIDEO_USE_CASE: Symbol('ADD_COMMENT_TO_VIDEO_USE_CASE'),
+        ADD_COMMENT_TO_VIDEO_CONTROLLER: Symbol('ADD_COMMENT_TO_VIDEO_CONTROLLER'),
     },
 };

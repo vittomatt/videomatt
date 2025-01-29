@@ -1,7 +1,7 @@
-import { VideoRepository } from '@videomatt/videos/domain/repositories/video.repository';
+import { VideoRepository } from '@videomatt/videos/videos/domain/repositories/video.repository';
 import { EventBus } from '@videomatt/shared/domain/event-bus/event-bus';
+import { Video } from '@videomatt/videos/videos/domain/models/video';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
-import { Video } from '@videomatt/videos/domain/models/video';
 import { inject, injectable } from 'tsyringe';
 
 @injectable()
@@ -11,8 +11,14 @@ export class PublishVideoUseCase {
         @inject(TOKEN.SHARED.EVENT_BUS) private readonly eventBus: EventBus
     ) {}
 
-    async execute(videoId: string, videoTitle: string, videoDescription: string, videoUrl: string, userId: string) {
-        const video = Video.create(videoId, videoTitle, videoDescription, videoUrl, userId);
+    async execute(id: string, title: string, description: string, url: string, userId: string) {
+        const video = Video.create({
+            id,
+            title,
+            description,
+            url,
+            userId,
+        });
         this.repository.add(video);
         this.eventBus.publish(video.pullDomainEvents());
     }

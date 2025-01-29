@@ -3,7 +3,7 @@ import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
 export class PublishVideoParamValidatorDto {
     @IsUUID()
     @IsNotEmpty()
-    id!: string;
+    videoId!: string;
 }
 
 export class PublishVideoBodyValidatorDto {

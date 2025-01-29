@@ -14,7 +14,7 @@ export class UserRoutes {
 
     public initRoutes(app: Express) {
         app.put(
-            '/api/users/:id',
+            '/api/users/:userId',
             validateDto(CreateUserParamValidatorDto, 'params'),
             validateDto(CreateUserBodyValidatorDto, 'body'),
             this.controller.execute.bind(this.controller)

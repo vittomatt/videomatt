@@ -1,13 +1,14 @@
-import { DBVideo } from '@videomatt/videos/infrastructure/models/db-video.model';
+import { DBVideoComment } from '@videomatt/videos/video-comment/infrastructure/models/db-video-comment.model';
+import { DBVideo } from '@videomatt/videos/videos/infrastructure/models/db-video.model';
 import { DBUser } from '@videomatt/users/infrastructure/models/db-user.model';
 import { getEnvs } from '@videomatt/shared/envs/init-envs';
 import { Sequelize } from 'sequelize';
-
 import { DB, DBModel } from './db';
 
 export class PostgresDB implements DB, DBModel {
     private instance: Sequelize;
     private videoModel!: typeof DBVideo;
+    private videoCommentModel!: typeof DBVideoComment;
     private userModel!: typeof DBUser;
 
     constructor() {
@@ -24,6 +25,7 @@ export class PostgresDB implements DB, DBModel {
     public initDb() {
         this.videoModel = DBVideo.initModel(this.instance);
         this.userModel = DBUser.initModel(this.instance);
+        this.videoCommentModel = DBVideoComment.initModel(this.instance);
     }
 
     public async syncDb() {
@@ -60,5 +62,12 @@ export class PostgresDB implements DB, DBModel {
             throw new Error('User model not initialized');
         }
         return this.userModel;
+    }
+
+    public getVideoCommentModel(): typeof DBVideoComment {
+        if (!this.videoCommentModel) {
+            throw new Error('Video comment model not initialized');
+        }
+        return this.videoCommentModel;
     }
 }

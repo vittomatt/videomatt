@@ -21,6 +21,12 @@ export abstract class SNSEventPublisher implements EventPublisher {
                     payload: { ...event, occurredOn: event.occurredOn.toISOString() },
                 }),
                 Subject: event.eventName,
+                MessageAttributes: {
+                    EventType: {
+                        DataType: 'String',
+                        StringValue: event.eventName,
+                    },
+                },
             });
 
             await this.snsClient.send(command);
