@@ -13,7 +13,7 @@ export class GetVideosUseCase {
     ) {}
 
     async execute(): Promise<Video[]> {
-        const criteria = Criteria.create();
+        const criteria = Criteria.create().setInclude(['comments']);
         const videos = await this.repository.search(criteria);
         return videos;
     }

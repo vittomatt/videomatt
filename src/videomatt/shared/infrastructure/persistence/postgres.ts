@@ -23,9 +23,28 @@ export class PostgresDB implements DB, DBModel {
     }
 
     public initDb() {
+        this.initModels();
+        this.initAssociations();
+    }
+
+    private initModels() {
         this.videoModel = DBVideo.initModel(this.instance);
         this.userModel = DBUser.initModel(this.instance);
         this.videoCommentModel = DBVideoComment.initModel(this.instance);
+    }
+
+    private initAssociations() {
+        this.videoModel.associate({
+            DBUser: this.userModel,
+            DBVideoComment: this.videoCommentModel,
+        });
+        this.userModel.associate({
+            DBVideo: this.videoModel,
+        });
+        this.videoCommentModel.associate({
+            DBVideo: this.videoModel,
+            DBUser: this.userModel,
+        });
     }
 
     public async syncDb() {

@@ -51,13 +51,14 @@ export class DBVideoRepository implements VideoRepository<Video> {
     async search(criteria: Criteria): Promise<Video[]> {
         try {
             const converter = new SequelizeCriteriaConverter(criteria);
-            const { where, order, offset, limit } = converter.build();
+            const { where, order, offset, limit, include } = converter.build();
 
             const dbVideos = await this.dbVideo.findAll({
                 where,
                 order,
                 offset,
                 limit,
+                include,
             });
 
             const videos = dbVideos.map((video) => video.toPrimitives()).map((video) => Video.fromPrimitives(video));

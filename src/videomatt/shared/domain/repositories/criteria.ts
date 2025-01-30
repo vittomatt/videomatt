@@ -6,7 +6,8 @@ export class Criteria {
         public filters: Filters[] = [],
         public order: Order = Order.create(OrderType.NONE),
         public offset?: number,
-        public limit?: number
+        public limit?: number,
+        public include?: string[]
     ) {}
 
     static create(): Criteria {
@@ -30,6 +31,11 @@ export class Criteria {
 
     setLimit(limit: number): Criteria {
         this.limit = limit;
+        return this;
+    }
+
+    setInclude(include: string[]): Criteria {
+        this.include = include;
         return this;
     }
 }

@@ -1,3 +1,4 @@
+import { DBModels } from '@videomatt/shared/infrastructure/persistence/db-models';
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export const USER_TABLE_NAME = 'users';
@@ -41,6 +42,10 @@ export class DBUser extends Model {
             },
             { sequelize, modelName: USER_TABLE_NAME }
         );
+    }
+
+    public static associate(models: DBModels) {
+        this.hasMany(models.DBVideo!, { foreignKey: 'userId' });
     }
 
     toPrimitives() {

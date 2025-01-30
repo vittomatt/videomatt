@@ -1,5 +1,6 @@
 import { VIDEO_TABLE_NAME } from '@videomatt/videos/videos/infrastructure/models/db-video.model';
 import { USER_TABLE_NAME } from '@videomatt/users/infrastructure/models/db-user.model';
+import { DBModels } from '@videomatt/shared/infrastructure/persistence/db-models';
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export const VIDEO_COMMENT_TABLE_NAME = 'comments';
@@ -50,6 +51,11 @@ export class DBVideoComment extends Model {
             },
             { sequelize, modelName: VIDEO_COMMENT_TABLE_NAME }
         );
+    }
+
+    public static associate(models: DBModels) {
+        this.belongsTo(models.DBVideo!, { foreignKey: 'videoId' });
+        this.belongsTo(models.DBUser!, { foreignKey: 'userId' });
     }
 
     toPrimitives() {
