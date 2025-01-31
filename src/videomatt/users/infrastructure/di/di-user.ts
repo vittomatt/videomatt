@@ -1,8 +1,8 @@
 import { IncreaseAmountOfVideosOnVideoPublishedHandler } from '@videomatt/users/infrastructure/handlers/increase-amount-of-videos-on-video-published.handler';
+import { SequelizeUserRepository } from '@videomatt/users/infrastructure/repositories/sequelize-user.repository';
 import { IncreaseAmountOfVideosUseCase } from '@videomatt/users/application/increase-amount-of-videos.use-case';
 import { CreateUserController } from '@videomatt/users/infrastructure/controllers/create-user.controller';
 import { SNSUserEventPublisher } from '@videomatt/users/infrastructure/broker/sns-user-event.publisher';
-import { DBUserRepository } from '@videomatt/users/infrastructure/repositories/db-user.repository';
 import { CreateUserUseCase } from '@videomatt/users/application/create-user.user-case';
 import { DBModel } from '@videomatt/shared/infrastructure/persistence/db';
 import { getEnvs } from '@videomatt/shared/envs/init-envs';
@@ -12,7 +12,7 @@ import { container } from 'tsyringe';
 export class DIUsers {
     constructor(private readonly db: DBModel) {}
 
-    public initDi() {
+    public initDI() {
         this.initDBDependencies();
         this.initControllersDependencies();
         this.initUseCasesDependencies();
@@ -56,7 +56,7 @@ export class DIUsers {
 
     private initRepositoriesDependencies() {
         container.register(TOKEN.REPOSITORY, {
-            useClass: DBUserRepository,
+            useClass: SequelizeUserRepository,
         });
     }
 

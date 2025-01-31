@@ -1,7 +1,7 @@
 import { VideoRepository } from '@videomatt/videos/videos/domain/repositories/video.repository';
 import { TOKEN as TOKEN_VIDEO } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
+import { Video } from '@videomatt/videos/videos/domain/models/write/video';
 import { EventBus } from '@videomatt/shared/domain/event-bus/event-bus';
-import { Video } from '@videomatt/videos/videos/domain/models/video';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { inject, injectable } from 'tsyringe';
 

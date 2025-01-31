@@ -11,6 +11,6 @@ export class PublishVideoController {
         const { videoId } = req.params;
         const { title, description, url, userId } = req.body;
         await this.useCase.execute(videoId, title, description, url, userId);
-        res.status(201).send(`Video published: ${videoId}`);
+        res.status(201).send({ videoId });
     }
 }

@@ -11,6 +11,6 @@ export class CreateUserController {
         const { userId } = req.params;
         const { firstName, lastName } = req.body;
         await this.useCase.execute(userId, firstName, lastName);
-        res.status(201).send(`User created: ${userId}`);
+        res.status(201).send({ userId });
     }
 }

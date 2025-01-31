@@ -1,8 +1,9 @@
 import { SQSEventVideoPublishedConsumer } from '@videomatt/users/infrastructure/broker/consumers/sqs-event-video-published.consumer';
 import { PublishVideoController } from '@videomatt/videos/videos/infrastructure/controllers/publish-video/publish-video.controller';
+import { SequelizeGetVideosRepository } from '@videomatt/videos/videos/infrastructure/repositories/sequelize-get-videos.repository';
 import { GetVideosController } from '@videomatt/videos/videos/infrastructure/controllers/get-videos/get-videos.controller';
+import { SequelizeVideoRepository } from '@videomatt/videos/videos/infrastructure/repositories/sequelize-video.repository';
 import { SNSVideoEventPublisher } from '@videomatt/videos/videos/infrastructure/broker/sns-video-event.publisher';
-import { DBVideoRepository } from '@videomatt/videos/videos/infrastructure/repositories/db-video.repository';
 import { PublishVideoUseCase } from '@videomatt/videos/videos/application/publish-video.use-case';
 import { GetVideosUseCase } from '@videomatt/videos/videos/application/get-videos.use-case';
 import { DBModel } from '@videomatt/shared/infrastructure/persistence/db';
@@ -13,7 +14,7 @@ import { container } from 'tsyringe';
 export class DIVideos {
     constructor(private readonly db: DBModel) {}
 
-    public initDi() {
+    public initDI() {
         this.initDBDependencies();
         this.initControllersDependencies();
         this.initUseCasesDependencies();
@@ -24,6 +25,9 @@ export class DIVideos {
     private initDBDependencies() {
         container.register(TOKEN.DB_MODEL, {
             useValue: this.db.getVideoModel(),
+        });
+        container.register(TOKEN.DB_MODEL_READ, {
+            useValue: this.db.getVideoModelRead(),
         });
     }
 
@@ -62,7 +66,10 @@ export class DIVideos {
 
     private initRepositoriesDependencies() {
         container.register(TOKEN.REPOSITORY, {
-            useClass: DBVideoRepository,
+            useClass: SequelizeVideoRepository,
+        });
+        container.register(TOKEN.GET_VIDEOS_REPOSITORY, {
+            useClass: SequelizeGetVideosRepository,
         });
     }
 }

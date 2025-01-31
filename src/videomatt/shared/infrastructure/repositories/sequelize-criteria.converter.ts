@@ -1,4 +1,4 @@
-import { DBVideoComment } from '@videomatt/videos/video-comment/infrastructure/models/db-video-comment.model';
+import { VideoCommentDBModel } from '@videomatt/videos/video-comment/infrastructure/models/video-comment.db-model';
 import { Includeable as SequelizeIncludeable, Op, Order as SequelizeOrder } from 'sequelize';
 import { FilterOperator, Filters } from '@videomatt/shared/domain/repositories/filters';
 import { Order, OrderType } from '@videomatt/shared/domain/repositories/order';
@@ -11,7 +11,7 @@ type WhereClause = Record<string, Record<symbol, FilterValue>>;
 type Includes = SequelizeIncludeable;
 
 const includeMap: Record<string, Includes> = {
-    comments: DBVideoComment,
+    comments: VideoCommentDBModel,
 };
 
 const operatorMap: Record<FilterOperator, symbol> = {

@@ -13,6 +13,6 @@ const port = getEnvs().PORT;
 const appInstance = app.getInstance();
 
 appInstance.listen(port, async () => {
-    await db.syncDb();
+    await db.syncDB();
     logger.info(`Server running on http://localhost:${port}`);
 });

@@ -9,7 +9,6 @@ export class GetVideosController {
 
     async execute(req: Request, res: Response) {
         const videos = await this.useCase.execute();
-        const videosPrimitives = videos.map((video) => video.toPrimitives());
-        res.status(201).json(videosPrimitives);
+        res.status(201).json(videos);
     }
 }

@@ -1,8 +1,8 @@
 import { VideoCommentAddedEvent } from '@videomatt/videos/video-comment/domain/events/video-comment-added.event';
 import { VideoPublishedEvent } from '@videomatt/videos/videos/domain/events/video-published.event';
-import { VideoComment } from '@videomatt/videos/video-comment/domain/models/video-comment';
+import { VideoComment } from '@videomatt/videos/video-comment/domain/models/write/video-comment';
 import { AggregateRoot } from '@videomatt/shared/domain/aggregate-root';
-import { UserId } from '@videomatt/users/domain/models/user-id';
+import { UserId } from '@videomatt/users/domain/models/write/user-id';
 import { VideoDescription } from './video-description';
 import { VideoTitle } from './video-title';
 import { VideoURL } from './video-url';

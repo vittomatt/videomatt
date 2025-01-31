@@ -1,16 +1,16 @@
-import { DBModels } from '@videomatt/shared/infrastructure/persistence/db-models';
+import { DBModel } from '@videomatt/shared/infrastructure/persistence/db';
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export const USER_TABLE_NAME = 'users';
 
-export class DBUser extends Model {
+export class UserDBModel extends Model {
     public id!: string;
     public firstName!: string;
     public lastName!: string;
     public amountOfVideos!: number;
 
-    public static initModel(sequelize: Sequelize): typeof DBUser {
-        return DBUser.init(
+    public static initModel(sequelize: Sequelize): typeof UserDBModel {
+        return UserDBModel.init(
             {
                 id: {
                     type: DataTypes.UUID,
@@ -44,8 +44,8 @@ export class DBUser extends Model {
         );
     }
 
-    public static associate(models: DBModels) {
-        this.hasMany(models.DBVideo!, { foreignKey: 'userId' });
+    public static associate(models: DBModel) {
+        this.hasMany(models.getVideoModel(), { foreignKey: 'userId' });
     }
 
     toPrimitives() {

@@ -5,6 +5,7 @@ import {
 import { CreateUserController } from '@videomatt/users/infrastructure/controllers/create-user.controller';
 import { validateDto } from '@videomatt/shared/infrastructure/controllers/validator';
 import { TOKEN as TOKEN_USER } from '@videomatt/users/infrastructure/di/tokens-user';
+import asyncHandler from 'express-async-handler';
 import { inject, injectable } from 'tsyringe';
 import { Express } from 'express';
 
@@ -17,7 +18,7 @@ export class UserRoutes {
             '/api/users/:userId',
             validateDto(CreateUserParamValidatorDto, 'params'),
             validateDto(CreateUserBodyValidatorDto, 'body'),
-            this.controller.execute.bind(this.controller)
+            asyncHandler(this.controller.execute.bind(this.controller))
         );
     }
 }

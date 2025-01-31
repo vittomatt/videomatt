@@ -1,8 +1,3 @@
-import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
+import { Repository } from '@videomatt/shared/infrastructure/repositories/repository';
 
-export interface UserRepository<T> {
-    add(item: T): Promise<void>;
-    remove(item: T): Promise<void>;
-    update(item: T): Promise<void>;
-    search(criteria: Criteria): Promise<T[]>;
-}
+export type UserRepository<T> = Repository<T>;

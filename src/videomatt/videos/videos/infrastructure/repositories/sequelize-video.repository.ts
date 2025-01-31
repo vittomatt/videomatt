@@ -1,20 +1,23 @@
+import { SequelizeCriteriaConverter } from '@videomatt/shared/infrastructure/repositories/sequelize-criteria.converter';
 import { TOKEN as TOKEN_VIDEO_COMMENT } from '@videomatt/videos/video-comment/infrastructure/di/tokens-video-comment';
-import { SequelizeCriteriaConverter } from '@videomatt/shared/infrastructure/repositories/db-criteria.converter';
-import { DBVideoComment } from '@videomatt/videos/video-comment/infrastructure/models/db-video-comment.model';
+import { VideoCommentDBModel } from '@videomatt/videos/video-comment/infrastructure/models/video-comment.db-model';
+import { VideoDBModelRead } from '@videomatt/videos/videos/infrastructure/models/video.db-read-model';
 import { VideoRepository } from '@videomatt/videos/videos/domain/repositories/video.repository';
 import { TOKEN as TOKEN_VIDEO } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
-import { DBVideo } from '@videomatt/videos/videos/infrastructure/models/db-video.model';
+import { VideoDBModel } from '@videomatt/videos/videos/infrastructure/models/video.db-model';
+import { Video } from '@videomatt/videos/videos/domain/models/write/video';
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
-import { Video } from '@videomatt/videos/videos/domain/models/video';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { Logger } from '@videomatt/shared/domain/logger/logger';
 import { inject, injectable } from 'tsyringe';
+import { Sequelize } from 'sequelize';
 
 @injectable()
-export class DBVideoRepository implements VideoRepository<Video> {
+export class SequelizeVideoRepository implements VideoRepository<Video> {
     constructor(
-        @inject(TOKEN_VIDEO.DB_MODEL) private readonly dbVideo: typeof DBVideo,
-        @inject(TOKEN_VIDEO_COMMENT.DB_MODEL_COMMENT) private readonly dbVideoComment: typeof DBVideoComment,
+        @inject(TOKEN_VIDEO.DB_MODEL) private readonly dbVideo: typeof VideoDBModel,
+        @inject(TOKEN_VIDEO.DB_MODEL_READ) private readonly dbVideoRead: typeof VideoDBModelRead,
+        @inject(TOKEN_VIDEO_COMMENT.DB_MODEL_COMMENT) private readonly dbVideoComment: typeof VideoCommentDBModel,
         @inject(TOKEN.LOGGER) private readonly logger: Logger
     ) {}
 
@@ -22,6 +25,9 @@ export class DBVideoRepository implements VideoRepository<Video> {
         try {
             const videoPrimitives = video.toPrimitives();
             await this.dbVideo.create(videoPrimitives);
+
+            const videoReadPrimitives = { ...videoPrimitives, amount_of_comments: 1 };
+            await this.dbVideoRead.create(videoReadPrimitives);
         } catch (error) {
             this.logger.error(`Error adding video: ${error}`);
         }
@@ -42,6 +48,10 @@ export class DBVideoRepository implements VideoRepository<Video> {
 
         try {
             await this.dbVideo.update(videoPrimitives, { where: { id: videoPrimitives.id } });
+            await this.dbVideoRead.update(
+                { amountOfComments: Sequelize.literal('"amountOfComments" + 1') },
+                { where: { id: videoPrimitives.id } }
+            );
 
             const promises = commentPrimitives.map((commentPrimitive) => this.dbVideoComment.create(commentPrimitive));
             await Promise.all(promises);
@@ -52,23 +62,26 @@ export class DBVideoRepository implements VideoRepository<Video> {
 
     async search(criteria: Criteria): Promise<Video[]> {
         try {
-            const converter = new SequelizeCriteriaConverter(criteria);
-            const { where, order, offset, limit, include } = converter.build();
-
-            const dbVideos = await this.dbVideo.findAll({
-                where,
-                order,
-                offset,
-                limit,
-                include,
-            });
-
-            const videos = dbVideos.map((video) => video.toPrimitives()).map((video) => Video.fromPrimitives(video));
-
+            const videos = await this.convert(criteria);
             return videos;
         } catch (error) {
             this.logger.error(`Error searching videos: ${error}`);
             return [];
         }
+    }
+
+    private async convert(criteria: Criteria): Promise<Video[]> {
+        const converter = new SequelizeCriteriaConverter(criteria);
+        const { where, order, offset, limit } = converter.build();
+
+        const dbVideos = await this.dbVideo.findAll({
+            where,
+            order,
+            offset,
+            limit,
+        });
+
+        const videos = dbVideos.map((video) => video.toPrimitives()).map((video) => Video.fromPrimitives(video));
+        return videos;
     }
 }

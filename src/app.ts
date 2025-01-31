@@ -1,4 +1,4 @@
-import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/postgres';
+import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/sequelize-db';
 import { initRoutes } from '@videomatt/shared/infrastructure/routes/init-routes';
 import { PinoLogger } from '@videomatt/shared/infrastructure/logger/pino';
 import { Logger } from '@videomatt/shared/domain/logger/logger';
@@ -18,10 +18,10 @@ export class App {
         this.expressApp.use(express.json());
 
         const db = new PostgresDB();
-        db.initDb();
+        db.initDB();
 
         const di = new DI(db);
-        di.initDi();
+        di.initDI();
 
         const logger = container.resolve(PinoLogger);
         this.expressApp.use(logger.getInstance());

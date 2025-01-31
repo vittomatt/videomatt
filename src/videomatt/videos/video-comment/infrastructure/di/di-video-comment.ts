@@ -7,7 +7,7 @@ import { container } from 'tsyringe';
 export class DIVideoComments {
     constructor(private readonly db: DBModel) {}
 
-    public initDi() {
+    public initDI() {
         this.initDBDependencies();
         this.initControllersDependencies();
         this.initUseCasesDependencies();

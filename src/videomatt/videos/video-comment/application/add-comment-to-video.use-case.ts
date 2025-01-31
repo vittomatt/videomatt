@@ -1,10 +1,10 @@
+import { VideoComment } from '@videomatt/videos/video-comment/domain/models/write/video-comment';
 import { VideoRepository } from '@videomatt/videos/videos/domain/repositories/video.repository';
 import { TOKEN as TOKEN_VIDEO } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
-import { VideoComment } from '@videomatt/videos/video-comment/domain/models/video-comment';
 import { FilterOperator, Filters } from '@videomatt/shared/domain/repositories/filters';
+import { Video } from '@videomatt/videos/videos/domain/models/write/video';
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 import { EventBus } from '@videomatt/shared/domain/event-bus/event-bus';
-import { Video } from '@videomatt/videos/videos/domain/models/video';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 
 import { inject, injectable } from 'tsyringe';

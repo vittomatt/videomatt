@@ -1,18 +1,18 @@
-import { VIDEO_TABLE_NAME } from '@videomatt/videos/videos/infrastructure/models/db-video.model';
-import { USER_TABLE_NAME } from '@videomatt/users/infrastructure/models/db-user.model';
-import { DBModels } from '@videomatt/shared/infrastructure/persistence/db-models';
+import { VIDEO_TABLE_NAME } from '@videomatt/videos/videos/infrastructure/models/video.db-model';
+import { USER_TABLE_NAME } from '@videomatt/users/infrastructure/models/user.db-model';
+import { DBModel } from '@videomatt/shared/infrastructure/persistence/db';
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export const VIDEO_COMMENT_TABLE_NAME = 'comments';
 
-export class DBVideoComment extends Model {
+export class VideoCommentDBModel extends Model {
     public id!: string;
     public text!: string;
     public videoId!: string;
     public userId!: string;
 
-    public static initModel(sequelize: Sequelize): typeof DBVideoComment {
-        return DBVideoComment.init(
+    public static initModel(sequelize: Sequelize): typeof VideoCommentDBModel {
+        return VideoCommentDBModel.init(
             {
                 id: {
                     type: DataTypes.UUID,
@@ -53,9 +53,9 @@ export class DBVideoComment extends Model {
         );
     }
 
-    public static associate(models: DBModels) {
-        this.belongsTo(models.DBVideo!, { foreignKey: 'videoId' });
-        this.belongsTo(models.DBUser!, { foreignKey: 'userId' });
+    public static associate(models: DBModel) {
+        this.belongsTo(models.getVideoModel(), { foreignKey: 'videoId' });
+        this.belongsTo(models.getUserModel(), { foreignKey: 'userId' });
     }
 
     toPrimitives() {

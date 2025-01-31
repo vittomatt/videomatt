@@ -1,8 +1,8 @@
 import { DIVideoComments } from '@videomatt/videos/video-comment/infrastructure/di/di-video-comment';
 import { InMemoryEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-event-bus';
 import { ErrorController } from '@videomatt/shared/infrastructure/controllers/error.controller';
+import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/sequelize-db';
 import { DIVideos } from '@videomatt/videos/videos/infrastructure/di/di-video';
-import { DBModel } from '@videomatt/shared/infrastructure/persistence/db';
 import { PinoLogger } from '@videomatt/shared/infrastructure/logger/pino';
 import { DIUsers } from '@videomatt/users/infrastructure/di/di-user';
 import { getEnvs } from '@videomatt/shared/envs/init-envs';
@@ -12,25 +12,31 @@ import { container } from 'tsyringe';
 import { TOKEN } from './tokens';
 
 export class DI {
-    constructor(private readonly db: DBModel) {}
+    constructor(private readonly db: PostgresDB) {}
 
-    public initDi() {
-        const diUsers = new DIUsers(this.db);
-        const diVideos = new DIVideos(this.db);
-        const diVideoComments = new DIVideoComments(this.db);
+    public initDI() {
+        new DIUsers(this.db).initDI();
+        new DIVideos(this.db).initDI();
+        new DIVideoComments(this.db).initDI();
 
-        diUsers.initDi();
-        diVideos.initDi();
-        diVideoComments.initDi();
-
-        this.initControllersDependencies();
-        this.initBrokerDependencies();
+        this.initDBDependencies();
         this.initSharedDependencies();
+        this.initBrokerDependencies();
+        this.initControllersDependencies();
     }
 
-    private initControllersDependencies() {
-        container.register(TOKEN.ERROR_CONTROLLER, {
-            useClass: ErrorController,
+    private initDBDependencies() {
+        container.register(TOKEN.DB, {
+            useValue: this.db as PostgresDB,
+        });
+    }
+
+    private initSharedDependencies() {
+        container.register(TOKEN.EVENT_BUS, {
+            useClass: InMemoryEventBus,
+        });
+        container.register(TOKEN.LOGGER, {
+            useClass: PinoLogger,
         });
     }
 
@@ -46,12 +52,9 @@ export class DI {
         });
     }
 
-    private initSharedDependencies() {
-        container.register(TOKEN.EVENT_BUS, {
-            useClass: InMemoryEventBus,
-        });
-        container.register(TOKEN.LOGGER, {
-            useClass: PinoLogger,
+    private initControllersDependencies() {
+        container.register(TOKEN.ERROR_CONTROLLER, {
+            useClass: ErrorController,
         });
     }
 }

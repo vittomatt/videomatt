@@ -2,7 +2,7 @@ import { FilterOperator, Filters } from '@videomatt/shared/domain/repositories/f
 import { UserRepository } from '@videomatt/users/domain/repositories/user.repository';
 import { TOKEN as TOKEN_USER } from '@videomatt/users/infrastructure/di/tokens-user';
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
-import { User } from '@videomatt/users/domain/models/user';
+import { User } from '@videomatt/users/domain/models/write/user';
 import { inject, injectable } from 'tsyringe';
 
 @injectable()

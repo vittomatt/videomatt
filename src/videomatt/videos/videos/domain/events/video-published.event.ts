@@ -1,5 +1,5 @@
 import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain-event';
-import { UserId } from '@videomatt/users/domain/models/user-id';
+import { UserId } from '@videomatt/users/domain/models/write/user-id';
 
 export class VideoPublishedEvent extends DomainEvent {
     public readonly userId: string;

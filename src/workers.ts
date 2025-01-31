@@ -11,10 +11,10 @@ async function startConsumers() {
     initEnvs();
 
     const db = new PostgresDB();
-    db.initDb();
+    db.initDB();
 
     const di = new DI(db);
-    di.initDi();
+    di.initDI();
 
     const consumer = container.resolve(SQSEventVideoPublishedConsumer);
 
