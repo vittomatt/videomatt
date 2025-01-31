@@ -4,18 +4,19 @@ import { AddCommentToVideoController } from '@videomatt/videos/video-comment/inf
 import { PublishVideoParamValidatorDto } from '@videomatt/videos/videos/infrastructure/controllers/publish-video/publish-video.validator';
 import { PublishVideoBodyValidatorDto } from '@videomatt/videos/videos/infrastructure/controllers/publish-video/publish-video.validator';
 import { PublishVideoController } from '@videomatt/videos/videos/infrastructure/controllers/publish-video/publish-video.controller';
+import { TOKEN as TOKEN_VIDEO_COMMENT } from '@videomatt/videos/video-comment/infrastructure/di/tokens-video-comment';
+import { TOKEN as TOKEN_VIDEO } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 import { GetVideosController } from '../controllers/get-videos/get-videos.controller';
 import { validateDto } from '@videomatt/shared/infrastructure/controllers/validator';
-import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { inject, injectable } from 'tsyringe';
 import { Express } from 'express';
 
 @injectable()
 export class VideoRoutes {
     constructor(
-        @inject(TOKEN.VIDEO.GET_VIDEOS_CONTROLLER) private readonly getVideosController: GetVideosController,
-        @inject(TOKEN.VIDEO.PUBLISH_VIDEO_CONTROLLER) private readonly publishVideoController: PublishVideoController,
-        @inject(TOKEN.VIDEO.ADD_COMMENT_TO_VIDEO_CONTROLLER)
+        @inject(TOKEN_VIDEO.GET_VIDEOS_CONTROLLER) private readonly getVideosController: GetVideosController,
+        @inject(TOKEN_VIDEO.PUBLISH_VIDEO_CONTROLLER) private readonly publishVideoController: PublishVideoController,
+        @inject(TOKEN_VIDEO_COMMENT.ADD_COMMENT_TO_VIDEO_CONTROLLER)
         private readonly addCommentToVideoController: AddCommentToVideoController
     ) {}
 

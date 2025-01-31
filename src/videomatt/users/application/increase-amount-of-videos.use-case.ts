@@ -1,13 +1,13 @@
 import { FilterOperator, Filters } from '@videomatt/shared/domain/repositories/filters';
 import { UserRepository } from '@videomatt/users/domain/repositories/user.repository';
+import { TOKEN as TOKEN_USER } from '@videomatt/users/infrastructure/di/tokens-user';
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
-import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { User } from '@videomatt/users/domain/models/user';
 import { inject, injectable } from 'tsyringe';
 
 @injectable()
 export class IncreaseAmountOfVideosUseCase {
-    constructor(@inject(TOKEN.USER.REPOSITORY) private readonly userRepository: UserRepository<User>) {}
+    constructor(@inject(TOKEN_USER.REPOSITORY) private readonly userRepository: UserRepository<User>) {}
 
     async execute(userId: string) {
         const criteria = Criteria.create().addFilter(Filters.create('id', FilterOperator.EQUALS, userId));

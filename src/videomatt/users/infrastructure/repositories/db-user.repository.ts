@@ -1,5 +1,6 @@
 import { SequelizeCriteriaConverter } from '@videomatt/shared/infrastructure/repositories/db-criteria.converter';
 import { UserRepository } from '@videomatt/users/domain/repositories/user.repository';
+import { TOKEN as TOKEN_USER } from '@videomatt/users/infrastructure/di/tokens-user';
 import { DBUser } from '@videomatt/users/infrastructure/models/db-user.model';
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
@@ -10,8 +11,8 @@ import { inject, injectable } from 'tsyringe';
 @injectable()
 export class DBUserRepository implements UserRepository<User> {
     constructor(
-        @inject(TOKEN.USER.DB_MODEL) private readonly dbUser: typeof DBUser,
-        @inject(TOKEN.SHARED.LOGGER) private readonly logger: Logger
+        @inject(TOKEN_USER.DB_MODEL) private readonly dbUser: typeof DBUser,
+        @inject(TOKEN.LOGGER) private readonly logger: Logger
     ) {}
 
     async add(user: User) {

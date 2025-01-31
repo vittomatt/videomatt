@@ -1,6 +1,8 @@
+import { TOKEN as TOKEN_VIDEO_COMMENT } from '@videomatt/videos/video-comment/infrastructure/di/tokens-video-comment';
 import { SequelizeCriteriaConverter } from '@videomatt/shared/infrastructure/repositories/db-criteria.converter';
 import { DBVideoComment } from '@videomatt/videos/video-comment/infrastructure/models/db-video-comment.model';
 import { VideoRepository } from '@videomatt/videos/videos/domain/repositories/video.repository';
+import { TOKEN as TOKEN_VIDEO } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 import { DBVideo } from '@videomatt/videos/videos/infrastructure/models/db-video.model';
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 import { Video } from '@videomatt/videos/videos/domain/models/video';
@@ -11,9 +13,9 @@ import { inject, injectable } from 'tsyringe';
 @injectable()
 export class DBVideoRepository implements VideoRepository<Video> {
     constructor(
-        @inject(TOKEN.VIDEO.DB_MODEL) private readonly dbVideo: typeof DBVideo,
-        @inject(TOKEN.VIDEO.DB_MODEL_COMMENT) private readonly dbVideoComment: typeof DBVideoComment,
-        @inject(TOKEN.SHARED.LOGGER) private readonly logger: Logger
+        @inject(TOKEN_VIDEO.DB_MODEL) private readonly dbVideo: typeof DBVideo,
+        @inject(TOKEN_VIDEO_COMMENT.DB_MODEL_COMMENT) private readonly dbVideoComment: typeof DBVideoComment,
+        @inject(TOKEN.LOGGER) private readonly logger: Logger
     ) {}
 
     async add(video: Video) {
