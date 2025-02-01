@@ -1,7 +1,7 @@
 import { VideoComment } from '@videomatt/videos/video-comment/domain/models/write/video-comment';
 import { VideoRepository } from '@videomatt/videos/videos/domain/repositories/video.repository';
-import { TOKEN as TOKEN_VIDEO } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 import { FilterOperator, Filters } from '@videomatt/shared/domain/repositories/filters';
+import { VIDEO_TOKENS } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 import { Video } from '@videomatt/videos/videos/domain/models/write/video';
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 import { EventBus } from '@videomatt/shared/domain/event-bus/event-bus';
@@ -12,7 +12,7 @@ import { inject, injectable } from 'tsyringe';
 @injectable()
 export class AddCommentToVideoUseCase {
     constructor(
-        @inject(TOKEN_VIDEO.REPOSITORY) private readonly repository: VideoRepository<Video>,
+        @inject(VIDEO_TOKENS.REPOSITORY) private readonly repository: VideoRepository<Video>,
         @inject(TOKEN.EVENT_BUS) private readonly eventBus: EventBus
     ) {}
 

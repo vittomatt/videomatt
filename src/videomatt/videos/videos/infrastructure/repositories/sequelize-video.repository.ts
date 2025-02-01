@@ -1,10 +1,10 @@
 import { SequelizeCriteriaConverter } from '@videomatt/shared/infrastructure/repositories/sequelize-criteria.converter';
-import { TOKEN as TOKEN_VIDEO_COMMENT } from '@videomatt/videos/video-comment/infrastructure/di/tokens-video-comment';
 import { VideoCommentDBModel } from '@videomatt/videos/video-comment/infrastructure/models/video-comment.db-model';
+import { VIDEO_COMMENT_TOKENS } from '@videomatt/videos/video-comment/infrastructure/di/tokens-video-comment';
 import { VideoDBModelRead } from '@videomatt/videos/videos/infrastructure/models/video.db-read-model';
 import { VideoRepository } from '@videomatt/videos/videos/domain/repositories/video.repository';
-import { TOKEN as TOKEN_VIDEO } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 import { VideoDBModel } from '@videomatt/videos/videos/infrastructure/models/video.db-model';
+import { VIDEO_TOKENS } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 import { Video } from '@videomatt/videos/videos/domain/models/write/video';
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
@@ -15,9 +15,9 @@ import { Sequelize } from 'sequelize';
 @injectable()
 export class SequelizeVideoRepository implements VideoRepository<Video> {
     constructor(
-        @inject(TOKEN_VIDEO.DB_MODEL) private readonly dbVideo: typeof VideoDBModel,
-        @inject(TOKEN_VIDEO.DB_MODEL_READ) private readonly dbVideoRead: typeof VideoDBModelRead,
-        @inject(TOKEN_VIDEO_COMMENT.DB_MODEL_COMMENT) private readonly dbVideoComment: typeof VideoCommentDBModel,
+        @inject(VIDEO_TOKENS.DB_MODEL) private readonly dbVideo: typeof VideoDBModel,
+        @inject(VIDEO_TOKENS.DB_MODEL_READ) private readonly dbVideoRead: typeof VideoDBModelRead,
+        @inject(VIDEO_COMMENT_TOKENS.DB_MODEL) private readonly dbVideoComment: typeof VideoCommentDBModel,
         @inject(TOKEN.LOGGER) private readonly logger: Logger
     ) {}
 

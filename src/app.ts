@@ -1,9 +1,9 @@
 import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/sequelize-db';
 import { initRoutes } from '@videomatt/shared/infrastructure/routes/init-routes';
+import { initEnvs } from '@videomatt/shared/infrastructure/envs/init-envs';
 import { PinoLogger } from '@videomatt/shared/infrastructure/logger/pino';
 import { Logger } from '@videomatt/shared/domain/logger/logger';
 import { DI } from '@videomatt/shared/infrastructure/di/di';
-import { initEnvs } from '@videomatt/shared/envs/init-envs';
 import express, { Express } from 'express';
 import { container } from 'tsyringe';
 import helmet from 'helmet';

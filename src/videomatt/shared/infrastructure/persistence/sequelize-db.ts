@@ -2,7 +2,7 @@ import { VideoCommentDBModel } from '@videomatt/videos/video-comment/infrastruct
 import { VideoDBModelRead } from '@videomatt/videos/videos/infrastructure/models/video.db-read-model';
 import { VideoDBModel } from '@videomatt/videos/videos/infrastructure/models/video.db-model';
 import { UserDBModel } from '@videomatt/users/infrastructure/models/user.db-model';
-import { getEnvs } from '@videomatt/shared/envs/init-envs';
+import { getEnvs } from '@videomatt/shared/infrastructure/envs/init-envs';
 import { Sequelize } from 'sequelize';
 import { DB, DBModel } from './db';
 

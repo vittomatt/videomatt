@@ -1,6 +1,6 @@
-export const TOKEN = {
+export const VIDEO_COMMENT_TOKENS = {
     // Storage
-    DB_MODEL_COMMENT: Symbol('VIDEO_COMMENT_DB_MODEL'),
+    DB_MODEL: Symbol('VIDEO_COMMENT_DB_MODEL'),
 
     // Controllers
     ADD_COMMENT_TO_VIDEO_CONTROLLER: Symbol('ADD_COMMENT_TO_VIDEO_CONTROLLER'),

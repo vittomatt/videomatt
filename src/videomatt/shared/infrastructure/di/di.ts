@@ -3,9 +3,9 @@ import { InMemoryEventBus } from '@videomatt/shared/infrastructure/event-bus/in-
 import { ErrorController } from '@videomatt/shared/infrastructure/controllers/error.controller';
 import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/sequelize-db';
 import { DIVideos } from '@videomatt/videos/videos/infrastructure/di/di-video';
+import { getEnvs } from '@videomatt/shared/infrastructure/envs/init-envs';
 import { PinoLogger } from '@videomatt/shared/infrastructure/logger/pino';
 import { DIUsers } from '@videomatt/users/infrastructure/di/di-user';
-import { getEnvs } from '@videomatt/shared/envs/init-envs';
 import { SNSClient } from '@aws-sdk/client-sns';
 import { SQSClient } from '@aws-sdk/client-sqs';
 import { container } from 'tsyringe';

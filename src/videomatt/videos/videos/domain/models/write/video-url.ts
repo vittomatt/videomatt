@@ -6,5 +6,11 @@ export class VideoURL extends BaseValueObject {
         this.ensureValidURL(value);
     }
 
-    private ensureValidURL(value: string) {}
+    private ensureValidURL(value: string) {
+        try {
+            new URL(value);
+        } catch (_) {
+            throw new Error('Invalid URL format');
+        }
+    }
 }

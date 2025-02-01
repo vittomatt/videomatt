@@ -1,7 +1,7 @@
-import { TOKEN as TOKEN_VIDEO } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
-import { TOKEN as TOKEN_USER } from '@videomatt/users/infrastructure/di/tokens-user';
+import { VIDEO_TOKENS } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 import { EventPublisher } from '@videomatt/shared/domain/broker/event.publisher';
 import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain-event';
+import { USER_TOKENS } from '@videomatt/users/infrastructure/di/tokens-user';
 import { EventBus } from '@videomatt/shared/domain/event-bus/event-bus';
 import { inject, injectable } from 'tsyringe';
 
@@ -10,8 +10,8 @@ export class InMemoryEventBus implements EventBus {
     private readonly publishers: EventPublisher[] = [];
 
     constructor(
-        @inject(TOKEN_VIDEO.SNS_EVENT_PUBLISHER) readonly videoPublisher: EventPublisher,
-        @inject(TOKEN_USER.SNS_EVENT_PUBLISHER) readonly userPublisher: EventPublisher
+        @inject(VIDEO_TOKENS.SNS_EVENT_PUBLISHER) readonly videoPublisher: EventPublisher,
+        @inject(USER_TOKENS.SNS_EVENT_PUBLISHER) readonly userPublisher: EventPublisher
     ) {
         this.publishers.push(userPublisher, videoPublisher);
     }

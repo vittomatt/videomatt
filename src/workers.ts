@@ -2,8 +2,8 @@ import 'reflect-metadata';
 
 import { SQSEventVideoPublishedConsumer } from '@videomatt/users/infrastructure/broker/consumers/sqs-event-video-published.consumer';
 import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/postgres';
+import { initEnvs } from '@videomatt/shared/infrastructure/envs/init-envs';
 import { DI } from '@videomatt/shared/infrastructure/di/di';
-import { initEnvs } from '@videomatt/shared/envs/init-envs';
 import { container } from 'tsyringe';
 
 async function startConsumers() {
