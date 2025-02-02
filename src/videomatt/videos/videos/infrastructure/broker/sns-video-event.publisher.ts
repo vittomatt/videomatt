@@ -1,5 +1,5 @@
 import { SNSEventPublisher } from '@videomatt/shared/infrastructure/broker/sns-event.publisher';
-import { VIDEO_TOKENS } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
+import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain-event';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { Logger } from '@videomatt/shared/domain/logger/logger';
@@ -11,7 +11,7 @@ export class SNSVideoEventPublisher extends SNSEventPublisher {
     constructor(
         @inject(TOKEN.SNS_CLIENT) protected readonly sns: SNSClient,
         @inject(TOKEN.LOGGER) protected readonly logger: Logger,
-        @inject(VIDEO_TOKENS.SNS_TOPIC_ARN) private readonly topicArn: string
+        @inject(VIDEO_TOKEN.SNS_TOPIC_ARN) private readonly topicArn: string
     ) {
         super(sns, logger);
     }

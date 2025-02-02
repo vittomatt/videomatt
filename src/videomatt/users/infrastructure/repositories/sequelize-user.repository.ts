@@ -1,7 +1,7 @@
 import { SequelizeCriteriaConverter } from '@videomatt/shared/infrastructure/repositories/sequelize-criteria.converter';
 import { UserRepository } from '@videomatt/users/domain/repositories/user.repository';
 import { UserDBModel } from '@videomatt/users/infrastructure/models/user.db-model';
-import { USER_TOKENS } from '@videomatt/users/infrastructure/di/tokens-user';
+import { USER_TOKEN } from '@videomatt/users/infrastructure/di/tokens-user';
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { User } from '@videomatt/users/domain/models/write/user';
@@ -11,7 +11,7 @@ import { inject, injectable } from 'tsyringe';
 @injectable()
 export class SequelizeUserRepository implements UserRepository<User> {
     constructor(
-        @inject(USER_TOKENS.DB_MODEL) private readonly dbUser: typeof UserDBModel,
+        @inject(USER_TOKEN.DB_MODEL) private readonly dbUser: typeof UserDBModel,
         @inject(TOKEN.LOGGER) private readonly logger: Logger
     ) {}
 

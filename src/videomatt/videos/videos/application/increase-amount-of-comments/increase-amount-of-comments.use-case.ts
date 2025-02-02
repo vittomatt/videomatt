@@ -1,6 +1,6 @@
 import { VideoReadRepository } from '@videomatt/videos/videos/domain/repositories/video-read.repository';
 import { FilterOperator, Filters } from '@videomatt/shared/domain/repositories/filters';
-import { VIDEO_TOKENS } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
+import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 import { VideoRead } from '@videomatt/videos/videos/domain/models/read/video.read';
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 import { inject, injectable } from 'tsyringe';
@@ -8,7 +8,7 @@ import { inject, injectable } from 'tsyringe';
 @injectable()
 export class IncreaseAmountOfCommentsUseCase {
     constructor(
-        @inject(VIDEO_TOKENS.VIDEO_READ_REPOSITORY) private readonly repository: VideoReadRepository<VideoRead>
+        @inject(VIDEO_TOKEN.VIDEO_READ_REPOSITORY) private readonly repository: VideoReadRepository<VideoRead>
     ) {}
 
     async execute(videoId: string) {

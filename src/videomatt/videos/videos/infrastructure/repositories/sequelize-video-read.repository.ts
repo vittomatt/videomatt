@@ -1,7 +1,7 @@
 import { SequelizeCriteriaConverter } from '@videomatt/shared/infrastructure/repositories/sequelize-criteria.converter';
 import { VideoReadRepository } from '@videomatt/videos/videos/domain/repositories/video-read.repository';
 import { VideoDBModelRead } from '@videomatt/videos/videos/infrastructure/models/video.db-read-model';
-import { VIDEO_TOKENS } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
+import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 import { VideoRead } from '@videomatt/videos/videos/domain/models/read/video.read';
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
@@ -12,7 +12,7 @@ import { Sequelize } from 'sequelize';
 @injectable()
 export class SequelizeVideoReadRepository implements VideoReadRepository<VideoRead> {
     constructor(
-        @inject(VIDEO_TOKENS.DB_MODEL_READ) private readonly dbVideoRead: typeof VideoDBModelRead,
+        @inject(VIDEO_TOKEN.DB_MODEL_READ) private readonly dbVideoRead: typeof VideoDBModelRead,
         @inject(TOKEN.LOGGER) private readonly logger: Logger
     ) {}
 

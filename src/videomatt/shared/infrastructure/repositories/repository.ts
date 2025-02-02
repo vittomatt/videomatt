@@ -8,5 +8,5 @@ export interface Repository<T> {
 }
 
 export interface RawRepository<T> {
-    raw(): Promise<T>;
+    raw(id: string): Promise<T>;
 }

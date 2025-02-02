@@ -1,5 +1,7 @@
+import { InMemoryCommandEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-command-event-bus';
+import { InMemoryDomainEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-domain-event-bus';
+import { InMemoryQueryEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-query-event-bus';
 import { DIVideoComments } from '@videomatt/videos/video-comment/infrastructure/di/di-video-comment';
-import { InMemoryEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-event-bus';
 import { ErrorController } from '@videomatt/shared/infrastructure/controllers/error.controller';
 import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/sequelize-db';
 import { DIVideos } from '@videomatt/videos/videos/infrastructure/di/di-video';
@@ -30,8 +32,14 @@ export class DI {
     }
 
     private initSharedDependencies() {
-        container.register(TOKEN.EVENT_BUS, {
-            useClass: InMemoryEventBus,
+        container.register(TOKEN.DOMAIN_EVENT_BUS, {
+            useClass: InMemoryDomainEventBus,
+        });
+        container.register(TOKEN.COMMAND_EVENT_BUS, {
+            useClass: InMemoryCommandEventBus,
+        });
+        container.register(TOKEN.QUERY_EVENT_BUS, {
+            useClass: InMemoryQueryEventBus,
         });
         container.register(TOKEN.LOGGER, {
             useClass: PinoLogger,

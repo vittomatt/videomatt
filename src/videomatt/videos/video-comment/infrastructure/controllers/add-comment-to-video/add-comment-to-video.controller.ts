@@ -1,18 +1,20 @@
-import { AddCommentToVideoUseCase } from '@videomatt/videos/video-comment/application/add-comment-to-video/add-comment-to-video.use-case';
-import { VIDEO_COMMENT_TOKENS } from '@videomatt/videos/video-comment/infrastructure/di/tokens-video-comment';
+import { AddCommentToVideoDTO } from '@videomatt/videos/video-comment/domain/dtos/add-comment-to-video.dto';
+import { CommandEventBus } from '@videomatt/shared/domain/event-bus/command-even-bus';
+import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { inject, injectable } from 'tsyringe';
 import { Request, Response } from 'express';
 
 @injectable()
 export class AddCommentToVideoController {
-    constructor(
-        @inject(VIDEO_COMMENT_TOKENS.ADD_COMMENT_TO_VIDEO_USE_CASE) private useCase: AddCommentToVideoUseCase
-    ) {}
+    constructor(@inject(TOKEN.COMMAND_EVENT_BUS) private eventBus: CommandEventBus) {}
 
     async execute(req: Request, res: Response) {
         const { commentId, videoId } = req.params;
         const { text, userId } = req.body;
-        await this.useCase.execute({ id: commentId, text, videoId, userId });
+
+        const event = AddCommentToVideoDTO.create({ id: commentId, text, videoId, userId });
+        this.eventBus.publish(event);
+
         res.status(201).send({ commentId });
     }
 }

@@ -1,6 +1,6 @@
 import { DeleteMessageCommand, Message, ReceiveMessageCommand, SQSClient } from '@aws-sdk/client-sqs';
 import { EventConsumer } from '@videomatt/shared/domain/broker/event.consumer';
-import { Handler } from '@videomatt/shared/domain/broker/handler';
+import { DomainHandler } from '@videomatt/shared/domain/broker/domain-handler';
 import { Logger } from '@videomatt/shared/domain/logger/logger';
 
 const RETRY_QUEUE_SUFFIX = '_retry';
@@ -10,7 +10,7 @@ export class SQSEventConsumer implements EventConsumer {
         protected readonly sqsClient: SQSClient,
         protected readonly sqsUrl: string,
         protected readonly logger: Logger,
-        protected readonly handler: Handler
+        protected readonly handler: DomainHandler<void>
     ) {}
 
     async consume() {

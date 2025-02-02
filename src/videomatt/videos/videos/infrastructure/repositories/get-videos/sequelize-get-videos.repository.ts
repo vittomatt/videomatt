@@ -14,12 +14,13 @@ export class SequelizeGetVideosRepository implements GetVideosRepository<VideoRe
         @inject(TOKEN.LOGGER) private readonly logger: Logger
     ) {}
 
-    query = `SELECT * FROM videos_reads`;
+    query = `SELECT * FROM videos_reads WHERE "userId" = :userId`;
 
-    async raw(): Promise<VideoRead[]> {
+    async raw(id: string): Promise<VideoRead[]> {
         try {
             const results = await this.db.getDB().query<VideoDBModelRead>(this.query, {
                 type: QueryTypes.SELECT,
+                replacements: { userId: id },
             });
             const videos = results.map(
                 (result) =>

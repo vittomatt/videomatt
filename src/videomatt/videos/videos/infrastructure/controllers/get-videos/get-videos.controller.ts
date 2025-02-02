@@ -1,14 +1,20 @@
-import { GetVideosUseCase } from '@videomatt/videos/videos/application/get-videos/get-videos.use-case';
-import { VIDEO_TOKENS } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
+import { VideoRead } from '@videomatt/videos/videos/domain/models/read/video.read';
+import { GetVideosDTO } from '@videomatt/videos/videos/domain/dtos/get-videos.dto';
+import { QueryEventBus } from '@videomatt/shared/domain/event-bus/query-event-bus';
+import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { inject, injectable } from 'tsyringe';
 import { Request, Response } from 'express';
 
 @injectable()
 export class GetVideosController {
-    constructor(@inject(VIDEO_TOKENS.GET_VIDEOS_USE_CASE) private useCase: GetVideosUseCase) {}
+    constructor(@inject(TOKEN.QUERY_EVENT_BUS) private eventBus: QueryEventBus<VideoRead[]>) {}
 
     async execute(req: Request, res: Response) {
-        const videos = await this.useCase.execute();
+        const userId = req.params.userId;
+
+        const event = new GetVideosDTO(userId);
+        const videos = await this.eventBus.publish(event);
+
         res.status(201).json(videos);
     }
 }

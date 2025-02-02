@@ -1,18 +1,18 @@
 import { VideoComment } from '@videomatt/videos/video-comment/domain/models/write/video-comment';
 import { VideoRepository } from '@videomatt/videos/videos/domain/repositories/video.repository';
 import { FilterOperator, Filters } from '@videomatt/shared/domain/repositories/filters';
-import { VIDEO_TOKENS } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
+import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
+import { DomainEventBus } from '@videomatt/shared/domain/event-bus/domain-event-bus';
 import { Video } from '@videomatt/videos/videos/domain/models/write/video';
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
-import { EventBus } from '@videomatt/shared/domain/event-bus/event-bus';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { inject, injectable } from 'tsyringe';
 
 @injectable()
 export class AddCommentToVideoUseCase {
     constructor(
-        @inject(VIDEO_TOKENS.REPOSITORY) private readonly repository: VideoRepository<Video>,
-        @inject(TOKEN.EVENT_BUS) private readonly eventBus: EventBus
+        @inject(VIDEO_TOKEN.REPOSITORY) private readonly repository: VideoRepository<Video>,
+        @inject(TOKEN.DOMAIN_EVENT_BUS) private readonly eventBus: DomainEventBus
     ) {}
 
     async execute({ id, text, videoId, userId }: { id: string; text: string; videoId: string; userId: string }) {

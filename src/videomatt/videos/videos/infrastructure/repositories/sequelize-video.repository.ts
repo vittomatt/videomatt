@@ -3,7 +3,7 @@ import { VideoCommentDBModel } from '@videomatt/videos/video-comment/infrastruct
 import { VIDEO_COMMENT_TOKENS } from '@videomatt/videos/video-comment/infrastructure/di/tokens-video-comment';
 import { VideoRepository } from '@videomatt/videos/videos/domain/repositories/video.repository';
 import { VideoDBModel } from '@videomatt/videos/videos/infrastructure/models/video.db-model';
-import { VIDEO_TOKENS } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
+import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 import { Video } from '@videomatt/videos/videos/domain/models/write/video';
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
@@ -13,7 +13,7 @@ import { inject, injectable } from 'tsyringe';
 @injectable()
 export class SequelizeVideoRepository implements VideoRepository<Video> {
     constructor(
-        @inject(VIDEO_TOKENS.DB_MODEL) private readonly dbVideo: typeof VideoDBModel,
+        @inject(VIDEO_TOKEN.DB_MODEL) private readonly dbVideo: typeof VideoDBModel,
         @inject(VIDEO_COMMENT_TOKENS.DB_MODEL) private readonly dbVideoComment: typeof VideoCommentDBModel,
         @inject(TOKEN.LOGGER) private readonly logger: Logger
     ) {}
