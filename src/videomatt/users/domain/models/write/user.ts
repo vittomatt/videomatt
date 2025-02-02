@@ -34,7 +34,7 @@ export class User extends AggregateRoot {
             new UserAmountOfVideo(amountOfVideos ?? 0)
         );
 
-        const event = UserCreatedEvent.create(user);
+        const event = UserCreatedEvent.create({ id, firstName, lastName });
         user.record(event);
 
         return user;

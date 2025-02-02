@@ -12,7 +12,7 @@ export class AddCommentToVideoController {
     async execute(req: Request, res: Response) {
         const { commentId, videoId } = req.params;
         const { text, userId } = req.body;
-        await this.useCase.execute(commentId, text, videoId, userId);
+        await this.useCase.execute({ id: commentId, text, videoId, userId });
         res.status(201).send({ commentId });
     }
 }

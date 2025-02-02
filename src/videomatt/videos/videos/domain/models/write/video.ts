@@ -47,7 +47,7 @@ export class Video extends AggregateRoot {
             user
         );
 
-        const event = VideoPublishedEvent.create(user);
+        const event = VideoPublishedEvent.create({ id, title, description, url, userId });
         video.record(event);
 
         return video;
@@ -96,6 +96,13 @@ export class Video extends AggregateRoot {
 
     addComment(comment: VideoComment) {
         this.comments.push(comment);
-        this.record(VideoCommentAddedEvent.create(this.userId, this.id));
+        this.record(
+            VideoCommentAddedEvent.create({
+                id: comment.id.value,
+                text: comment.text.value,
+                userId: this.userId.value,
+                videoId: this.id.value,
+            })
+        );
     }
 }

@@ -12,6 +12,7 @@ const envSchema = z.object({
     SNS_USER_TOPIC_ARN: z.string(),
     SQS_USER_CREATED_QUEUE_URL: z.string(),
     SQS_VIDEO_PUBLISHED_QUEUE_URL: z.string(),
+    SQS_COMMENT_ADDED_QUEUE_URL: z.string(),
     AWS_REGION: z.string(),
     PORT: z.coerce.number().default(3000),
 });

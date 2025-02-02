@@ -10,7 +10,7 @@ export class PublishVideoController {
     async execute(req: Request, res: Response) {
         const { videoId } = req.params;
         const { title, description, url, userId } = req.body;
-        await this.useCase.execute(videoId, title, description, url, userId);
+        await this.useCase.execute({ id: videoId, title, description, url, userId });
         res.status(201).send({ videoId });
     }
 }

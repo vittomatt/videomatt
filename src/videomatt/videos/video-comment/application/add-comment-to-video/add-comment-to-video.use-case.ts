@@ -6,7 +6,6 @@ import { Video } from '@videomatt/videos/videos/domain/models/write/video';
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 import { EventBus } from '@videomatt/shared/domain/event-bus/event-bus';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
-
 import { inject, injectable } from 'tsyringe';
 
 @injectable()
@@ -16,7 +15,7 @@ export class AddCommentToVideoUseCase {
         @inject(TOKEN.EVENT_BUS) private readonly eventBus: EventBus
     ) {}
 
-    async execute(id: string, text: string, videoId: string, userId: string) {
+    async execute({ id, text, videoId, userId }: { id: string; text: string; videoId: string; userId: string }) {
         const criteria = Criteria.create().addFilter(Filters.create('id', FilterOperator.EQUALS, videoId));
         const videos = await this.repository.search(criteria);
         if (!videos.length) {

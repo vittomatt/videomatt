@@ -8,6 +8,7 @@ import { PinoLogger } from '@videomatt/shared/infrastructure/logger/pino';
 import { DIUsers } from '@videomatt/users/infrastructure/di/di-user';
 import { SNSClient } from '@aws-sdk/client-sns';
 import { SQSClient } from '@aws-sdk/client-sqs';
+import { SQSWorker } from 'src/workers';
 import { container } from 'tsyringe';
 import { TOKEN } from './tokens';
 
@@ -15,14 +16,11 @@ export class DI {
     constructor(private readonly db: PostgresDB) {}
 
     public initDI() {
-        new DIUsers(this.db).initDI();
-        new DIVideos(this.db).initDI();
-        new DIVideoComments(this.db).initDI();
-
         this.initDBDependencies();
         this.initSharedDependencies();
         this.initBrokerDependencies();
         this.initControllersDependencies();
+        this.initModules();
     }
 
     private initDBDependencies() {
@@ -42,6 +40,9 @@ export class DI {
 
     private initBrokerDependencies() {
         const awsRegion = getEnvs().AWS_REGION;
+        container.register(TOKEN.WORKER, {
+            useClass: SQSWorker,
+        });
         container.register(TOKEN.SNS_CLIENT, {
             useValue: new SNSClient({ region: awsRegion }),
         });
@@ -56,5 +57,11 @@ export class DI {
         container.register(TOKEN.ERROR_CONTROLLER, {
             useClass: ErrorController,
         });
+    }
+
+    private initModules() {
+        new DIUsers(this.db).initDI();
+        new DIVideos(this.db).initDI();
+        new DIVideoComments(this.db).initDI();
     }
 }

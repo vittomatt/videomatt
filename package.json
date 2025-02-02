@@ -10,8 +10,7 @@
     "build": "tsc && tsc-alias",
     "start": "node dist/index.js",
     "start:worker": "node dist/workers.js",
-    "dev": "nodemon --watch 'src/**/*' --exec \"ts-node -r tsconfig-paths/register -P tsconfig.json\" src/index.ts",
-    "dev:worker": "nodemon --watch 'src/**/*' --exec \"ts-node -r tsconfig-paths/register -P tsconfig.json\" src/workers.ts"
+    "dev": "nodemon --watch 'src/**/*' --exec \"ts-node -r tsconfig-paths/register -P tsconfig.json\" src/index.ts"
   },
   "keywords": [],
   "author": "",

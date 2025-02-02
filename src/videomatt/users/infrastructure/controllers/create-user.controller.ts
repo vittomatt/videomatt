@@ -10,7 +10,7 @@ export class CreateUserController {
     async execute(req: Request, res: Response) {
         const { userId } = req.params;
         const { firstName, lastName } = req.body;
-        await this.useCase.execute(userId, firstName, lastName);
+        await this.useCase.execute({ id: userId, firstName, lastName });
         res.status(201).send({ userId });
     }
 }

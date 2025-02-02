@@ -7,17 +7,17 @@ import { inject, injectable } from 'tsyringe';
 
 @injectable()
 export class IncreaseAmountOfVideosUseCase {
-    constructor(@inject(USER_TOKENS.REPOSITORY) private readonly userRepository: UserRepository<User>) {}
+    constructor(@inject(USER_TOKENS.REPOSITORY) private readonly repository: UserRepository<User>) {}
 
     async execute(userId: string) {
         const criteria = Criteria.create().addFilter(Filters.create('id', FilterOperator.EQUALS, userId));
-        const users = await this.userRepository.search(criteria);
+        const users = await this.repository.search(criteria);
         if (users.length === 0) {
             throw new Error('User not found');
         }
 
         const user = users[0];
         user.increaseAmountOfVideos();
-        await this.userRepository.update(user);
+        await this.repository.update(user);
     }
 }

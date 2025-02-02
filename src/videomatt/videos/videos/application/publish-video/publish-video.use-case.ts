@@ -12,7 +12,19 @@ export class PublishVideoUseCase {
         @inject(TOKEN.EVENT_BUS) private readonly eventBus: EventBus
     ) {}
 
-    async execute(id: string, title: string, description: string, url: string, userId: string) {
+    async execute({
+        id,
+        title,
+        description,
+        url,
+        userId,
+    }: {
+        id: string;
+        title: string;
+        description: string;
+        url: string;
+        userId: string;
+    }) {
         const video = Video.create({
             id,
             title,

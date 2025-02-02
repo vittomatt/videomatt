@@ -1,5 +1,6 @@
 import { IncreaseAmountOfVideosOnVideoPublishedHandler } from '@videomatt/users/infrastructure/handlers/increase-amount-of-videos-on-video-published.handler';
 import { IncreaseAmountOfVideosUseCase } from '@videomatt/users/application/increase-amount-of-videos/increase-amount-of-videos.use-case';
+import { SQSEventVideoPublishedConsumer } from '@videomatt/users/infrastructure/broker/consumers/sqs-event-video-published.consumer';
 import { SequelizeUserRepository } from '@videomatt/users/infrastructure/repositories/sequelize-user.repository';
 import { CreateUserController } from '@videomatt/users/infrastructure/controllers/create-user.controller';
 import { SNSUserEventPublisher } from '@videomatt/users/infrastructure/broker/sns-user-event.publisher';
@@ -16,9 +17,9 @@ export class DIUsers {
         this.initDBDependencies();
         this.initControllersDependencies();
         this.initUseCasesDependencies();
-        this.initHandlersDependencies();
-        this.initBrokerDependencies();
         this.initRepositoriesDependencies();
+        this.initBrokerDependencies();
+        this.initHandlersDependencies();
     }
 
     private initDBDependencies() {
@@ -42,21 +43,29 @@ export class DIUsers {
         });
     }
 
+    private initRepositoriesDependencies() {
+        container.register(USER_TOKENS.REPOSITORY, {
+            useClass: SequelizeUserRepository,
+        });
+    }
+
     private initBrokerDependencies() {
+        // SNS
         container.register(USER_TOKENS.SNS_TOPIC_ARN, {
             useValue: getEnvs().SNS_USER_TOPIC_ARN,
         });
         container.register(USER_TOKENS.SNS_EVENT_PUBLISHER, {
             useClass: SNSUserEventPublisher,
         });
+
+        // SQS
         container.register(USER_TOKENS.SQS_USER_CREATED_QUEUE_URL, {
             useValue: getEnvs().SQS_USER_CREATED_QUEUE_URL,
         });
-    }
 
-    private initRepositoriesDependencies() {
-        container.register(USER_TOKENS.REPOSITORY, {
-            useClass: SequelizeUserRepository,
+        // Consumers
+        container.register(USER_TOKENS.SQS_EVENT_VIDEO_PUBLISHED_CONSUMER, {
+            useClass: SQSEventVideoPublishedConsumer,
         });
     }
 

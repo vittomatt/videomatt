@@ -12,7 +12,7 @@ export class CreateUserUseCase {
         @inject(TOKEN.EVENT_BUS) private readonly eventBus: EventBus
     ) {}
 
-    async execute(id: string, firstName: string, lastName: string) {
+    async execute({ id, firstName, lastName }: { id: string; firstName: string; lastName: string }) {
         const user = User.create({ id, firstName, lastName });
         this.repository.add(user);
         this.eventBus.publish(user.pullDomainEvents());
