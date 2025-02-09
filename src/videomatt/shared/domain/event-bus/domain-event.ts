@@ -1,6 +1,6 @@
 export type EventPrefix = 'video' | 'user';
 
-export class DomainEvent {
+export abstract class DomainEvent {
     public readonly occurredOn: Date;
 
     protected constructor(
@@ -23,4 +23,8 @@ export class DomainEvent {
         const service = eventParts[1];
         return service;
     }
+
+    abstract isLocal(): boolean;
+
+    abstract isRemote(): boolean;
 }

@@ -1,13 +1,14 @@
 import { IncreaseAmountOfVideosUseCase } from '@videomatt/users/application/increase-amount-of-videos/increase-amount-of-videos.use-case';
-import { CreateVideoReadHandler } from '@videomatt/videos/videos/infrastructure/handlers/domain/create-video-read.handler';
+import { IncreaseAmountOfVideosHandler } from '@videomatt/users/infrastructure/handlers/domain/increase-amount-of-videos.handler';
+import { SQSEventUserCreatedConsumer } from '@videomatt/users/infrastructure/broker/consumers/sqs-event-user-created.consumer';
 import { SequelizeUserRepository } from '@videomatt/users/infrastructure/repositories/sequelize-user.repository';
+import { SNSUserEventProducer } from '@videomatt/users/infrastructure/broker/producer/sns-user-event.producer';
 import { CreateUserController } from '@videomatt/users/infrastructure/controllers/create-user.controller';
 import { CreateUserHandler } from '@videomatt/users/infrastructure/handlers/command/create-user.handler';
-import { SNSUserEventPublisher } from '@videomatt/users/infrastructure/broker/sns-user-event.publisher';
 import { CreateUserUseCase } from '@videomatt/users/application/create-user/create-user.use-case';
+import { USER_TOKEN } from '@videomatt/users/infrastructure/di/tokens-user';
 import { DBModel } from '@videomatt/shared/infrastructure/persistence/db';
 import { getEnvs } from '@videomatt/shared/infrastructure/envs/init-envs';
-import { USER_TOKEN } from './tokens-user';
 import { container } from 'tsyringe';
 
 export class DIUsers {
@@ -54,8 +55,8 @@ export class DIUsers {
         container.register(USER_TOKEN.SNS_TOPIC_ARN, {
             useValue: getEnvs().SNS_USER_TOPIC_ARN,
         });
-        container.register(USER_TOKEN.SNS_EVENT_PUBLISHER, {
-            useClass: SNSUserEventPublisher,
+        container.register(USER_TOKEN.SNS_EVENT_PRODUCER, {
+            useClass: SNSUserEventProducer,
         });
 
         // SQS
@@ -64,14 +65,17 @@ export class DIUsers {
         });
 
         // Consumers
+        container.register(USER_TOKEN.SQS_EVENT_USER_CREATED_CONSUMER, {
+            useClass: SQSEventUserCreatedConsumer,
+        });
     }
 
     private initHandlersDependencies() {
         container.register(USER_TOKEN.CREATE_USER_HANDLER, {
             useClass: CreateUserHandler,
         });
-        container.register(USER_TOKEN.CREATE_VIDEO_READ_HANDLER, {
-            useClass: CreateVideoReadHandler,
+        container.register(USER_TOKEN.INCREASE_AMOUNT_OF_VIDEOS_HANDLER, {
+            useClass: IncreaseAmountOfVideosHandler,
         });
     }
 }

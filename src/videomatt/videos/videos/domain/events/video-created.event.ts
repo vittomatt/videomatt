@@ -1,6 +1,8 @@
 import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain-event';
 
-export class VideoPublishedEvent extends DomainEvent {
+export class VideoCreatedEvent extends DomainEvent {
+    static readonly eventName = 'videomatt.video.1.event.video.created';
+
     private constructor(
         public readonly id: string,
         public readonly title: string,
@@ -8,8 +10,7 @@ export class VideoPublishedEvent extends DomainEvent {
         public readonly url: string,
         public readonly userId: string
     ) {
-        const eventName = 'videomatt.video.1.event.video.published';
-        super(eventName);
+        super(VideoCreatedEvent.eventName);
     }
 
     static create({
@@ -24,7 +25,15 @@ export class VideoPublishedEvent extends DomainEvent {
         description: string;
         url: string;
         userId: string;
-    }): VideoPublishedEvent {
-        return new VideoPublishedEvent(id, title, description, url, userId);
+    }): VideoCreatedEvent {
+        return new VideoCreatedEvent(id, title, description, url, userId);
+    }
+
+    isLocal(): boolean {
+        return true;
+    }
+
+    isRemote(): boolean {
+        return true;
     }
 }

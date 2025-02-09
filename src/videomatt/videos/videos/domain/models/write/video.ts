@@ -1,6 +1,6 @@
 import { VideoCommentAddedEvent } from '@videomatt/videos/video-comment/domain/events/video-comment-added.event';
-import { VideoPublishedEvent } from '@videomatt/videos/videos/domain/events/video-published.event';
 import { VideoComment } from '@videomatt/videos/video-comment/domain/models/write/video-comment';
+import { VideoCreatedEvent } from '@videomatt/videos/videos/domain/events/video-created.event';
 import { AggregateRoot } from '@videomatt/shared/domain/aggregate-root';
 import { UserId } from '@videomatt/users/domain/models/write/user-id';
 import { VideoDescription } from './video-description';
@@ -47,7 +47,7 @@ export class Video extends AggregateRoot {
             user
         );
 
-        const event = VideoPublishedEvent.create({ id, title, description, url, userId });
+        const event = VideoCreatedEvent.create({ id, title, description, url, userId });
         video.record(event);
 
         return video;

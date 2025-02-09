@@ -17,12 +17,12 @@ export class InMemoryCommandEventBus implements CommandEventBus {
     private readonly handlers: Record<string, CommandHandler> = {};
 
     constructor(
-        @inject(VIDEO_TOKEN.CREATE_VIDEO_HANDLER) createVideoHandler: CreateVideoHandler,
         @inject(USER_TOKEN.CREATE_USER_HANDLER) createUserHandler: CreateUserHandler,
+        @inject(VIDEO_TOKEN.CREATE_VIDEO_HANDLER) createVideoHandler: CreateVideoHandler,
         @inject(VIDEO_COMMENT_TOKENS.ADD_COMMENT_TO_VIDEO_HANDLER) addCommentToVideoHandler: AddCommentToVideoHandler
     ) {
-        this.handlers[CreateVideoDTO.name] = createVideoHandler;
         this.handlers[CreateUserDTO.name] = createUserHandler;
+        this.handlers[CreateVideoDTO.name] = createVideoHandler;
         this.handlers[AddCommentToVideoDTO.name] = addCommentToVideoHandler;
     }
 

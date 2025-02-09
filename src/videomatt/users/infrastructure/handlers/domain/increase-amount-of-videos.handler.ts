@@ -1,5 +1,5 @@
 import { IncreaseAmountOfVideosUseCase } from '@videomatt/users/application/increase-amount-of-videos/increase-amount-of-videos.use-case';
-import { VideoPublishedEvent } from '@videomatt/videos/videos/domain/events/video-published.event';
+import { VideoCreatedEvent } from '@videomatt/videos/videos/domain/events/video-created.event';
 import { DomainHandler } from '@videomatt/shared/domain/broker/domain-handler';
 import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain-event';
 import { USER_TOKEN } from '@videomatt/users/infrastructure/di/tokens-user';
@@ -13,7 +13,7 @@ export class IncreaseAmountOfVideosHandler implements DomainHandler<void> {
     ) {}
 
     async handle(event: DomainEvent) {
-        const videoEvent = event as VideoPublishedEvent;
+        const videoEvent = event as VideoCreatedEvent;
         const userId = videoEvent.userId;
         await this.useCase.execute(userId);
     }

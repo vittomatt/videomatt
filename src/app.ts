@@ -5,7 +5,7 @@ import { PinoLogger } from '@videomatt/shared/infrastructure/logger/pino';
 import { Logger } from '@videomatt/shared/domain/logger/logger';
 import { DI } from '@videomatt/shared/infrastructure/di/di';
 import express, { Express } from 'express';
-import { SQSWorker } from './workers';
+import { SQSWorker } from 'src/workers';
 import { container } from 'tsyringe';
 import helmet from 'helmet';
 

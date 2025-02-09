@@ -1,8 +1,8 @@
 import { AddCommentToVideoController } from '@videomatt/videos/video-comment/infrastructure/controllers/add-comment-to-video/add-comment-to-video.controller';
 import { AddCommentToVideoUseCase } from '@videomatt/videos/video-comment/application/add-comment-to-video/add-comment-to-video.use-case';
 import { AddCommentToVideoHandler } from '@videomatt/videos/video-comment/infrastructure/handlers/command/add-comment-to-video.hanlder';
+import { VIDEO_COMMENT_TOKENS } from '@videomatt/videos/video-comment/infrastructure/di/tokens-video-comment';
 import { DBModel } from '@videomatt/shared/infrastructure/persistence/db';
-import { VIDEO_COMMENT_TOKENS } from './tokens-video-comment';
 import { container } from 'tsyringe';
 
 export class DIVideoComments {

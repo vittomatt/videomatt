@@ -2,7 +2,7 @@ import 'reflect-metadata';
 
 import { getEnvs } from '@videomatt/shared/infrastructure/envs/init-envs';
 import express from 'express';
-import { App } from './app';
+import { App } from 'src/app';
 
 const expressApp = express();
 const app = new App(expressApp);

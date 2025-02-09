@@ -2,9 +2,9 @@ import { VideoCommentDBModel } from '@videomatt/videos/video-comment/infrastruct
 import { VideoDBModelRead } from '@videomatt/videos/videos/infrastructure/models/video.db-read-model';
 import { VideoDBModel } from '@videomatt/videos/videos/infrastructure/models/video.db-model';
 import { UserDBModel } from '@videomatt/users/infrastructure/models/user.db-model';
+import { DB, DBModel } from '@videomatt/shared/infrastructure/persistence/db';
 import { getEnvs } from '@videomatt/shared/infrastructure/envs/init-envs';
 import { Sequelize } from 'sequelize';
-import { DB, DBModel } from './db';
 
 export class PostgresDB implements DB, DBModel {
     private instance: Sequelize;

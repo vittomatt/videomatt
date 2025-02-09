@@ -1,5 +1,5 @@
 import { CreateVideoReadUseCase } from '@videomatt/videos/videos/application/create-video/create-video-read.use-case';
-import { VideoPublishedEvent } from '@videomatt/videos/videos/domain/events/video-published.event';
+import { VideoCreatedEvent } from '@videomatt/videos/videos/domain/events/video-created.event';
 import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 import { DomainHandler } from '@videomatt/shared/domain/broker/domain-handler';
 import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain-event';
@@ -13,7 +13,7 @@ export class CreateVideoReadHandler implements DomainHandler<void> {
     ) {}
 
     async handle(event: DomainEvent) {
-        const videoEvent = event as VideoPublishedEvent;
+        const videoEvent = event as VideoCreatedEvent;
         await this.useCase.execute({
             id: videoEvent.id,
             title: videoEvent.title,

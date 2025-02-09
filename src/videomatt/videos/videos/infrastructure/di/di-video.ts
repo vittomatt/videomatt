@@ -1,22 +1,24 @@
+import { InMemoryEventCommentAddedSubscriber } from '@videomatt/videos/videos/infrastructure/broker/subscriber/in-memory-event-comment-added.subscriber';
+import { InMemoryEventVideoCreatedSubscriber } from '@videomatt/videos/videos/infrastructure/broker/subscriber/in-memory-event-video-created.subscriber';
 import { IncreaseAmountOfCommentsUseCase } from '@videomatt/videos/videos/application/increase-amount-of-comments/increase-amount-of-comments.use-case';
 import { SequelizeGetVideosRepository } from '@videomatt/videos/videos/infrastructure/repositories/get-videos/sequelize-get-videos.repository';
-import { SQSEventVideoPublishedConsumer } from '@videomatt/videos/videos/infrastructure/broker/consumers/sqs-event-video-published.consumer';
-import { SQSEventCommentAddedConsumer } from '@videomatt/videos/videos/infrastructure/broker/consumers/sqs-event-comment-added.consumer';
+import { SQSEventVideoCreatedConsumer } from '@videomatt/videos/videos/infrastructure/broker/consumers/sqs-event-video-created.consumer';
+import { InMemoryVideoEventPublisher } from '@videomatt/videos/videos/infrastructure/broker/publishers/in-memory-video-event.publisher';
 import { IncreaseAmountOfCommentsHandler } from '@videomatt/videos/videos/infrastructure/handlers/increase-amount-of-comments.handler';
 import { SequelizeVideoReadRepository } from '@videomatt/videos/videos/infrastructure/repositories/sequelize-video-read.repository';
 import { CreateVideoController } from '@videomatt/videos/videos/infrastructure/controllers/create-video/create-video.controller';
 import { GetVideosController } from '@videomatt/videos/videos/infrastructure/controllers/get-videos/get-videos.controller';
 import { CreateVideoReadHandler } from '@videomatt/videos/videos/infrastructure/handlers/domain/create-video-read.handler';
 import { SequelizeVideoRepository } from '@videomatt/videos/videos/infrastructure/repositories/sequelize-video.repository';
+import { SNSVideoEventProducer } from '@videomatt/videos/videos/infrastructure/broker/producer/sns-video-event.producer';
 import { CreateVideoReadUseCase } from '@videomatt/videos/videos/application/create-video/create-video-read.use-case';
 import { CreateVideoHandler } from '@videomatt/videos/videos/infrastructure/handlers/domain/create-video.handler';
-import { SNSVideoEventPublisher } from '@videomatt/videos/videos/infrastructure/broker/sns-video-event.publisher';
 import { GetVideosHandler } from '@videomatt/videos/videos/infrastructure/handlers/query/get-videos.handler';
 import { CreateVideoUseCase } from '@videomatt/videos/videos/application/create-video/create-video.use-case';
 import { GetVideosUseCase } from '@videomatt/videos/videos/application/get-videos/get-videos.use-case';
+import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 import { DBModel } from '@videomatt/shared/infrastructure/persistence/db';
 import { getEnvs } from '@videomatt/shared/infrastructure/envs/init-envs';
-import { VIDEO_TOKEN } from './tokens-video';
 import { container } from 'tsyringe';
 
 export class DIVideos {
@@ -69,24 +71,29 @@ export class DIVideos {
         container.register(VIDEO_TOKEN.SNS_TOPIC_ARN, {
             useValue: getEnvs().SNS_VIDEO_TOPIC_ARN,
         });
-        container.register(VIDEO_TOKEN.SNS_EVENT_PUBLISHER, {
-            useClass: SNSVideoEventPublisher,
+        container.register(VIDEO_TOKEN.SNS_EVENT_PRODUCER, {
+            useClass: SNSVideoEventProducer,
+        });
+        container.register(VIDEO_TOKEN.IN_MEMORY_EVENT_PUBLISHER, {
+            useClass: InMemoryVideoEventPublisher,
         });
 
         // SQS
-        container.register(VIDEO_TOKEN.SQS_VIDEO_PUBLISHED_QUEUE_URL, {
-            useValue: getEnvs().SQS_VIDEO_PUBLISHED_QUEUE_URL,
-        });
-        container.register(VIDEO_TOKEN.SQS_COMMENT_ADDED_QUEUE_URL, {
-            useValue: getEnvs().SQS_COMMENT_ADDED_QUEUE_URL,
+        container.register(VIDEO_TOKEN.SQS_VIDEO_CREATED_QUEUE_URL, {
+            useValue: getEnvs().SQS_VIDEO_CREATED_QUEUE_URL,
         });
 
         // Consumers
-        container.register(VIDEO_TOKEN.SQS_EVENT_VIDEO_PUBLISHED_CONSUMER, {
-            useClass: SQSEventVideoPublishedConsumer,
+        container.register(VIDEO_TOKEN.SQS_EVENT_VIDEO_CREATED_CONSUMER, {
+            useClass: SQSEventVideoCreatedConsumer,
         });
-        container.register(VIDEO_TOKEN.SQS_EVENT_COMMENT_ADDED_CONSUMER, {
-            useClass: SQSEventCommentAddedConsumer,
+
+        // Subscribers
+        container.register(VIDEO_TOKEN.IN_MEMORY_EVENT_VIDEO_CREATED_SUBSCRIBER, {
+            useClass: InMemoryEventVideoCreatedSubscriber,
+        });
+        container.register(VIDEO_TOKEN.IN_MEMORY_EVENT_COMMENT_ADDED_SUBSCRIBER, {
+            useClass: InMemoryEventCommentAddedSubscriber,
         });
     }
 
