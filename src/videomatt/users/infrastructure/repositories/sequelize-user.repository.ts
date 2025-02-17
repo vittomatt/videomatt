@@ -27,7 +27,7 @@ export class SequelizeUserRepository implements UserRepository<User> {
     async remove(user: User) {
         const id = user.id.value;
         try {
-            this.dbUser.destroy({ where: { id } });
+            await this.dbUser.destroy({ where: { id } });
         } catch (error) {
             this.logger.error(`Error removing user: ${error}`);
         }

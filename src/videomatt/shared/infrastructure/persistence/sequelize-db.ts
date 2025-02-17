@@ -49,6 +49,7 @@ export class PostgresDB implements DB, DBModel {
             console.log('✅ Database synchronized successfully');
         } catch (error) {
             console.error('❌ Error synchronizing database:', error);
+            throw error;
         }
     }
 
