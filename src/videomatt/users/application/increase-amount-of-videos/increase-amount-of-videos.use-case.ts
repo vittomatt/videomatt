@@ -9,10 +9,11 @@ import { inject, injectable } from 'tsyringe';
 export class IncreaseAmountOfVideosUseCase {
     constructor(@inject(USER_TOKEN.REPOSITORY) private readonly repository: UserRepository<User>) {}
 
-    async execute(userId: string) {
+    // fitu
+    async execute(userId: string, videoId: string) {
         const criteria = Criteria.create().addFilter(Filters.create('id', FilterOperator.EQUALS, userId));
         const users = await this.repository.search(criteria);
-        if (users.length === 0) {
+        if (!users.length) {
             throw new Error('User not found');
         }
 

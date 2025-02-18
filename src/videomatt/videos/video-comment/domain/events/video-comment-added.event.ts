@@ -7,7 +7,8 @@ export class VideoCommentAddedEvent extends DomainEvent {
         public readonly id: string,
         public readonly text: string,
         public readonly userId: string,
-        public readonly videoId: string
+        public readonly videoId: string,
+        public readonly commentId: string
     ) {
         super(VideoCommentAddedEvent.eventName);
     }
@@ -17,13 +18,15 @@ export class VideoCommentAddedEvent extends DomainEvent {
         text,
         userId,
         videoId,
+        commentId,
     }: {
         id: string;
         text: string;
         userId: string;
         videoId: string;
+        commentId: string;
     }): VideoCommentAddedEvent {
-        return new VideoCommentAddedEvent(id, text, userId, videoId);
+        return new VideoCommentAddedEvent(id, text, userId, videoId, commentId);
     }
 
     isLocal(): boolean {

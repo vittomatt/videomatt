@@ -7,7 +7,7 @@ export class VideoTitle extends BaseValueObject {
     }
 
     private ensureNotEmpty(value: string) {
-        if (!value || value.length === 0) {
+        if (!value?.length) {
             throw new Error('Video title cannot be empty');
         }
     }

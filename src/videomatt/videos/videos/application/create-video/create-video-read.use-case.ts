@@ -1,6 +1,8 @@
 import { VideoReadRepository } from '@videomatt/videos/videos/domain/repositories/video-read.repository';
+import { FilterOperator, Filters } from '@videomatt/shared/domain/repositories/filters';
 import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 import { VideoRead } from '@videomatt/videos/videos/domain/models/read/video.read';
+import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 import { inject, injectable } from 'tsyringe';
 
 @injectable()
@@ -22,7 +24,13 @@ export class CreateVideoReadUseCase {
         url: string;
         userId: string;
     }) {
-        const videoRead = VideoRead.create({ id, title, description, url, userId });
-        await this.repository.add(videoRead);
+        const criteria = Criteria.create().addFilter(Filters.create('id', FilterOperator.EQUALS, id));
+        const videoRead = await this.repository.search(criteria);
+        if (videoRead.length) {
+            return;
+        }
+
+        const newVideoRead = VideoRead.create({ id, title, description, url, userId });
+        await this.repository.add(newVideoRead);
     }
 }

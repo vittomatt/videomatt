@@ -30,7 +30,7 @@ export class SQSEventConsumer implements RemoteEventConsumer {
 
             const response = await this.sqsClient.send(params);
 
-            if (!response.Messages || response.Messages.length === 0) {
+            if (!response.Messages?.length) {
                 return;
             }
 

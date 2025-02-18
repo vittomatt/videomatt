@@ -8,7 +8,8 @@ export class VideoCreatedEvent extends DomainEvent {
         public readonly title: string,
         public readonly description: string,
         public readonly url: string,
-        public readonly userId: string
+        public readonly userId: string,
+        public readonly videoId: string
     ) {
         super(VideoCreatedEvent.eventName);
     }
@@ -19,14 +20,16 @@ export class VideoCreatedEvent extends DomainEvent {
         description,
         url,
         userId,
+        videoId,
     }: {
         id: string;
         title: string;
         description: string;
         url: string;
         userId: string;
+        videoId: string;
     }): VideoCreatedEvent {
-        return new VideoCreatedEvent(id, title, description, url, userId);
+        return new VideoCreatedEvent(id, title, description, url, userId, videoId);
     }
 
     isLocal(): boolean {

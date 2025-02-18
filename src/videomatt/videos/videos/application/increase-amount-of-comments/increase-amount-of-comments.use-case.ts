@@ -11,10 +11,10 @@ export class IncreaseAmountOfCommentsUseCase {
         @inject(VIDEO_TOKEN.VIDEO_READ_REPOSITORY) private readonly repository: VideoReadRepository<VideoRead>
     ) {}
 
-    async execute(videoId: string) {
+    async execute(videoId: string, commentId: string) {
         const criteria = Criteria.create().addFilter(Filters.create('id', FilterOperator.EQUALS, videoId));
         const videos = await this.repository.search(criteria);
-        if (videos.length === 0) {
+        if (!videos.length) {
             throw new Error('Video not found');
         }
 

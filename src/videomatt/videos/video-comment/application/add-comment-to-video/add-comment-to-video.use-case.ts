@@ -16,16 +16,22 @@ export class AddCommentToVideoUseCase {
     ) {}
 
     async execute({ id, text, videoId, userId }: { id: string; text: string; videoId: string; userId: string }) {
-        const criteria = Criteria.create().addFilter(Filters.create('id', FilterOperator.EQUALS, videoId));
-        const videos = await this.repository.search(criteria);
+        const commentCriteria = Criteria.create().addFilter(Filters.create('id', FilterOperator.EQUALS, videoId));
+        const comment = await this.repository.search(commentCriteria);
+        if (comment.length) {
+            return;
+        }
+
+        const videoCriteria = Criteria.create().addFilter(Filters.create('id', FilterOperator.EQUALS, videoId));
+        const videos = await this.repository.search(videoCriteria);
         if (!videos.length) {
             throw new Error('Video not found');
         }
 
         const video = videos[0];
 
-        const comment = VideoComment.create({ id, text, userId, videoId });
-        video.addComment(comment);
+        const newComment = VideoComment.create({ id, text, userId, videoId });
+        video.addComment(newComment);
 
         this.repository.update(video);
         this.eventBus.publish(video.pullDomainEvents());
