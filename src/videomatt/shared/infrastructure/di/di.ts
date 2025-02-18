@@ -4,6 +4,7 @@ import { InMemoryQueryEventBus } from '@videomatt/shared/infrastructure/event-bu
 import { DIVideoComments } from '@videomatt/videos/video-comment/infrastructure/di/di-video-comment';
 import { ErrorController } from '@videomatt/shared/infrastructure/controllers/error.controller';
 import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/sequelize-db';
+import { RedisDB } from '@videomatt/shared/infrastructure/persistence/redis-db';
 import { DIVideos } from '@videomatt/videos/videos/infrastructure/di/di-video';
 import { getEnvs } from '@videomatt/shared/infrastructure/envs/init-envs';
 import { PinoLogger } from '@videomatt/shared/infrastructure/logger/pino';
@@ -15,7 +16,10 @@ import { SQSWorker } from 'src/workers';
 import { container } from 'tsyringe';
 
 export class DI {
-    constructor(private readonly db: PostgresDB) {}
+    constructor(
+        private readonly db: PostgresDB,
+        private readonly redis: RedisDB
+    ) {}
 
     public initDI() {
         this.initDBDependencies();
@@ -27,7 +31,10 @@ export class DI {
 
     private initDBDependencies() {
         container.register(TOKEN.DB, {
-            useValue: this.db as PostgresDB,
+            useValue: this.db,
+        });
+        container.register(TOKEN.REDIS, {
+            useValue: this.redis,
         });
     }
 

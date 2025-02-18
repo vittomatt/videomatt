@@ -6,13 +6,13 @@ import { SNSUserEventProducer } from '@videomatt/users/infrastructure/broker/pro
 import { CreateUserController } from '@videomatt/users/infrastructure/controllers/create-user.controller';
 import { CreateUserHandler } from '@videomatt/users/infrastructure/handlers/command/create-user.handler';
 import { CreateUserUseCase } from '@videomatt/users/application/create-user/create-user.use-case';
+import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/sequelize-db';
 import { USER_TOKEN } from '@videomatt/users/infrastructure/di/tokens-user';
-import { DBModel } from '@videomatt/shared/infrastructure/persistence/db';
 import { getEnvs } from '@videomatt/shared/infrastructure/envs/init-envs';
 import { container } from 'tsyringe';
 
 export class DIUsers {
-    constructor(private readonly db: DBModel) {}
+    constructor(private readonly db: PostgresDB) {}
 
     public initDI() {
         this.initDBDependencies();

@@ -16,13 +16,13 @@ import { CreateVideoHandler } from '@videomatt/videos/videos/infrastructure/hand
 import { GetVideosHandler } from '@videomatt/videos/videos/infrastructure/handlers/query/get-videos.handler';
 import { CreateVideoUseCase } from '@videomatt/videos/videos/application/create-video/create-video.use-case';
 import { GetVideosUseCase } from '@videomatt/videos/videos/application/get-videos/get-videos.use-case';
+import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/sequelize-db';
 import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
-import { DBModel } from '@videomatt/shared/infrastructure/persistence/db';
 import { getEnvs } from '@videomatt/shared/infrastructure/envs/init-envs';
 import { container } from 'tsyringe';
 
 export class DIVideos {
-    constructor(private readonly db: DBModel) {}
+    constructor(private readonly db: PostgresDB) {}
 
     public initDI() {
         this.initDBDependencies();

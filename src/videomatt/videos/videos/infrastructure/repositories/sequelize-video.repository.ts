@@ -4,6 +4,7 @@ import { VIDEO_COMMENT_TOKENS } from '@videomatt/videos/video-comment/infrastruc
 import { VideoRepository } from '@videomatt/videos/videos/domain/repositories/video.repository';
 import { VideoDBModel } from '@videomatt/videos/videos/infrastructure/models/video.db-model';
 import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
+import { RedisDB } from '@videomatt/shared/infrastructure/persistence/redis-db';
 import { Video } from '@videomatt/videos/videos/domain/models/write/video';
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
@@ -15,8 +16,18 @@ export class SequelizeVideoRepository implements VideoRepository<Video> {
     constructor(
         @inject(VIDEO_TOKEN.DB_MODEL) private readonly dbVideo: typeof VideoDBModel,
         @inject(VIDEO_COMMENT_TOKENS.DB_MODEL) private readonly dbVideoComment: typeof VideoCommentDBModel,
-        @inject(TOKEN.LOGGER) private readonly logger: Logger
+        @inject(TOKEN.LOGGER) private readonly logger: Logger,
+        @inject(TOKEN.REDIS) private readonly redis: RedisDB
     ) {}
+
+    async check(id: string): Promise<boolean> {
+        const value = await this.redis.getValue(id);
+        return value !== null;
+    }
+
+    async save(id: string): Promise<void> {
+        await this.redis.setValue(id, '1');
+    }
 
     async add(video: Video) {
         try {

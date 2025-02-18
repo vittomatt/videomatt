@@ -1,4 +1,4 @@
-import { DBModel } from '@videomatt/shared/infrastructure/persistence/db';
+import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/sequelize-db';
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export const USER_TABLE_NAME = 'users';
@@ -44,7 +44,7 @@ export class UserDBModel extends Model {
         );
     }
 
-    public static associate(models: DBModel) {
+    public static associate(models: PostgresDB) {
         this.hasMany(models.getVideoModel(), { foreignKey: 'userId' });
     }
 

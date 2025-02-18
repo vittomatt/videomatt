@@ -3,18 +3,28 @@ import { VideoReadRepository } from '@videomatt/videos/videos/domain/repositorie
 import { VideoDBModelRead } from '@videomatt/videos/videos/infrastructure/models/video.db-read-model';
 import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 import { VideoRead } from '@videomatt/videos/videos/domain/models/read/video.read';
+import { RedisDB } from '@videomatt/shared/infrastructure/persistence/redis-db';
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { Logger } from '@videomatt/shared/domain/logger/logger';
 import { inject, injectable } from 'tsyringe';
 import { Sequelize } from 'sequelize';
-
 @injectable()
 export class SequelizeVideoReadRepository implements VideoReadRepository<VideoRead> {
     constructor(
         @inject(VIDEO_TOKEN.DB_MODEL_READ) private readonly dbVideoRead: typeof VideoDBModelRead,
-        @inject(TOKEN.LOGGER) private readonly logger: Logger
+        @inject(TOKEN.LOGGER) private readonly logger: Logger,
+        @inject(TOKEN.REDIS) private readonly redis: RedisDB
     ) {}
+
+    async check(id: string): Promise<boolean> {
+        const value = await this.redis.getValue(id);
+        return value !== null;
+    }
+
+    async save(id: string): Promise<void> {
+        await this.redis.setValue(id, '1');
+    }
 
     async add(video: VideoRead) {
         try {

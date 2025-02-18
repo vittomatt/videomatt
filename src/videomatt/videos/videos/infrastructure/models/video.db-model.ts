@@ -1,6 +1,6 @@
 import { VideoCommentDBModel } from '@videomatt/videos/video-comment/infrastructure/models/video-comment.db-model';
+import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/sequelize-db';
 import { USER_TABLE_NAME } from '@videomatt/users/infrastructure/models/user.db-model';
-import { DBModel } from '@videomatt/shared/infrastructure/persistence/db';
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export const VIDEO_TABLE_NAME = 'videos';
@@ -55,7 +55,7 @@ export class VideoDBModel extends Model {
         );
     }
 
-    public static associate(models: DBModel) {
+    public static associate(models: PostgresDB) {
         this.belongsTo(models.getUserModel(), { foreignKey: 'userId' });
         this.hasMany(models.getVideoCommentModel(), { foreignKey: 'videoId' });
     }

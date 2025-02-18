@@ -12,6 +12,11 @@ export class IncreaseAmountOfCommentsUseCase {
     ) {}
 
     async execute(videoId: string, commentId: string) {
+        const commentExists = await this.repository.check(commentId);
+        if (commentExists) {
+            return;
+        }
+
         const criteria = Criteria.create().addFilter(Filters.create('id', FilterOperator.EQUALS, videoId));
         const videos = await this.repository.search(criteria);
         if (!videos.length) {
@@ -21,5 +26,6 @@ export class IncreaseAmountOfCommentsUseCase {
         const video = videos[0];
         video.increaseAmountOfComments();
         this.repository.update(video);
+        await this.repository.save(commentId);
     }
 }

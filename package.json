@@ -29,6 +29,7 @@
     "pg-hstore": "^2.3.4",
     "pino": "^9.6.0",
     "pino-http": "^10.4.0",
+    "redis": "^4.7.0",
     "reflect-metadata": "^0.2.2",
     "sequelize": "^6.37.5",
     "tsyringe": "^4.8.0",

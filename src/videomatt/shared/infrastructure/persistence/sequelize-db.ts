@@ -2,12 +2,11 @@ import { VideoCommentDBModel } from '@videomatt/videos/video-comment/infrastruct
 import { VideoDBModelRead } from '@videomatt/videos/videos/infrastructure/models/video.db-read-model';
 import { VideoDBModel } from '@videomatt/videos/videos/infrastructure/models/video.db-model';
 import { UserDBModel } from '@videomatt/users/infrastructure/models/user.db-model';
-import { DB, DBModel } from '@videomatt/shared/infrastructure/persistence/db';
 import { getEnvs } from '@videomatt/shared/infrastructure/envs/init-envs';
 import { Sequelize } from 'sequelize';
 
-export class PostgresDB implements DB, DBModel {
-    private instance: Sequelize;
+export class PostgresDB {
+    private readonly instance: Sequelize;
     private videoModel!: typeof VideoDBModel;
     private videoCommentModel!: typeof VideoCommentDBModel;
     private userModel!: typeof UserDBModel;

@@ -8,6 +8,8 @@ const envSchema = z.object({
     POSTGRES_USER: z.string(),
     POSTGRES_PASSWORD: z.string(),
     POSTGRES_DB: z.string(),
+    REDIS_HOST: z.string(),
+    REDIS_PORT: z.coerce.number(),
     SNS_VIDEO_TOPIC_ARN: z.string(),
     SNS_USER_TOPIC_ARN: z.string(),
     SQS_USER_CREATED_QUEUE_URL: z.string(),
