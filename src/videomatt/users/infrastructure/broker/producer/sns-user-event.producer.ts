@@ -1,5 +1,5 @@
 import { SNSEventProducer } from '@videomatt/shared/infrastructure/broker/sns-event.producer';
-import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain-event';
+import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain.event';
 import { USER_TOKEN } from '@videomatt/users/infrastructure/di/tokens-user';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { Logger } from '@videomatt/shared/domain/logger/logger';

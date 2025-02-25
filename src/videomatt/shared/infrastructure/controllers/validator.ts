@@ -23,7 +23,7 @@ export const validateDto = (DtoClass: new () => object, from: 'body' | 'params' 
         if (from === 'body') {
             req.body = dtoInstance;
         } else {
-            req.params = dtoInstance as unknown as ParamsDictionary;
+            req.params = dtoInstance as ParamsDictionary;
         }
 
         next();

@@ -1,5 +1,5 @@
 import { RemoteEventProducer } from '@videomatt/shared/domain/broker/remote-event.producer';
-import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain-event';
+import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain.event';
 import { Logger } from '@videomatt/shared/domain/logger/logger';
 import { PublishCommand, SNSClient } from '@aws-sdk/client-sns';
 

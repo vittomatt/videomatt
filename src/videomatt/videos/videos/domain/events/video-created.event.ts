@@ -1,7 +1,8 @@
-import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain-event';
+import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain.event';
 
 export class VideoCreatedEvent extends DomainEvent {
     static readonly eventName = 'videomatt.video.1.event.video.created';
+    public readonly eventName = VideoCreatedEvent.eventName;
 
     private constructor(
         public readonly id: string,
@@ -11,7 +12,7 @@ export class VideoCreatedEvent extends DomainEvent {
         public readonly userId: string,
         public readonly videoId: string
     ) {
-        super(VideoCreatedEvent.eventName);
+        super();
     }
 
     static create({

@@ -4,7 +4,7 @@ import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-v
 import { VideoRead } from '@videomatt/videos/videos/domain/models/read/video.read';
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 import { inject, injectable } from 'tsyringe';
-
+import { fold } from 'fp-ts/lib/Option';
 @injectable()
 export class IncreaseAmountOfCommentsUseCase {
     constructor(
@@ -18,14 +18,17 @@ export class IncreaseAmountOfCommentsUseCase {
         }
 
         const criteria = Criteria.create().addFilter(Filters.create('id', FilterOperator.EQUALS, videoId));
-        const videos = await this.repository.search(criteria);
-        if (!videos.length) {
-            throw new Error('Video not found');
-        }
+        const videoOption = await this.repository.searchById(criteria);
 
-        const video = videos[0];
-        video.increaseAmountOfComments();
-        this.repository.update(video);
-        await this.repository.save(commentId);
+        fold(
+            async () => {
+                throw new Error('Video not found');
+            },
+            async (video: VideoRead) => {
+                video.increaseAmountOfComments();
+                await this.repository.update(video);
+                await this.repository.save(commentId);
+            }
+        )(videoOption);
     }
 }

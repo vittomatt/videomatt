@@ -6,6 +6,7 @@ import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { User } from '@videomatt/users/domain/models/write/user';
 import { Logger } from '@videomatt/shared/domain/logger/logger';
+import { Option, none, some } from 'fp-ts/lib/Option';
 import { inject, injectable } from 'tsyringe';
 
 @injectable()
@@ -50,6 +51,11 @@ export class SequelizeUserRepository implements UserRepository<User> {
             this.logger.error(`Error searching users: ${error}`);
             return [];
         }
+    }
+
+    async searchById(criteria: Criteria): Promise<Option<User>> {
+        const users = await this.search(criteria);
+        return users.length ? some(users[0]) : none;
     }
 
     private async convert(criteria: Criteria): Promise<User[]> {

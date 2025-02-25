@@ -7,6 +7,7 @@ import { RedisDB } from '@videomatt/shared/infrastructure/persistence/redis-db';
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { Logger } from '@videomatt/shared/domain/logger/logger';
+import { none, some, Option } from 'fp-ts/lib/Option';
 import { inject, injectable } from 'tsyringe';
 import { Sequelize } from 'sequelize';
 @injectable()
@@ -61,6 +62,11 @@ export class SequelizeVideoReadRepository implements VideoReadRepository<VideoRe
             this.logger.error(`Error searching videos: ${error}`);
             return [];
         }
+    }
+
+    async searchById(criteria: Criteria): Promise<Option<VideoRead>> {
+        const videos = await this.search(criteria);
+        return videos.length ? some(videos[0]) : none;
     }
 
     private async convert(criteria: Criteria): Promise<VideoRead[]> {

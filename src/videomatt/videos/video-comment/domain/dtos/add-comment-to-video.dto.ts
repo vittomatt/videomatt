@@ -1,6 +1,8 @@
-import { DTO } from '@videomatt/shared/domain/dtos/dto';
+import { BaseDTO, DTO } from '@videomatt/shared/domain/dtos/dto';
 
-export class AddCommentToVideoDTO extends DTO {
+export class AddCommentToVideoDTO extends DTO implements BaseDTO {
+    readonly type = 'AddCommentToVideoDTO';
+
     private constructor(
         public readonly id: string,
         public readonly text: string,

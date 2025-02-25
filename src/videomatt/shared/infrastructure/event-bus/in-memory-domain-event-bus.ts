@@ -5,7 +5,7 @@ import { RemoteEventProducer } from '@videomatt/shared/domain/broker/remote-even
 import { LocalEventPublisher } from '@videomatt/shared/domain/broker/local-event.publisher';
 import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 import { DomainEventBus } from '@videomatt/shared/domain/event-bus/domain-event-bus';
-import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain-event';
+import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain.event';
 import { USER_TOKEN } from '@videomatt/users/infrastructure/di/tokens-user';
 import { inject, injectable } from 'tsyringe';
 

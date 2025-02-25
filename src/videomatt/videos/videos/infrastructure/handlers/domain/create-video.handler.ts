@@ -1,20 +1,22 @@
 import { CreateVideoUseCase } from '@videomatt/videos/videos/application/create-video/create-video.use-case';
+import { VideoAlreadyExistsError } from '@videomatt/videos/videos/domain/errors/video-already-exists.error';
 import { VideoCreatedEvent } from '@videomatt/videos/videos/domain/events/video-created.event';
 import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 import { CommandHandler } from '@videomatt/shared/domain/event-bus/command.handler';
-import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain-event';
+import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain.event';
 import { inject, injectable } from 'tsyringe';
+import { Either } from 'fp-ts/lib/Either';
 
 @injectable()
-export class CreateVideoHandler implements CommandHandler {
+export class CreateVideoHandler implements CommandHandler<VideoAlreadyExistsError> {
     constructor(
         @inject(VIDEO_TOKEN.PUBLISH_VIDEO_USE_CASE)
         private readonly useCase: CreateVideoUseCase
     ) {}
 
-    async handle(event: DomainEvent) {
+    async handle(event: DomainEvent): Promise<Either<VideoAlreadyExistsError, void>> {
         const videoEvent = event as VideoCreatedEvent;
-        await this.useCase.execute({
+        return this.useCase.execute({
             id: videoEvent.id,
             title: videoEvent.title,
             description: videoEvent.description,

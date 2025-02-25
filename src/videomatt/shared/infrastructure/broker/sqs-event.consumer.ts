@@ -10,7 +10,7 @@ export class SQSEventConsumer implements RemoteEventConsumer {
         protected readonly sqsClient: SQSClient,
         protected readonly sqsUrl: string,
         protected readonly logger: Logger,
-        protected readonly handler: DomainHandler<void>
+        protected readonly handler?: DomainHandler<void>
     ) {}
 
     async consume() {
@@ -48,7 +48,7 @@ export class SQSEventConsumer implements RemoteEventConsumer {
 
         const parsedBody = JSON.parse(message.Body as string);
         const parsedMessage = JSON.parse(parsedBody.Message as string);
-        await this.handler.handle(parsedMessage.payload);
+        await this.handler?.handle(parsedMessage.payload);
 
         if (message.ReceiptHandle) {
             await this.deleteMessage(this.sqsUrl, message.ReceiptHandle);

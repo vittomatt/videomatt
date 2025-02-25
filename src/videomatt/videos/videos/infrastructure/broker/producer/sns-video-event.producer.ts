@@ -1,6 +1,6 @@
 import { SNSEventProducer } from '@videomatt/shared/infrastructure/broker/sns-event.producer';
 import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
-import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain-event';
+import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain.event';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { Logger } from '@videomatt/shared/domain/logger/logger';
 import { SNSClient } from '@aws-sdk/client-sns';
