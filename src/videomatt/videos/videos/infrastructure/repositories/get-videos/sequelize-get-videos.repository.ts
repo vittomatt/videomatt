@@ -7,6 +7,7 @@ import { Logger } from '@videomatt/shared/domain/logger/logger';
 import { Option, some } from 'fp-ts/lib/Option';
 import { inject, injectable } from 'tsyringe';
 import { QueryTypes } from 'sequelize';
+
 @injectable()
 export class SequelizeGetVideosRepository implements GetVideosRepository<VideoRead[]> {
     constructor(

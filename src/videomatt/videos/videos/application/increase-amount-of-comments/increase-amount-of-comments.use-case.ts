@@ -5,6 +5,7 @@ import { VideoRead } from '@videomatt/videos/videos/domain/models/read/video.rea
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 import { inject, injectable } from 'tsyringe';
 import { fold } from 'fp-ts/lib/Option';
+
 @injectable()
 export class IncreaseAmountOfCommentsUseCase {
     constructor(

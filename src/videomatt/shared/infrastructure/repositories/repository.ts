@@ -1,5 +1,6 @@
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 import { Option } from 'fp-ts/lib/Option';
+
 export interface Repository<T> {
     add(item: T): Promise<void>;
     remove(item: T): Promise<void>;

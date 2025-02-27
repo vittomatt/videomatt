@@ -1,6 +1,7 @@
 import { InMemoryCommandEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-command-event-bus';
 import { AddCommentToVideoDTO } from '@videomatt/videos/video-comment/domain/dtos/add-comment-to-video.dto';
 import { VideoNotFoundError } from '@videomatt/videos/videos/domain/errors/video-not-found.error';
+import { HttpResponse } from '@videomatt/shared/infrastructure/controllers/http-response';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { inject, injectable } from 'tsyringe';
 import { Request, Response } from 'express';
@@ -14,20 +15,24 @@ export class AddCommentToVideoController {
     ) {}
 
     async execute(req: Request, res: Response) {
-        const { commentId, videoId } = req.params;
-        const { text, userId } = req.body;
+        try {
+            const { commentId, videoId } = req.params;
+            const { text, userId } = req.body;
 
-        const event = AddCommentToVideoDTO.create({ id: commentId, text, videoId, userId });
+            const event = AddCommentToVideoDTO.create({ id: commentId, text, videoId, userId });
 
-        const result = await this.eventBus.publish(event);
+            const result = await this.eventBus.publish(event);
 
-        match(
-            (error: VideoNotFoundError) => {
-                res.status(400).send({ error: error.message });
-            },
-            () => {
-                res.status(201).send({ commentId });
-            }
-        )(result);
+            match(
+                (error: VideoNotFoundError) => {
+                    return HttpResponse.domainError(res, error, 400);
+                },
+                () => {
+                    return res.status(201).send({ commentId });
+                }
+            )(result);
+        } catch (error) {
+            return HttpResponse.internalServerError(res);
+        }
     }
 }

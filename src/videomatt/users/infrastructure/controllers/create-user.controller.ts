@@ -1,5 +1,6 @@
 import { InMemoryCommandEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-command-event-bus';
 import { UserAlreadyExistsError } from '@videomatt/users/domain/errors/user-already-exists.error';
+import { HttpResponse } from '@videomatt/shared/infrastructure/controllers/http-response';
 import { CreateUserDTO } from '@videomatt/users/domain/dtos/create-user.dto';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { inject, injectable } from 'tsyringe';
@@ -14,20 +15,24 @@ export class CreateUserController {
     ) {}
 
     async execute(req: Request, res: Response) {
-        const { userId } = req.params;
-        const { firstName, lastName } = req.body;
+        try {
+            const { userId } = req.params;
+            const { firstName, lastName } = req.body;
 
-        const event = CreateUserDTO.create({ id: userId, firstName, lastName });
+            const event = CreateUserDTO.create({ id: userId, firstName, lastName });
 
-        const result = await this.eventBus.publish(event);
+            const result = await this.eventBus.publish(event);
 
-        match(
-            (error: UserAlreadyExistsError) => {
-                res.status(400).send({ error: error.message });
-            },
-            () => {
-                res.status(201).send({ userId });
-            }
-        )(result);
+            match(
+                (error: UserAlreadyExistsError) => {
+                    return HttpResponse.domainError(res, error, 400);
+                },
+                () => {
+                    return res.status(201).send({ userId });
+                }
+            )(result);
+        } catch (error) {
+            return HttpResponse.internalServerError(res);
+        }
     }
 }

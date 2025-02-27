@@ -10,6 +10,7 @@ import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { Either, left, right } from 'fp-ts/lib/Either';
 import { inject, injectable } from 'tsyringe';
 import { fold } from 'fp-ts/lib/Option';
+
 @injectable()
 export class AddCommentToVideoUseCase {
     constructor(

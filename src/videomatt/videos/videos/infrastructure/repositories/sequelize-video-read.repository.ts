@@ -10,6 +10,7 @@ import { Logger } from '@videomatt/shared/domain/logger/logger';
 import { none, some, Option } from 'fp-ts/lib/Option';
 import { inject, injectable } from 'tsyringe';
 import { Sequelize } from 'sequelize';
+
 @injectable()
 export class SequelizeVideoReadRepository implements VideoReadRepository<VideoRead> {
     constructor(
