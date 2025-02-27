@@ -1,7 +1,8 @@
-import { DTO } from '@videomatt/shared/domain/dtos/dto';
+import { BaseQueryDTO, DTO } from '@videomatt/shared/domain/dtos/dto';
 
-// FITU here
-export class GetVideosDTO extends DTO {
+export class GetVideosDTO extends DTO implements BaseQueryDTO {
+    readonly type = 'GetVideosDTO';
+
     constructor(public readonly userId: string) {
         super();
     }

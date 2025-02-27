@@ -9,9 +9,7 @@ import { match } from 'fp-ts/lib/Either';
 
 @injectable()
 export class GetVideosController {
-    constructor(
-        @inject(TOKEN.QUERY_EVENT_BUS) private readonly eventBus: InMemoryQueryEventBus<DomainError, VideoRead[]>
-    ) {}
+    constructor(@inject(TOKEN.QUERY_EVENT_BUS) private readonly eventBus: InMemoryQueryEventBus) {}
 
     async execute(req: Request, res: Response) {
         const userId = req.params.userId;

@@ -6,7 +6,7 @@ import { CreateUserHandler } from '@videomatt/users/infrastructure/handlers/comm
 import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 import { CommandHandler } from '@videomatt/shared/domain/event-bus/command.handler';
 import { USER_TOKEN } from '@videomatt/users/infrastructure/di/tokens-user';
-import { BaseDTO } from '@videomatt/shared/domain/dtos/dto';
+import { BaseCommandDTO } from '@videomatt/shared/domain/dtos/dto';
 import { inject, injectable } from 'tsyringe';
 import { Either } from 'fp-ts/lib/Either';
 
@@ -28,7 +28,7 @@ export class InMemoryCommandEventBus {
         };
     }
 
-    async publish<T extends BaseDTO>(dto: T): Promise<Either<CommandHandlerMapping[T['type']]['error'], void>> {
+    async publish<T extends BaseCommandDTO>(dto: T): Promise<Either<CommandHandlerMapping[T['type']]['error'], void>> {
         const handler = this.handlers[dto.type] as CommandHandler<CommandHandlerMapping[T['type']]['error']>;
         if (!handler) {
             throw new Error('Handler not found');
