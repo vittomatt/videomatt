@@ -4,7 +4,7 @@ import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-v
 import { QueryHandler } from '@videomatt/shared/domain/event-bus/query.handler';
 import { BaseQueryDTO } from '@videomatt/shared/domain/dtos/dto';
 import { inject, injectable } from 'tsyringe';
-import { Either } from 'fp-ts/lib/Either';
+import * as Effect from 'effect/Effect';
 
 @injectable()
 export class InMemoryQueryEventBus {
@@ -21,16 +21,13 @@ export class InMemoryQueryEventBus {
         };
     }
 
-    async publish<T extends BaseQueryDTO>(
+    publish<T extends BaseQueryDTO>(
         dto: T
-    ): Promise<Either<QueryHandlerMapping[T['type']]['error'], QueryHandlerMapping[T['type']]['result']>> {
+    ): Promise<Effect.Effect<QueryHandlerMapping[T['type']]['result'], QueryHandlerMapping[T['type']]['error']>> {
         const handler = this.handlers[dto.type] as QueryHandler<
             QueryHandlerMapping[T['type']]['error'],
             QueryHandlerMapping[T['type']]['result']
         >;
-        if (!handler) {
-            throw new Error('Handler not found');
-        }
-        return await handler.handle(dto);
+        return handler.handle(dto);
     }
 }

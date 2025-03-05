@@ -1,12 +1,11 @@
 import { InMemoryQueryEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-query-event-bus';
 import { HttpResponse } from '@videomatt/shared/infrastructure/controllers/http-response';
-import { VideoRead } from '@videomatt/videos/videos/domain/models/read/video.read';
 import { GetVideosDTO } from '@videomatt/videos/videos/domain/dtos/get-videos.dto';
 import { DomainError } from '@videomatt/shared/domain/errors/domain.error';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { inject, injectable } from 'tsyringe';
 import { Request, Response } from 'express';
-import { match } from 'fp-ts/lib/Either';
+import * as Effect from 'effect/Effect';
 
 @injectable()
 export class GetVideosController {
@@ -15,20 +14,15 @@ export class GetVideosController {
     async execute(req: Request, res: Response) {
         try {
             const userId = req.params.userId;
-
             const event = new GetVideosDTO(userId);
 
-            const result = await this.eventBus.publish(event);
-
-            match(
-                (error: DomainError) => {
-                    return HttpResponse.domainError(res, error, 400);
-                },
-                (videos: VideoRead[]) => {
-                    return res.status(200).json(videos);
-                }
-            )(result);
+            const effect = await this.eventBus.publish(event);
+            const result = await Effect.runPromise(effect);
+            return res.status(200).json(result);
         } catch (error) {
+            if (error instanceof DomainError) {
+                return HttpResponse.domainError(res, error, 400);
+            }
             return HttpResponse.internalServerError(res);
         }
     }

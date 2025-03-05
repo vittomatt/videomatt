@@ -1,7 +1,7 @@
 import { BaseCommandDTO, DTO } from '@videomatt/shared/domain/dtos/dto';
 
 export class CreateUserDTO extends DTO implements BaseCommandDTO {
-    readonly type = 'CreateUserDTO';
+    public readonly type = 'CreateUserDTO';
 
     private constructor(
         public readonly id: string,

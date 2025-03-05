@@ -1,4 +1,5 @@
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
+import * as OptionEffect from 'effect/Option';
 import { Option } from 'fp-ts/lib/Option';
 
 export interface Repository<T> {
@@ -10,5 +11,5 @@ export interface Repository<T> {
 }
 
 export interface RawRepository<T> {
-    raw(id: string): Promise<Option<T>>;
+    raw(id: string): Promise<OptionEffect.Option<T>>;
 }

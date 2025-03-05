@@ -4,8 +4,8 @@ import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/sequeli
 import { VideoRead } from '@videomatt/videos/videos/domain/models/read/video.read';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { Logger } from '@videomatt/shared/domain/logger/logger';
-import { Option, some } from 'fp-ts/lib/Option';
 import { inject, injectable } from 'tsyringe';
+import * as Option from 'effect/Option';
 import { QueryTypes } from 'sequelize';
 
 @injectable()
@@ -17,7 +17,7 @@ export class SequelizeGetVideosRepository implements GetVideosRepository<VideoRe
 
     query = `SELECT * FROM videos_reads WHERE "userId" = :userId`;
 
-    async raw(id: string): Promise<Option<VideoRead[]>> {
+    async raw(id: string): Promise<Option.Option<VideoRead[]>> {
         try {
             const results = await this.db.getDB().query<VideoDBModelRead>(this.query, {
                 type: QueryTypes.SELECT,
@@ -34,10 +34,10 @@ export class SequelizeGetVideosRepository implements GetVideosRepository<VideoRe
                         result.userId
                     )
             );
-            return some(videos);
+            return Option.some(videos);
         } catch (error) {
             this.logger.error(`Error searching for videos: ${error}`);
-            return some([]);
+            return Option.some([]);
         }
     }
 }

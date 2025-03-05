@@ -1,8 +1,12 @@
-import { AddCommentToVideoParamValidatorDto } from '@videomatt/videos/video-comment/infrastructure/controllers/add-comment-to-video/add-comment-to-video.validator';
-import { AddCommentToVideoBodyValidatorDto } from '@videomatt/videos/video-comment/infrastructure/controllers/add-comment-to-video/add-comment-to-video.validator';
+import {
+    AddCommentToVideoParamValidatorDto,
+    AddCommentToVideoBodyValidatorDto,
+} from '@videomatt/videos/video-comment/infrastructure/controllers/add-comment-to-video/add-comment-to-video.validator';
+import {
+    CreateVideoParamValidatorDto,
+    CreateVideoBodyValidatorDto,
+} from '@videomatt/videos/videos/infrastructure/controllers/create-video/create-video.validator';
 import { AddCommentToVideoController } from '@videomatt/videos/video-comment/infrastructure/controllers/add-comment-to-video/add-comment-to-video.controller';
-import { CreateVideoParamValidatorDto } from '@videomatt/videos/videos/infrastructure/controllers/create-video/create-video.validator';
-import { CreateVideoBodyValidatorDto } from '@videomatt/videos/videos/infrastructure/controllers/create-video/create-video.validator';
 import { CreateVideoController } from '@videomatt/videos/videos/infrastructure/controllers/create-video/create-video.controller';
 import { GetVideosParamValidatorDto } from '@videomatt/videos/videos/infrastructure/controllers/get-videos/get-videos.validator';
 import { GetVideosController } from '@videomatt/videos/videos/infrastructure/controllers/get-videos/get-videos.controller';
@@ -26,19 +30,25 @@ export class VideoRoutes {
         app.get(
             '/api/videos/:userId',
             validateDto(GetVideosParamValidatorDto, 'params'),
-            expressAsyncHandler(this.getVideosController.execute.bind(this.getVideosController))
+            expressAsyncHandler(async (req, res, next) => {
+                await this.getVideosController.execute(req, res);
+            })
         );
         app.put(
             '/api/videos/:videoId',
             validateDto(CreateVideoParamValidatorDto, 'params'),
             validateDto(CreateVideoBodyValidatorDto, 'body'),
-            expressAsyncHandler(this.createVideoController.execute.bind(this.createVideoController))
+            expressAsyncHandler(async (req, res, next) => {
+                await this.createVideoController.execute(req, res);
+            })
         );
         app.post(
             '/api/videos/:videoId/comments/:commentId',
             validateDto(AddCommentToVideoParamValidatorDto, 'params'),
             validateDto(AddCommentToVideoBodyValidatorDto, 'body'),
-            expressAsyncHandler(this.addCommentToVideoController.execute.bind(this.addCommentToVideoController))
+            expressAsyncHandler(async (req, res, next) => {
+                await this.addCommentToVideoController.execute(req, res);
+            })
         );
     }
 }

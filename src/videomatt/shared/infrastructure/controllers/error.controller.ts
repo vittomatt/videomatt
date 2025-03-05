@@ -4,8 +4,8 @@ import { injectable } from 'tsyringe';
 
 @injectable()
 export class ErrorController {
-    async execute(err: Error, req: Request, res: Response, next: NextFunction) {
+    async execute(err: Error, req: Request, res: Response, next: NextFunction): Promise<void> {
         console.error(err.stack);
-        return HttpResponse.internalServerError(res);
+        HttpResponse.internalServerError(res);
     }
 }

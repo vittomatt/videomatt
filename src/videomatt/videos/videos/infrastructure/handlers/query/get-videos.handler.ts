@@ -6,7 +6,7 @@ import { QueryHandler } from '@videomatt/shared/domain/event-bus/query.handler';
 import { DomainError } from '@videomatt/shared/domain/errors/domain.error';
 import { DTO } from '@videomatt/shared/domain/dtos/dto';
 import { inject, injectable } from 'tsyringe';
-import { Either } from 'fp-ts/lib/Either';
+import * as Effect from 'effect/Effect';
 
 @injectable()
 export class GetVideosHandler implements QueryHandler<DomainError, VideoRead[]> {
@@ -15,7 +15,7 @@ export class GetVideosHandler implements QueryHandler<DomainError, VideoRead[]> 
         private readonly useCase: GetVideosUseCase
     ) {}
 
-    async handle(dto: DTO): Promise<Either<DomainError, VideoRead[]>> {
+    handle(dto: DTO): Promise<Effect.Effect<VideoRead[], DomainError>> {
         const videoEvent = dto as GetVideosDTO;
         return this.useCase.execute(videoEvent.userId);
     }

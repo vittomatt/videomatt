@@ -18,7 +18,9 @@ export class UserRoutes {
             '/api/users/:userId',
             validateDto(CreateUserParamValidatorDto, 'params'),
             validateDto(CreateUserBodyValidatorDto, 'body'),
-            asyncHandler(this.controller.execute.bind(this.controller))
+            asyncHandler(async (req, res, next) => {
+                await this.controller.execute(req, res);
+            })
         );
     }
 }
