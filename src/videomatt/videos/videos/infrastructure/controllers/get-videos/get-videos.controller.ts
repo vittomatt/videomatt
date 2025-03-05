@@ -16,8 +16,8 @@ export class GetVideosController {
             const userId = req.params.userId;
             const event = new GetVideosDTO(userId);
 
-            const effect = await this.eventBus.publish(event);
-            const result = await Effect.runPromise(effect);
+            const program = await this.eventBus.publish(event);
+            const result = await Effect.runPromise(program);
             return res.status(200).json(result);
         } catch (error) {
             if (error instanceof DomainError) {

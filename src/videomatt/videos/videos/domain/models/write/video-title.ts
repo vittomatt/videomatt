@@ -1,3 +1,4 @@
+import { EmptyTextError } from '@videomatt/shared/domain/errors/empty-text.error';
 import { BaseValueObject } from '@videomatt/shared/domain/value-object';
 
 export class VideoTitle extends BaseValueObject {
@@ -8,7 +9,7 @@ export class VideoTitle extends BaseValueObject {
 
     private ensureNotEmpty(value: string) {
         if (!value?.length) {
-            throw new Error('Video title cannot be empty');
+            throw new EmptyTextError('Video title');
         }
     }
 }

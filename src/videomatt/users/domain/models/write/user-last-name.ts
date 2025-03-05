@@ -1,3 +1,4 @@
+import { EmptyTextError } from '@videomatt/shared/domain/errors/empty-text.error';
 import { BaseValueObject } from '@videomatt/shared/domain/value-object';
 
 export class UserLastName extends BaseValueObject {
@@ -8,7 +9,7 @@ export class UserLastName extends BaseValueObject {
 
     private ensureNotEmpty(value: string) {
         if (!value?.length) {
-            throw new Error('User last name cannot be empty');
+            throw new EmptyTextError('Last name');
         }
     }
 }

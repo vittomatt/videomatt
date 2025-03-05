@@ -1,3 +1,4 @@
+import { InvalidURLFormatError } from '@videomatt/videos/videos/domain/errors/invalid-url.error';
 import { BaseValueObject } from '@videomatt/shared/domain/value-object';
 
 export class VideoURL extends BaseValueObject {
@@ -10,7 +11,7 @@ export class VideoURL extends BaseValueObject {
         try {
             new URL(value);
         } catch (_) {
-            throw new Error('Invalid URL format');
+            throw new InvalidURLFormatError();
         }
     }
 }
