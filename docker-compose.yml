@@ -9,6 +9,7 @@ services:
             - '3000:3000'
         environment:
             - DB_HOST=db
+            - REDIS_HOST=redis
         env_file:
             - .env
         volumes:
