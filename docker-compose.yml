@@ -20,23 +20,6 @@ services:
                 condition: service_healthy
         networks:
             - videonet
-    worker:
-        build:
-            context: .
-            dockerfile: docker/Dockerfile.worker
-        environment:
-            - DB_HOST=db
-        env_file:
-            - .env
-        volumes:
-            - .:/app
-            - /app/node_modules
-            - /app/dist
-        depends_on:
-            db:
-                condition: service_healthy
-        networks:
-            - videonet
     db:
         image: postgres:15-alpine
         container_name: postgres
