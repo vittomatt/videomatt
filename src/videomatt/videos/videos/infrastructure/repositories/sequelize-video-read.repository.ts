@@ -64,9 +64,9 @@ export class SequelizeVideoReadRepository implements VideoReadRepository<VideoRe
         }
     }
 
-    async searchById(criteria: Criteria): Promise<VideoRead> {
-        const videos = await this.search(criteria);
-        return videos[0];
+    async searchById(id: string): Promise<VideoRead | null> {
+        const video = await this.dbVideoRead.findByPk(id);
+        return video ? VideoRead.fromPrimitives(video) : null;
     }
 
     private async convert(criteria: Criteria): Promise<VideoRead[]> {

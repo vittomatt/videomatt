@@ -1,10 +1,8 @@
 import { VideoAlreadyExistsError } from '@videomatt/videos/videos/domain/errors/video-already-exists.error';
 import { VideoRepository } from '@videomatt/videos/videos/domain/repositories/video.repository';
-import { FilterOperator, Filters } from '@videomatt/shared/domain/repositories/filters';
 import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 import { DomainEventBus } from '@videomatt/shared/domain/event-bus/domain-event-bus';
 import { Video } from '@videomatt/videos/videos/domain/models/write/video';
-import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { inject, injectable } from 'tsyringe';
 
@@ -28,9 +26,7 @@ export class CreateVideoUseCase {
         url: string;
         userId: string;
     }): Promise<VideoAlreadyExistsError | void> {
-        const criteria = Criteria.create().addFilter(Filters.create('id', FilterOperator.EQUALS, id));
-        const video = await this.repository.searchById(criteria);
-
+        const video = await this.repository.searchById(id);
         if (video) {
             return new VideoAlreadyExistsError();
         }

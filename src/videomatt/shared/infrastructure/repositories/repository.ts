@@ -5,7 +5,7 @@ export interface Repository<T> {
     remove(item: T): Promise<void>;
     update(item: T): Promise<void>;
     search(criteria: Criteria): Promise<T[]>;
-    searchById(criteria: Criteria): Promise<T>;
+    searchById(id: string): Promise<T | null>;
 }
 
 export interface RawRepository<T> {

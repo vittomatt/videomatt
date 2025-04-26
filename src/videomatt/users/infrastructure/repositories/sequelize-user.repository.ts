@@ -52,9 +52,9 @@ export class SequelizeUserRepository implements UserRepository<User> {
         }
     }
 
-    async searchById(criteria: Criteria): Promise<User> {
-        const users = await this.search(criteria);
-        return users[0];
+    async searchById(id: string): Promise<User | null> {
+        const user = await this.dbUser.findByPk(id);
+        return user ? User.fromPrimitives(user) : null;
     }
 
     private async convert(criteria: Criteria): Promise<User[]> {

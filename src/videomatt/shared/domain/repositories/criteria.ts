@@ -14,27 +14,27 @@ export class Criteria {
         return new Criteria();
     }
 
-    addFilter(filter: Filters): Criteria {
+    addFilter(filter: Filters): this {
         this.filters.push(filter);
         return this;
     }
 
-    setOrder(order: Order): Criteria {
+    setOrder(order: Order): this {
         this.order = order;
         return this;
     }
 
-    setOffset(offset: number): Criteria {
+    setOffset(offset: number): this {
         this.offset = offset;
         return this;
     }
 
-    setLimit(limit: number): Criteria {
+    setLimit(limit: number): this {
         this.limit = limit;
         return this;
     }
 
-    setInclude(include: string[]): Criteria {
+    setInclude(include: string[]): this {
         this.include = include;
         return this;
     }

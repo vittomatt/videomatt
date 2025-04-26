@@ -25,8 +25,7 @@ export class CreateVideoReadUseCase {
         userId: string;
     }) {
         const criteria = Criteria.create().addFilter(Filters.create('id', FilterOperator.EQUALS, id));
-        const videoRead = await this.repository.searchById(criteria);
-
+        const videoRead = await this.repository.search(criteria);
         if (videoRead) {
             return;
         }

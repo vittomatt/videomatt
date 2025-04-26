@@ -1,8 +1,6 @@
 import { VideoReadRepository } from '@videomatt/videos/videos/domain/repositories/video-read.repository';
-import { FilterOperator, Filters } from '@videomatt/shared/domain/repositories/filters';
 import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 import { VideoRead } from '@videomatt/videos/videos/domain/models/read/video.read';
-import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 import { inject, injectable } from 'tsyringe';
 
 @injectable()
@@ -17,14 +15,11 @@ export class IncreaseAmountOfCommentsUseCase {
             return;
         }
 
-        const criteria = Criteria.create().addFilter(Filters.create('id', FilterOperator.EQUALS, videoId));
-        const videoOption = await this.repository.searchById(criteria);
-
-        if (!videoOption) {
+        const video = await this.repository.searchById(videoId);
+        if (!video) {
             throw new Error('Video not found');
         }
 
-        const video = videoOption;
         video.increaseAmountOfComments();
         await this.repository.update(video);
         await this.repository.save(commentId);

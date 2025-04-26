@@ -1,9 +1,7 @@
 import { UserAlreadyExistsError } from '@videomatt/users/domain/errors/user-already-exists.error';
-import { FilterOperator, Filters } from '@videomatt/shared/domain/repositories/filters';
 import { UserRepository } from '@videomatt/users/domain/repositories/user.repository';
 import { DomainEventBus } from '@videomatt/shared/domain/event-bus/domain-event-bus';
 import { USER_TOKEN } from '@videomatt/users/infrastructure/di/tokens-user';
-import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { User } from '@videomatt/users/domain/models/write/user';
 import { inject, injectable } from 'tsyringe';
@@ -24,8 +22,7 @@ export class CreateUserUseCase {
         firstName: string;
         lastName: string;
     }): Promise<UserAlreadyExistsError | void> {
-        const criteria = Criteria.create().addFilter(Filters.create('id', FilterOperator.EQUALS, id));
-        const user = await this.repository.searchById(criteria);
+        const user = await this.repository.searchById(id);
 
         if (user) {
             return new UserAlreadyExistsError();

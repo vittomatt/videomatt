@@ -1,10 +1,8 @@
 import { VideoRepository } from '@videomatt/videos/videos/domain/repositories/video.repository';
-import { FilterOperator, Filters } from '@videomatt/shared/domain/repositories/filters';
 import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 import { UserRepository } from '@videomatt/users/domain/repositories/user.repository';
 import { USER_TOKEN } from '@videomatt/users/infrastructure/di/tokens-user';
 import { Video } from '@videomatt/videos/videos/domain/models/write/video';
-import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 import { User } from '@videomatt/users/domain/models/write/user';
 import { inject, injectable } from 'tsyringe';
 
@@ -16,20 +14,19 @@ export class IncreaseAmountOfVideosUseCase {
     ) {}
 
     async execute(userId: string, videoId: string) {
-        const videoExists = await this.videoRepository.check(videoId);
-        if (videoExists) {
+        const video = await this.videoRepository.searchById(videoId);
+        if (video) {
             return;
         }
 
-        const criteria = Criteria.create().addFilter(Filters.create('id', FilterOperator.EQUALS, userId));
-        const users = await this.userRepository.search(criteria);
-        if (!users.length) {
+        const user = await this.userRepository.searchById(userId);
+        if (!user) {
             throw new Error('User not found');
         }
 
-        const user = users[0];
         user.increaseAmountOfVideos();
         await this.userRepository.update(user);
-        await this.videoRepository.save(videoId);
+
+        // await this.videoRepository.add(video);  FITU HERE
     }
 }

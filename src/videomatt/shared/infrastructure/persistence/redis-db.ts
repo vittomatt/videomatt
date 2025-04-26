@@ -45,6 +45,15 @@ export class RedisDB {
         }
     }
 
+    public async deleteValue(key: string): Promise<void> {
+        try {
+            await this.client.del(key);
+            console.log(`✅ Key ${key} deleted successfully`);
+        } catch (error) {
+            console.error('❌ Error deleting value in Redis:', error);
+        }
+    }
+
     public async disconnect() {
         try {
             await this.client.disconnect();
