@@ -5,7 +5,6 @@ import { CreateUserDTO } from '@videomatt/users/domain/dtos/create-user.dto';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { inject, injectable } from 'tsyringe';
 import { Request, Response } from 'express';
-import { match } from 'fp-ts/lib/Either';
 
 @injectable()
 export class CreateUserController {
@@ -23,14 +22,11 @@ export class CreateUserController {
 
             const result = await this.eventBus.publish(event);
 
-            match(
-                (error: UserAlreadyExistsError) => {
-                    return HttpResponse.domainError(res, error, 400);
-                },
-                () => {
-                    return res.status(201).send({ userId });
-                }
-            )(result);
+            if (result instanceof UserAlreadyExistsError) {
+                return HttpResponse.domainError(res, result, 400);
+            }
+
+            return res.status(201).send({ userId });
         } catch (error) {
             return HttpResponse.internalServerError(res);
         }

@@ -9,7 +9,6 @@ import { Video } from '@videomatt/videos/videos/domain/models/write/video';
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { Logger } from '@videomatt/shared/domain/logger/logger';
-import { Option, none, some } from 'fp-ts/lib/Option';
 import { inject, injectable } from 'tsyringe';
 
 @injectable()
@@ -71,9 +70,9 @@ export class SequelizeVideoRepository implements VideoRepository<Video> {
         }
     }
 
-    async searchById(criteria: Criteria): Promise<Option<Video>> {
+    async searchById(criteria: Criteria): Promise<Video> {
         const videos = await this.search(criteria);
-        return videos.length ? some(videos[0]) : none;
+        return videos[0];
     }
 
     private async convert(criteria: Criteria): Promise<Video[]> {

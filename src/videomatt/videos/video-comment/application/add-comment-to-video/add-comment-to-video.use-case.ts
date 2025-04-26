@@ -7,9 +7,7 @@ import { DomainEventBus } from '@videomatt/shared/domain/event-bus/domain-event-
 import { Video } from '@videomatt/videos/videos/domain/models/write/video';
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
-import { Either, left, right } from 'fp-ts/lib/Either';
 import { inject, injectable } from 'tsyringe';
-import { fold } from 'fp-ts/lib/Option';
 
 @injectable()
 export class AddCommentToVideoUseCase {
@@ -28,25 +26,24 @@ export class AddCommentToVideoUseCase {
         text: string;
         videoId: string;
         userId: string;
-    }): Promise<Either<VideoNotFoundError, void>> {
+    }): Promise<VideoNotFoundError | void> {
         const commentExists = await this.repository.check(id);
         if (commentExists) {
-            return right(undefined);
+            return undefined;
         }
 
         const videoCriteria = Criteria.create().addFilter(Filters.create('id', FilterOperator.EQUALS, videoId));
         const videoOption = await this.repository.searchById(videoCriteria);
 
-        return fold<Video, Promise<Either<VideoNotFoundError, void>>>(
-            async () => left(new VideoNotFoundError()),
-            async (video: Video) => {
-                const newComment = VideoComment.create({ id, text, userId, videoId });
-                video.addComment(newComment);
+        if (!videoOption) {
+            return new VideoNotFoundError();
+        }
 
-                await this.repository.update(video);
-                await this.eventBus.publish(video.pullDomainEvents());
-                return right(undefined);
-            }
-        )(videoOption);
+        const video = videoOption;
+        const newComment = VideoComment.create({ id, text, userId, videoId });
+        video.addComment(newComment);
+
+        await this.repository.update(video);
+        await this.eventBus.publish(video.pullDomainEvents());
     }
 }

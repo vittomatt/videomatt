@@ -5,7 +5,6 @@ import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-v
 import { CommandHandler } from '@videomatt/shared/domain/event-bus/command.handler';
 import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain.event';
 import { inject, injectable } from 'tsyringe';
-import { Either } from 'fp-ts/lib/Either';
 
 @injectable()
 export class CreateVideoHandler implements CommandHandler<VideoAlreadyExistsError> {
@@ -14,7 +13,7 @@ export class CreateVideoHandler implements CommandHandler<VideoAlreadyExistsErro
         private readonly useCase: CreateVideoUseCase
     ) {}
 
-    async handle(event: DomainEvent): Promise<Either<VideoAlreadyExistsError, void>> {
+    async handle(event: DomainEvent): Promise<VideoAlreadyExistsError | void> {
         const videoEvent = event as VideoCreatedEvent;
         return this.useCase.execute({
             id: videoEvent.id,

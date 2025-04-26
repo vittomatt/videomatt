@@ -5,7 +5,6 @@ import { HttpResponse } from '@videomatt/shared/infrastructure/controllers/http-
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { inject, injectable } from 'tsyringe';
 import { Request, Response } from 'express';
-import { match } from 'fp-ts/lib/Either';
 
 @injectable()
 export class AddCommentToVideoController {
@@ -23,14 +22,11 @@ export class AddCommentToVideoController {
 
             const result = await this.eventBus.publish(event);
 
-            match(
-                (error: VideoNotFoundError) => {
-                    return HttpResponse.domainError(res, error, 400);
-                },
-                () => {
-                    return res.status(201).send({ commentId });
-                }
-            )(result);
+            if (result instanceof VideoNotFoundError) {
+                return HttpResponse.domainError(res, result, 400);
+            }
+
+            return res.status(201).send({ commentId });
         } catch (error) {
             return HttpResponse.internalServerError(res);
         }

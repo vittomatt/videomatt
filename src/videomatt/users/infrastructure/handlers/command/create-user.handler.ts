@@ -5,7 +5,6 @@ import { CommandHandler } from '@videomatt/shared/domain/event-bus/command.handl
 import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain.event';
 import { USER_TOKEN } from '@videomatt/users/infrastructure/di/tokens-user';
 import { inject, injectable } from 'tsyringe';
-import { Either } from 'fp-ts/lib/Either';
 
 @injectable()
 export class CreateUserHandler implements CommandHandler<UserAlreadyExistsError> {
@@ -14,7 +13,7 @@ export class CreateUserHandler implements CommandHandler<UserAlreadyExistsError>
         private readonly useCase: CreateUserUseCase
     ) {}
 
-    async handle(event: DomainEvent): Promise<Either<UserAlreadyExistsError, void>> {
+    async handle(event: DomainEvent): Promise<UserAlreadyExistsError | void> {
         const userEvent = event as UserCreatedEvent;
         return this.useCase.execute({
             id: userEvent.id,

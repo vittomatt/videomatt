@@ -5,7 +5,6 @@ import { VideoNotFoundError } from '@videomatt/videos/videos/domain/errors/video
 import { CommandHandler } from '@videomatt/shared/domain/event-bus/command.handler';
 import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain.event';
 import { inject, injectable } from 'tsyringe';
-import { Either } from 'fp-ts/lib/Either';
 
 @injectable()
 export class AddCommentToVideoHandler implements CommandHandler<VideoNotFoundError> {
@@ -14,7 +13,7 @@ export class AddCommentToVideoHandler implements CommandHandler<VideoNotFoundErr
         private readonly useCase: AddCommentToVideoUseCase
     ) {}
 
-    async handle(event: DomainEvent): Promise<Either<VideoNotFoundError, void>> {
+    async handle(event: DomainEvent): Promise<VideoNotFoundError | void> {
         const videoCommentEvent = event as VideoCommentAddedEvent;
         return this.useCase.execute({
             id: videoCommentEvent.id,

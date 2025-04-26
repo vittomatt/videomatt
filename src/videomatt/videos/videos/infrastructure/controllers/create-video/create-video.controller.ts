@@ -5,7 +5,6 @@ import { CreateVideoDTO } from '@videomatt/videos/videos/domain/dtos/create-vide
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { inject, injectable } from 'tsyringe';
 import { Request, Response } from 'express';
-import { match } from 'fp-ts/lib/Either';
 
 @injectable()
 export class CreateVideoController {
@@ -22,14 +21,11 @@ export class CreateVideoController {
             const event = CreateVideoDTO.create({ id: videoId, title, description, url, userId });
             const result = await this.eventBus.publish(event);
 
-            match(
-                (error: VideoAlreadyExistsError) => {
-                    return HttpResponse.domainError(res, error, 400);
-                },
-                () => {
-                    return res.status(201).send({ videoId });
-                }
-            )(result);
+            if (result instanceof VideoAlreadyExistsError) {
+                return HttpResponse.domainError(res, result, 400);
+            }
+
+            return res.status(201).send({ videoId });
         } catch (error) {
             return HttpResponse.internalServerError(res);
         }

@@ -5,7 +5,6 @@ import { DomainError } from '@videomatt/shared/domain/errors/domain.error';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { inject, injectable } from 'tsyringe';
 import { Request, Response } from 'express';
-import * as Effect from 'effect/Effect';
 
 @injectable()
 export class GetVideosController {
@@ -16,8 +15,7 @@ export class GetVideosController {
             const userId = req.params.userId;
             const event = new GetVideosDTO(userId);
 
-            const program = await this.eventBus.publish(event);
-            const result = await Effect.runPromise(program);
+            const result = await this.eventBus.publish(event);
             return res.status(200).json(result);
         } catch (error) {
             if (error instanceof DomainError) {

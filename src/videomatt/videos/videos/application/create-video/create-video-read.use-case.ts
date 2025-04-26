@@ -4,7 +4,6 @@ import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-v
 import { VideoRead } from '@videomatt/videos/videos/domain/models/read/video.read';
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 import { inject, injectable } from 'tsyringe';
-import { fold } from 'fp-ts/lib/Option';
 
 @injectable()
 export class CreateVideoReadUseCase {
@@ -28,12 +27,11 @@ export class CreateVideoReadUseCase {
         const criteria = Criteria.create().addFilter(Filters.create('id', FilterOperator.EQUALS, id));
         const videoRead = await this.repository.searchById(criteria);
 
-        fold(
-            async () => {
-                const newVideoRead = VideoRead.create({ id, title, description, url, userId });
-                await this.repository.add(newVideoRead);
-            },
-            async (_) => {}
-        )(videoRead);
+        if (videoRead) {
+            return;
+        }
+
+        const newVideoRead = VideoRead.create({ id, title, description, url, userId });
+        await this.repository.add(newVideoRead);
     }
 }

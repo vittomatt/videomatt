@@ -4,7 +4,6 @@ import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-v
 import { QueryHandler } from '@videomatt/shared/domain/event-bus/query.handler';
 import { BaseQueryDTO } from '@videomatt/shared/domain/dtos/dto';
 import { inject, injectable } from 'tsyringe';
-import * as Effect from 'effect/Effect';
 
 @injectable()
 export class InMemoryQueryEventBus {
@@ -23,7 +22,7 @@ export class InMemoryQueryEventBus {
 
     publish<T extends BaseQueryDTO>(
         dto: T
-    ): Promise<Effect.Effect<QueryHandlerMapping[T['type']]['result'], QueryHandlerMapping[T['type']]['error']>> {
+    ): Promise<QueryHandlerMapping[T['type']]['result'] | QueryHandlerMapping[T['type']]['error']> {
         const handler = this.handlers[dto.type] as QueryHandler<
             QueryHandlerMapping[T['type']]['error'],
             QueryHandlerMapping[T['type']]['result']
