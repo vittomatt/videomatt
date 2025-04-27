@@ -26,7 +26,5 @@ export class IncreaseAmountOfVideosUseCase {
 
         user.increaseAmountOfVideos();
         await this.userRepository.update(user);
-
-        // await this.videoRepository.add(video);  FITU HERE
     }
 }

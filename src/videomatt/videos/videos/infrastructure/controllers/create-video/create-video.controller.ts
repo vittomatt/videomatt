@@ -1,4 +1,4 @@
-import { InMemoryCommandEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-command-event-bus';
+import { InMemoryCommandEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-command.event-bus';
 import { VideoAlreadyExistsError } from '@videomatt/videos/videos/domain/errors/video-already-exists.error';
 import { HttpResponse } from '@videomatt/shared/infrastructure/controllers/http-response';
 import { CreateVideoDTO } from '@videomatt/videos/videos/domain/dtos/create-video.dto';

@@ -18,6 +18,7 @@ import { CreateVideoUseCase } from '@videomatt/videos/videos/application/create-
 import { GetVideosUseCase } from '@videomatt/videos/videos/application/get-videos/get-videos.use-case';
 import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/sequelize-db';
 import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
+import { RedisVideoRepository } from '../repositories/redis-video.repository';
 import { getEnvs } from '@videomatt/shared/infrastructure/envs/init-envs';
 import { container } from 'tsyringe';
 
@@ -99,6 +100,9 @@ export class DIVideos {
 
     private initRepositoriesDependencies() {
         container.register(VIDEO_TOKEN.REPOSITORY, {
+            useClass: RedisVideoRepository,
+        });
+        container.register(VIDEO_TOKEN.DB_REPOSITORY, {
             useClass: SequelizeVideoRepository,
         });
         container.register(VIDEO_TOKEN.GET_VIDEOS_REPOSITORY, {

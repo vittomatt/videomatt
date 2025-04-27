@@ -14,7 +14,7 @@ import { inject, injectable } from 'tsyringe';
 export class RedisVideoRepository implements VideoRepository<Video> {
     constructor(
         @inject(TOKEN.REDIS) private readonly redis: RedisDB,
-        @inject(VIDEO_TOKEN.REPOSITORY) private readonly videoRepository: SequelizeVideoRepository,
+        @inject(VIDEO_TOKEN.DB_REPOSITORY) private readonly videoRepository: SequelizeVideoRepository,
         @inject(VIDEO_COMMENT_TOKENS.DB_MODEL) private readonly dbVideoComment: typeof VideoCommentDBModel,
         @inject(TOKEN.LOGGER) private readonly logger: Logger
     ) {}

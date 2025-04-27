@@ -18,15 +18,6 @@ export class SequelizeVideoReadRepository implements VideoReadRepository<VideoRe
         @inject(TOKEN.REDIS) private readonly redis: RedisDB
     ) {}
 
-    async check(id: string): Promise<boolean> {
-        const value = await this.redis.getValue(id);
-        return value !== null;
-    }
-
-    async save(id: string): Promise<void> {
-        await this.redis.setValue(id, '1');
-    }
-
     async add(video: VideoRead) {
         try {
             const videoPrimitives = {

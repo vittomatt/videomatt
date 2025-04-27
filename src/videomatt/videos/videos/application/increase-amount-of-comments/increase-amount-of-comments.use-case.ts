@@ -10,7 +10,7 @@ export class IncreaseAmountOfCommentsUseCase {
     ) {}
 
     async execute(videoId: string, commentId: string) {
-        const commentExists = await this.repository.check(commentId);
+        const commentExists = await this.repository.searchById(commentId);
         if (commentExists) {
             return;
         }
@@ -22,6 +22,5 @@ export class IncreaseAmountOfCommentsUseCase {
 
         video.increaseAmountOfComments();
         await this.repository.update(video);
-        await this.repository.save(commentId);
     }
 }

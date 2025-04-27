@@ -1,4 +1,4 @@
-import { InMemoryCommandEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-command-event-bus';
+import { InMemoryCommandEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-command.event-bus';
 import { AddCommentToVideoDTO } from '@videomatt/videos/video-comment/domain/dtos/add-comment-to-video.dto';
 import { VideoNotFoundError } from '@videomatt/videos/videos/domain/errors/video-not-found.error';
 import { HttpResponse } from '@videomatt/shared/infrastructure/controllers/http-response';

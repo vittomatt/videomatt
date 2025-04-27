@@ -1,4 +1,4 @@
-import { InMemoryQueryEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-query-event-bus';
+import { InMemoryQueryEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-query.event-bus';
 import { HttpResponse } from '@videomatt/shared/infrastructure/controllers/http-response';
 import { GetVideosDTO } from '@videomatt/videos/videos/domain/dtos/get-videos.dto';
 import { DomainError } from '@videomatt/shared/domain/errors/domain.error';

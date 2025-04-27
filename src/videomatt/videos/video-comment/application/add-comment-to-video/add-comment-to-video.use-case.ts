@@ -27,7 +27,7 @@ export class AddCommentToVideoUseCase {
     }): Promise<VideoNotFoundError | void> {
         const commentExists = await this.repository.searchById(id);
         if (commentExists) {
-            return undefined;
+            return;
         }
 
         const video = await this.repository.searchById(videoId);

@@ -77,14 +77,14 @@ export class SequelizeCriteriaConverter {
 
     private buildSequelizeOrder(): SequelizeOrder | undefined {
         if (!this.order || this.order.isNone()) {
-            return undefined;
+            return;
         }
 
         const orderBy = this.order.orderBy;
         const orderType = this.order.orderType;
 
         if (!orderBy || orderType === OrderType.NONE) {
-            return undefined;
+            return;
         }
 
         return [[orderBy, orderType]];
@@ -92,7 +92,7 @@ export class SequelizeCriteriaConverter {
 
     private buildSequelizeInclude(): Includes[] | undefined {
         if (!this.include) {
-            return undefined;
+            return;
         }
 
         const allIncludes: Includes[] = [];
