@@ -12,13 +12,13 @@ import { CreateVideoReadHandler } from '@videomatt/videos/videos/infrastructure/
 import { SequelizeVideoRepository } from '@videomatt/videos/videos/infrastructure/repositories/sequelize-video.repository';
 import { SNSVideoEventProducer } from '@videomatt/videos/videos/infrastructure/broker/producer/sns-video-event.producer';
 import { CreateVideoReadUseCase } from '@videomatt/videos/videos/application/create-video/create-video-read.use-case';
+import { RedisVideoRepository } from '@videomatt/videos/videos/infrastructure/repositories/redis-video.repository';
 import { CreateVideoHandler } from '@videomatt/videos/videos/infrastructure/handlers/domain/create-video.handler';
 import { GetVideosHandler } from '@videomatt/videos/videos/infrastructure/handlers/query/get-videos.handler';
 import { CreateVideoUseCase } from '@videomatt/videos/videos/application/create-video/create-video.use-case';
 import { GetVideosUseCase } from '@videomatt/videos/videos/application/get-videos/get-videos.use-case';
 import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/sequelize-db';
 import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
-import { RedisVideoRepository } from '../repositories/redis-video.repository';
 import { getEnvs } from '@videomatt/shared/infrastructure/envs/init-envs';
 import { container } from 'tsyringe';
 
@@ -32,6 +32,15 @@ export class DIVideos {
         this.initRepositoriesDependencies();
         this.initBrokerDependencies();
         this.initHandlersDependencies();
+    }
+
+    public initSingletons() {
+        container.resolve(VIDEO_TOKEN.IN_MEMORY_EVENT_PUBLISHER);
+        container.resolve(VIDEO_TOKEN.SNS_EVENT_PRODUCER);
+        container.resolve(VIDEO_TOKEN.CREATE_VIDEO_HANDLER);
+        container.resolve(VIDEO_TOKEN.IN_MEMORY_EVENT_VIDEO_CREATED_SUBSCRIBER);
+        container.resolve(VIDEO_TOKEN.IN_MEMORY_EVENT_COMMENT_ADDED_SUBSCRIBER);
+        container.resolve(VIDEO_TOKEN.GET_VIDEOS_HANDLER);
     }
 
     private initDBDependencies() {
@@ -75,9 +84,7 @@ export class DIVideos {
         container.register(VIDEO_TOKEN.SNS_EVENT_PRODUCER, {
             useClass: SNSVideoEventProducer,
         });
-        container.register(VIDEO_TOKEN.IN_MEMORY_EVENT_PUBLISHER, {
-            useClass: InMemoryVideoEventPublisher,
-        });
+        container.registerSingleton(VIDEO_TOKEN.IN_MEMORY_EVENT_PUBLISHER, InMemoryVideoEventPublisher);
 
         // SQS
         container.register(VIDEO_TOKEN.SQS_VIDEO_CREATED_QUEUE_URL, {
@@ -99,11 +106,11 @@ export class DIVideos {
     }
 
     private initRepositoriesDependencies() {
-        container.register(VIDEO_TOKEN.REPOSITORY, {
-            useClass: RedisVideoRepository,
-        });
         container.register(VIDEO_TOKEN.DB_REPOSITORY, {
             useClass: SequelizeVideoRepository,
+        });
+        container.register(VIDEO_TOKEN.REPOSITORY, {
+            useClass: RedisVideoRepository,
         });
         container.register(VIDEO_TOKEN.GET_VIDEOS_REPOSITORY, {
             useClass: SequelizeGetVideosRepository,

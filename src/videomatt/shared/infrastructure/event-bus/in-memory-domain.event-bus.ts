@@ -1,26 +1,20 @@
-import { InMemoryVideoEventPublisher } from '@videomatt/videos/videos/infrastructure/broker/publishers/in-memory-video-event.publisher';
-import { SNSVideoEventProducer } from '@videomatt/videos/videos/infrastructure/broker/producer/sns-video-event.producer';
-import { SNSUserEventProducer } from '@videomatt/users/infrastructure/broker/producer/sns-user-event.producer';
 import { RemoteEventProducer } from '@videomatt/shared/domain/broker/remote-event.producer';
 import { LocalEventPublisher } from '@videomatt/shared/domain/broker/local-event.publisher';
-import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 import { DomainEventBus } from '@videomatt/shared/domain/event-bus/domain-event-bus';
 import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain.event';
-import { USER_TOKEN } from '@videomatt/users/infrastructure/di/tokens-user';
-import { inject, injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 
-@injectable()
+@singleton()
 export class InMemoryDomainEventBus implements DomainEventBus {
     private readonly localPublishers: LocalEventPublisher[] = [];
     private readonly remoteProducers: RemoteEventProducer[] = [];
 
-    constructor(
-        @inject(VIDEO_TOKEN.IN_MEMORY_EVENT_PUBLISHER) readonly inMemoryVideoPublisher: InMemoryVideoEventPublisher,
-        @inject(VIDEO_TOKEN.SNS_EVENT_PRODUCER) readonly snsVideoProducer: SNSVideoEventProducer,
-        @inject(USER_TOKEN.SNS_EVENT_PRODUCER) readonly snsUserProducer: SNSUserEventProducer
-    ) {
-        this.localPublishers.push(inMemoryVideoPublisher);
-        this.remoteProducers.push(snsVideoProducer, snsUserProducer);
+    registerLocalPublisher(publisher: LocalEventPublisher): void {
+        this.localPublishers.push(publisher);
+    }
+
+    registerRemoteProducer(producer: RemoteEventProducer): void {
+        this.remoteProducers.push(producer);
     }
 
     async publish(events: DomainEvent[]) {

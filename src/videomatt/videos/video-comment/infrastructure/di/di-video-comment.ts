@@ -15,6 +15,10 @@ export class DIVideoComments {
         this.initHandlersDependencies();
     }
 
+    public initSingletons() {
+        container.resolve(VIDEO_COMMENT_TOKENS.ADD_COMMENT_TO_VIDEO_HANDLER);
+    }
+
     private initDBDependencies() {
         container.register(VIDEO_COMMENT_TOKENS.DB_MODEL, {
             useValue: this.db.getVideoCommentModel(),

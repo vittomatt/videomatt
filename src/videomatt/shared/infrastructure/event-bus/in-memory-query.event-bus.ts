@@ -1,32 +1,20 @@
-import { GetVideosHandler } from '@videomatt/videos/videos/infrastructure/handlers/query/get-videos.handler';
-import { QueryHandlerMapping } from '@videomatt/shared/infrastructure/event-bus/query-handler-mapping';
-import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 import { QueryHandler } from '@videomatt/shared/domain/event-bus/query.handler';
-import { BaseQueryDTO } from '@videomatt/shared/domain/dtos/dto';
-import { inject, injectable } from 'tsyringe';
+import { DomainError } from '@videomatt/shared/domain/errors/domain.error';
+import { DTO } from '@videomatt/shared/domain/dtos/dto';
+import { singleton } from 'tsyringe';
 
-@injectable()
+@singleton()
 export class InMemoryQueryEventBus {
     private readonly handlers: {
-        [K in keyof QueryHandlerMapping]: QueryHandler<
-            QueryHandlerMapping[K]['error'],
-            QueryHandlerMapping[K]['result']
-        >;
-    };
+        [key: string]: QueryHandler<any>;
+    } = {};
 
-    constructor(@inject(VIDEO_TOKEN.GET_VIDEOS_HANDLER) getVideosHandler: GetVideosHandler) {
-        this.handlers = {
-            GetVideosDTO: getVideosHandler,
-        };
+    registerHandler<T extends DTO>(dto: string, handler: QueryHandler<any>): void {
+        this.handlers[dto] = handler;
     }
 
-    publish<T extends BaseQueryDTO>(
-        dto: T
-    ): Promise<QueryHandlerMapping[T['type']]['result'] | QueryHandlerMapping[T['type']]['error']> {
-        const handler = this.handlers[dto.type] as QueryHandler<
-            QueryHandlerMapping[T['type']]['error'],
-            QueryHandlerMapping[T['type']]['result']
-        >;
+    publish<T extends DTO>(dto: T): Promise<DomainError> {
+        const handler = this.handlers[dto.constructor.name];
         return handler.handle(dto);
     }
 }

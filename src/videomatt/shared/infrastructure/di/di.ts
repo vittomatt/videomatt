@@ -4,6 +4,7 @@ import { InMemoryQueryEventBus } from '@videomatt/shared/infrastructure/event-bu
 import { DIVideoComments } from '@videomatt/videos/video-comment/infrastructure/di/di-video-comment';
 import { ErrorController } from '@videomatt/shared/infrastructure/controllers/error.controller';
 import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/sequelize-db';
+import { DomainEventBus } from '@videomatt/shared/domain/event-bus/domain-event-bus';
 import { RedisDB } from '@videomatt/shared/infrastructure/persistence/redis-db';
 import { DIVideos } from '@videomatt/videos/videos/infrastructure/di/di-video';
 import { getEnvs } from '@videomatt/shared/infrastructure/envs/init-envs';
@@ -23,10 +24,12 @@ export class DI {
 
     public initDI() {
         this.initDBDependencies();
+        this.initSingletonDependencies();
         this.initSharedDependencies();
         this.initBrokerDependencies();
         this.initControllersDependencies();
         this.initModules();
+        this.initSingletons();
     }
 
     private initDBDependencies() {
@@ -38,16 +41,13 @@ export class DI {
         });
     }
 
+    private initSingletonDependencies() {
+        container.registerSingleton<DomainEventBus>(TOKEN.DOMAIN_EVENT_BUS, InMemoryDomainEventBus);
+        container.registerSingleton(TOKEN.COMMAND_EVENT_BUS, InMemoryCommandEventBus);
+        container.registerSingleton(TOKEN.QUERY_EVENT_BUS, InMemoryQueryEventBus);
+    }
+
     private initSharedDependencies() {
-        container.register(TOKEN.DOMAIN_EVENT_BUS, {
-            useClass: InMemoryDomainEventBus,
-        });
-        container.register(TOKEN.COMMAND_EVENT_BUS, {
-            useClass: InMemoryCommandEventBus,
-        });
-        container.register(TOKEN.QUERY_EVENT_BUS, {
-            useClass: InMemoryQueryEventBus,
-        });
         container.register(TOKEN.LOGGER, {
             useClass: PinoLogger,
         });
@@ -78,5 +78,11 @@ export class DI {
         new DIUsers(this.db).initDI();
         new DIVideos(this.db).initDI();
         new DIVideoComments(this.db).initDI();
+    }
+
+    public initSingletons() {
+        new DIUsers(this.db).initSingletons();
+        new DIVideos(this.db).initSingletons();
+        new DIVideoComments(this.db).initSingletons();
     }
 }

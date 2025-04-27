@@ -23,6 +23,11 @@ export class DIUsers {
         this.initHandlersDependencies();
     }
 
+    public initSingletons() {
+        container.resolve(USER_TOKEN.SNS_EVENT_PRODUCER);
+        container.resolve(USER_TOKEN.CREATE_USER_HANDLER);
+    }
+
     private initDBDependencies() {
         container.register(USER_TOKEN.DB_MODEL, {
             useValue: this.db.getUserModel(),

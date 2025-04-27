@@ -1,13 +1,17 @@
 import { RemoteEventProducer } from '@videomatt/shared/domain/broker/remote-event.producer';
+import { DomainEventBus } from '@videomatt/shared/domain/event-bus/domain-event-bus';
 import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain.event';
 import { Logger } from '@videomatt/shared/domain/logger/logger';
 import { PublishCommand, SNSClient } from '@aws-sdk/client-sns';
 
 export abstract class SNSEventProducer implements RemoteEventProducer {
     protected constructor(
+        protected readonly eventBus: DomainEventBus,
         protected readonly snsClient: SNSClient,
         protected readonly logger: Logger
-    ) {}
+    ) {
+        this.eventBus.registerRemoteProducer(this);
+    }
 
     async publish(event: DomainEvent) {
         try {

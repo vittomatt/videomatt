@@ -5,24 +5,25 @@ import { VideoCreatedEvent } from '@videomatt/videos/videos/domain/events/video-
 import { LocalEventSubscriber } from '@videomatt/shared/domain/broker/local-event.subscriber';
 import { LocalEventPublisher } from '@videomatt/shared/domain/broker/local-event.publisher';
 import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
+import { DomainEventBus } from '@videomatt/shared/domain/event-bus/domain-event-bus';
 import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain.event';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { Logger } from '@videomatt/shared/domain/logger/logger';
-import { inject, injectable } from 'tsyringe';
+import { inject, singleton } from 'tsyringe';
 
-@injectable()
+@singleton()
 export class InMemoryVideoEventPublisher implements LocalEventPublisher {
     private readonly handlers: Record<string, LocalEventSubscriber[]> = {};
 
     constructor(
-        @inject(TOKEN.LOGGER) protected readonly logger: Logger,
-        @inject(VIDEO_TOKEN.IN_MEMORY_EVENT_VIDEO_CREATED_SUBSCRIBER)
-        private readonly videoCreatedSubscriber: InMemoryEventVideoCreatedSubscriber,
-        @inject(VIDEO_TOKEN.IN_MEMORY_EVENT_COMMENT_ADDED_SUBSCRIBER)
-        private readonly commentAddedSubscriber: InMemoryEventCommentAddedSubscriber
+        @inject(TOKEN.DOMAIN_EVENT_BUS) protected readonly eventBus: DomainEventBus,
+        @inject(TOKEN.LOGGER) protected readonly logger: Logger
     ) {
-        this.handlers[VideoCreatedEvent.eventName] = [this.videoCreatedSubscriber];
-        this.handlers[VideoCommentAddedEvent.eventName] = [this.commentAddedSubscriber];
+        this.eventBus.registerLocalPublisher(this);
+    }
+
+    registerHandler(event: string, handler: LocalEventSubscriber): void {
+        this.handlers[event] = [handler];
     }
 
     async publish(event: DomainEvent) {
