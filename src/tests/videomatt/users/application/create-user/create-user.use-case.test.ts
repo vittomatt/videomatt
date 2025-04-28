@@ -1,5 +1,7 @@
 import 'reflect-metadata';
 
+import { UserMother } from '@tests/shared/users/user-mother';
+
 import { expect } from 'chai';
 import sinon from 'sinon';
 
@@ -18,11 +20,11 @@ describe('CreateUserUseCase', () => {
         repository = {
             searchById: sinon.stub(),
             add: sinon.stub(),
-        } as unknown as sinon.SinonStubbedInstance<UserRepository<User>>;
+        } as sinon.SinonStubbedInstance<UserRepository<User>>;
 
         eventBus = {
             publish: sinon.stub(),
-        } as unknown as sinon.SinonStubbedInstance<DomainEventBus>;
+        } as sinon.SinonStubbedInstance<DomainEventBus>;
 
         useCase = new CreateUserUseCase(repository, eventBus);
     });
@@ -30,14 +32,17 @@ describe('CreateUserUseCase', () => {
     afterEach(() => sinon.restore());
 
     it('should return UserAlreadyExistsError if the user already exists', async () => {
-        // const existingUser = User.create({ id: 'u-1', firstName: 'Juan', lastName: 'Pérez' });
-        // (repository.searchById as sinon.SinonStub).resolves(existingUser);
+        const existingUser = UserMother.create();
+        (repository.searchById as sinon.SinonStub).resolves(existingUser);
 
-        // const result = await useCase.execute({ id: 'u-1', firstName: 'Juan', lastName: 'Pérez' });
+        const result = await useCase.execute({
+            id: existingUser.id.value,
+            firstName: existingUser.firstName.value,
+            lastName: existingUser.lastName.value,
+        });
 
-        // expect(result).to.be.instanceOf(UserAlreadyExistsError);
-        // expect(repository.add.called).to.be.false;
-        // expect(eventBus.publish.called).to.be.false;
-        expect(true).to.be.true;
+        expect(result).to.be.instanceOf(UserAlreadyExistsError);
+        expect(repository.add.called).to.be.false;
+        expect(eventBus.publish.called).to.be.false;
     });
 });

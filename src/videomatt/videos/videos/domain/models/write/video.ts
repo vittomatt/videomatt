@@ -6,7 +6,10 @@ import { VideoURL } from './video-url';
 import { AggregateRoot } from '@videomatt/shared/domain/aggregate-root';
 import { UserId } from '@videomatt/users/domain/models/write/user-id';
 import { VideoCommentAddedEvent } from '@videomatt/videos/video-comment/domain/events/video-comment-added.event';
-import { VideoComment } from '@videomatt/videos/video-comment/domain/models/write/video-comment';
+import {
+    VideoComment,
+    VideoCommentPrimitives,
+} from '@videomatt/videos/video-comment/domain/models/write/video-comment';
 import { VideoCreatedEvent } from '@videomatt/videos/videos/domain/events/video-created.event';
 
 export class Video extends AggregateRoot {
@@ -54,26 +57,7 @@ export class Video extends AggregateRoot {
         return video;
     }
 
-    static fromPrimitives({
-        id,
-        title,
-        description,
-        url,
-        userId,
-        comments = [],
-    }: {
-        id: string;
-        title: string;
-        description: string;
-        url: string;
-        userId: string;
-        comments?: {
-            id: string;
-            text: string;
-            userId: string;
-            videoId: string;
-        }[];
-    }) {
+    static fromPrimitives({ id, title, description, url, userId, comments = [] }: VideoPrimitives) {
         return new Video(
             new VideoId(id),
             new VideoTitle(title),
@@ -84,7 +68,7 @@ export class Video extends AggregateRoot {
         );
     }
 
-    toPrimitives() {
+    toPrimitives(): VideoPrimitives {
         return {
             id: this.id.value,
             title: this.title.value,
@@ -108,3 +92,12 @@ export class Video extends AggregateRoot {
         );
     }
 }
+
+export type VideoPrimitives = {
+    id: string;
+    title: string;
+    description: string;
+    url: string;
+    userId: string;
+    comments: VideoCommentPrimitives[];
+};

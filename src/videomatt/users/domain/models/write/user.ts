@@ -40,17 +40,7 @@ export class User extends AggregateRoot {
         return user;
     }
 
-    static fromPrimitives({
-        id,
-        firstName,
-        lastName,
-        amountOfVideos,
-    }: {
-        id: string;
-        firstName: string;
-        lastName: string;
-        amountOfVideos: number;
-    }) {
+    static fromPrimitives({ id, firstName, lastName, amountOfVideos }: UserPrimitives) {
         return new User(
             new UserId(id),
             new UserFirstName(firstName),
@@ -59,7 +49,7 @@ export class User extends AggregateRoot {
         );
     }
 
-    toPrimitives() {
+    toPrimitives(): UserPrimitives {
         return {
             id: this.id.value,
             firstName: this.firstName.value,
@@ -73,3 +63,10 @@ export class User extends AggregateRoot {
         this.amountOfVideos = new UserAmountOfVideo(newAmountOfVideos);
     }
 }
+
+export type UserPrimitives = {
+    id: string;
+    firstName: string;
+    lastName: string;
+    amountOfVideos: number;
+};

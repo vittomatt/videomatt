@@ -3,6 +3,8 @@ import { SQSClient } from '@aws-sdk/client-sqs';
 
 import { container } from 'tsyringe';
 
+import { SQSWorker } from 'src/workers';
+
 import { DomainEventBus } from '@videomatt/shared/domain/event-bus/domain-event-bus';
 import { ErrorController } from '@videomatt/shared/infrastructure/controllers/error.controller';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
@@ -16,8 +18,6 @@ import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/sequeli
 import { DIUsers } from '@videomatt/users/infrastructure/di/di-user';
 import { DIVideoComments } from '@videomatt/videos/video-comment/infrastructure/di/di-video-comment';
 import { DIVideos } from '@videomatt/videos/videos/infrastructure/di/di-video';
-
-import { SQSWorker } from 'src/workers';
 
 export class DI {
     constructor(

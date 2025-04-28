@@ -23,17 +23,7 @@ export class VideoComment {
         return comment;
     }
 
-    static fromPrimitives({
-        id,
-        text,
-        userId,
-        videoId,
-    }: {
-        id: string;
-        text: string;
-        userId: string;
-        videoId: string;
-    }) {
+    static fromPrimitives({ id, text, userId, videoId }: VideoCommentPrimitives) {
         return new VideoComment(
             new VideoCommentId(id),
             new VideoCommentText(text),
@@ -42,7 +32,7 @@ export class VideoComment {
         );
     }
 
-    toPrimitives() {
+    toPrimitives(): VideoCommentPrimitives {
         return {
             id: this.id.value,
             text: this.text.value,
@@ -51,3 +41,10 @@ export class VideoComment {
         };
     }
 }
+
+export type VideoCommentPrimitives = {
+    id: string;
+    text: string;
+    userId: string;
+    videoId: string;
+};

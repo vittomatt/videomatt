@@ -11,8 +11,9 @@
         "^node:",
         "^@(?!videomatt)(?:[\\w-]+)",
         "^(?!src/)[\\w-]+",
+        "^src/",
         "^@videomatt",
-        "^src/"
+        "^@tests"
     ],
     "importOrderSeparation": true,
     "importOrderSortSpecifiers": true,

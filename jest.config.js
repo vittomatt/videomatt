@@ -4,10 +4,9 @@ module.exports = {
     testEnvironment: 'node',
     moduleNameMapper: {
         '^@videomatt/(.*)$': '<rootDir>/src/videomatt/$1',
+        '^@tests/(.*)$': '<rootDir>/src/tests/$1',
     },
     modulePaths: ['<rootDir>/src'],
     setupFiles: ['reflect-metadata'],
-    testMatch: [
-        '**/?(*.)+(test).+(ts|js)'
-    ]
+    testMatch: ['**/?(*.)+(test).+(ts|js)'],
 };

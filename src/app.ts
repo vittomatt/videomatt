@@ -2,6 +2,8 @@ import express, { Express } from 'express';
 import helmet from 'helmet';
 import { container } from 'tsyringe';
 
+import { SQSWorker } from 'src/workers';
+
 import { Logger } from '@videomatt/shared/domain/logger/logger';
 import { DI } from '@videomatt/shared/infrastructure/di/di';
 import { initEnvs } from '@videomatt/shared/infrastructure/envs/init-envs';
@@ -9,8 +11,6 @@ import { PinoLogger } from '@videomatt/shared/infrastructure/logger/pino';
 import { RedisDB } from '@videomatt/shared/infrastructure/persistence/redis-db';
 import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/sequelize-db';
 import { initRoutes } from '@videomatt/shared/infrastructure/routes/init-routes';
-
-import { SQSWorker } from 'src/workers';
 
 export class App {
     constructor(private readonly expressApp: Express) {}
