@@ -1,8 +1,8 @@
 import { singleton } from 'tsyringe';
 
-import { CommandHandler } from '@videomatt/shared/domain/event-bus/command.handler';
-import { DomainError } from '@videomatt/shared/domain/errors/domain.error';
 import { DTO } from '@videomatt/shared/domain/dtos/dto';
+import { DomainError } from '@videomatt/shared/domain/errors/domain.error';
+import { CommandHandler } from '@videomatt/shared/domain/event-bus/command.handler';
 
 @singleton()
 export class InMemoryCommandEventBus {

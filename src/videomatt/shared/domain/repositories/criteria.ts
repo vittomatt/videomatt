@@ -1,5 +1,5 @@
-import { Order, OrderType } from '@videomatt/shared/domain/repositories/order';
 import { Filters } from '@videomatt/shared/domain/repositories/filters';
+import { Order, OrderType } from '@videomatt/shared/domain/repositories/order';
 
 export class Criteria {
     private constructor(

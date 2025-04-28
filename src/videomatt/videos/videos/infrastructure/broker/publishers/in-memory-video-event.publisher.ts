@@ -1,16 +1,16 @@
 import { inject, singleton } from 'tsyringe';
 
-import { InMemoryEventCommentAddedSubscriber } from '@videomatt/videos/videos/infrastructure/broker/subscriber/in-memory-event-comment-added.subscriber';
-import { InMemoryEventVideoCreatedSubscriber } from '@videomatt/videos/videos/infrastructure/broker/subscriber/in-memory-event-video-created.subscriber';
-import { VideoCommentAddedEvent } from '@videomatt/videos/video-comment/domain/events/video-comment-added.event';
-import { VideoCreatedEvent } from '@videomatt/videos/videos/domain/events/video-created.event';
-import { LocalEventSubscriber } from '@videomatt/shared/domain/broker/local-event.subscriber';
 import { LocalEventPublisher } from '@videomatt/shared/domain/broker/local-event.publisher';
-import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
+import { LocalEventSubscriber } from '@videomatt/shared/domain/broker/local-event.subscriber';
 import { DomainEventBus } from '@videomatt/shared/domain/event-bus/domain-event-bus';
 import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain.event';
-import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { Logger } from '@videomatt/shared/domain/logger/logger';
+import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
+import { VideoCommentAddedEvent } from '@videomatt/videos/video-comment/domain/events/video-comment-added.event';
+import { VideoCreatedEvent } from '@videomatt/videos/videos/domain/events/video-created.event';
+import { InMemoryEventCommentAddedSubscriber } from '@videomatt/videos/videos/infrastructure/broker/subscriber/in-memory-event-comment-added.subscriber';
+import { InMemoryEventVideoCreatedSubscriber } from '@videomatt/videos/videos/infrastructure/broker/subscriber/in-memory-event-video-created.subscriber';
+import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 
 @singleton()
 export class InMemoryVideoEventPublisher implements LocalEventPublisher {

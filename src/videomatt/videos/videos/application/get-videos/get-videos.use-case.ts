@@ -1,8 +1,8 @@
 import { inject, injectable } from 'tsyringe';
 
+import { VideoRead } from '@videomatt/videos/videos/domain/models/read/video.read';
 import { GetVideosRepository } from '@videomatt/videos/videos/domain/repositories/get-videos.repository';
 import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
-import { VideoRead } from '@videomatt/videos/videos/domain/models/read/video.read';
 
 @injectable()
 export class GetVideosUseCase {

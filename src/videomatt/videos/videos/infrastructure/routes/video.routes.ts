@@ -1,22 +1,22 @@
+import { Express } from 'express';
 import expressAsyncHandler from 'express-async-handler';
 import { inject, injectable } from 'tsyringe';
-import { Express } from 'express';
 
+import { validateDto } from '@videomatt/shared/infrastructure/controllers/validator';
+import { AddCommentToVideoController } from '@videomatt/videos/video-comment/infrastructure/controllers/add-comment-to-video/add-comment-to-video.controller';
 import {
     AddCommentToVideoBodyValidatorDto,
     AddCommentToVideoParamValidatorDto,
 } from '@videomatt/videos/video-comment/infrastructure/controllers/add-comment-to-video/add-comment-to-video.validator';
+import { VIDEO_COMMENT_TOKENS } from '@videomatt/videos/video-comment/infrastructure/di/tokens-video-comment';
+import { CreateVideoController } from '@videomatt/videos/videos/infrastructure/controllers/create-video/create-video.controller';
 import {
     CreateVideoBodyValidatorDto,
     CreateVideoParamValidatorDto,
 } from '@videomatt/videos/videos/infrastructure/controllers/create-video/create-video.validator';
-import { AddCommentToVideoController } from '@videomatt/videos/video-comment/infrastructure/controllers/add-comment-to-video/add-comment-to-video.controller';
-import { CreateVideoController } from '@videomatt/videos/videos/infrastructure/controllers/create-video/create-video.controller';
-import { GetVideosParamValidatorDto } from '@videomatt/videos/videos/infrastructure/controllers/get-videos/get-videos.validator';
 import { GetVideosController } from '@videomatt/videos/videos/infrastructure/controllers/get-videos/get-videos.controller';
-import { VIDEO_COMMENT_TOKENS } from '@videomatt/videos/video-comment/infrastructure/di/tokens-video-comment';
+import { GetVideosParamValidatorDto } from '@videomatt/videos/videos/infrastructure/controllers/get-videos/get-videos.validator';
 import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
-import { validateDto } from '@videomatt/shared/infrastructure/controllers/validator';
 
 @injectable()
 export class VideoRoutes {

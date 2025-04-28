@@ -1,11 +1,11 @@
 import { inject, injectable } from 'tsyringe';
 
-import { VideoRepository } from '@videomatt/videos/videos/domain/repositories/video.repository';
-import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
+import { User } from '@videomatt/users/domain/models/write/user';
 import { UserRepository } from '@videomatt/users/domain/repositories/user.repository';
 import { USER_TOKEN } from '@videomatt/users/infrastructure/di/tokens-user';
 import { Video } from '@videomatt/videos/videos/domain/models/write/video';
-import { User } from '@videomatt/users/domain/models/write/user';
+import { VideoRepository } from '@videomatt/videos/videos/domain/repositories/video.repository';
+import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 
 @injectable()
 export class IncreaseAmountOfVideosUseCase {

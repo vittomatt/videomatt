@@ -1,11 +1,11 @@
 import { inject, injectable } from 'tsyringe';
 
-import { InMemoryVideoEventPublisher } from '@videomatt/videos/videos/infrastructure/broker/publishers/in-memory-video-event.publisher';
-import { IncreaseAmountOfCommentsHandler } from '@videomatt/videos/videos/infrastructure/handlers/increase-amount-of-comments.handler';
-import { VideoCommentAddedEvent } from '@videomatt/videos/video-comment/domain/events/video-comment-added.event';
 import { LocalEventSubscriber } from '@videomatt/shared/domain/broker/local-event.subscriber';
-import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain.event';
+import { VideoCommentAddedEvent } from '@videomatt/videos/video-comment/domain/events/video-comment-added.event';
+import { InMemoryVideoEventPublisher } from '@videomatt/videos/videos/infrastructure/broker/publishers/in-memory-video-event.publisher';
+import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
+import { IncreaseAmountOfCommentsHandler } from '@videomatt/videos/videos/infrastructure/handlers/increase-amount-of-comments.handler';
 
 @injectable()
 export class InMemoryEventCommentAddedSubscriber implements LocalEventSubscriber {

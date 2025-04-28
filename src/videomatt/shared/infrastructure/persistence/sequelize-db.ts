@@ -1,10 +1,10 @@
 import { Sequelize } from 'sequelize';
 
-import { VideoCommentDBModel } from '@videomatt/videos/video-comment/infrastructure/models/video-comment.db-model';
-import { VideoDBModelRead } from '@videomatt/videos/videos/infrastructure/models/video.db-read-model';
-import { VideoDBModel } from '@videomatt/videos/videos/infrastructure/models/video.db-model';
-import { UserDBModel } from '@videomatt/users/infrastructure/models/user.db-model';
 import { getEnvs } from '@videomatt/shared/infrastructure/envs/init-envs';
+import { UserDBModel } from '@videomatt/users/infrastructure/models/user.db-model';
+import { VideoCommentDBModel } from '@videomatt/videos/video-comment/infrastructure/models/video-comment.db-model';
+import { VideoDBModel } from '@videomatt/videos/videos/infrastructure/models/video.db-model';
+import { VideoDBModelRead } from '@videomatt/videos/videos/infrastructure/models/video.db-read-model';
 
 export class PostgresDB {
     private readonly instance: Sequelize;

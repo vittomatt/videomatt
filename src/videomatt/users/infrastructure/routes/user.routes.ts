@@ -1,13 +1,13 @@
+import { Express } from 'express';
 import asyncHandler from 'express-async-handler';
 import { inject, injectable } from 'tsyringe';
-import { Express } from 'express';
 
+import { validateDto } from '@videomatt/shared/infrastructure/controllers/validator';
+import { CreateUserController } from '@videomatt/users/infrastructure/controllers/create-user.controller';
 import {
     CreateUserBodyValidatorDto,
     CreateUserParamValidatorDto,
 } from '@videomatt/users/infrastructure/controllers/create-user.validator';
-import { CreateUserController } from '@videomatt/users/infrastructure/controllers/create-user.controller';
-import { validateDto } from '@videomatt/shared/infrastructure/controllers/validator';
 import { USER_TOKEN } from '@videomatt/users/infrastructure/di/tokens-user';
 
 @injectable()

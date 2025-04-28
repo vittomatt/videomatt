@@ -1,27 +1,27 @@
 import { container } from 'tsyringe';
 
-import { InMemoryEventCommentAddedSubscriber } from '@videomatt/videos/videos/infrastructure/broker/subscriber/in-memory-event-comment-added.subscriber';
-import { InMemoryEventVideoCreatedSubscriber } from '@videomatt/videos/videos/infrastructure/broker/subscriber/in-memory-event-video-created.subscriber';
-import { IncreaseAmountOfCommentsUseCase } from '@videomatt/videos/videos/application/increase-amount-of-comments/increase-amount-of-comments.use-case';
-import { SequelizeGetVideosRepository } from '@videomatt/videos/videos/infrastructure/repositories/get-videos/sequelize-get-videos.repository';
-import { SQSEventVideoCreatedConsumer } from '@videomatt/videos/videos/infrastructure/broker/consumers/sqs-event-video-created.consumer';
-import { InMemoryVideoEventPublisher } from '@videomatt/videos/videos/infrastructure/broker/publishers/in-memory-video-event.publisher';
-import { IncreaseAmountOfCommentsHandler } from '@videomatt/videos/videos/infrastructure/handlers/increase-amount-of-comments.handler';
-import { SequelizeVideoReadRepository } from '@videomatt/videos/videos/infrastructure/repositories/sequelize-video-read.repository';
-import { CreateVideoController } from '@videomatt/videos/videos/infrastructure/controllers/create-video/create-video.controller';
-import { GetVideosController } from '@videomatt/videos/videos/infrastructure/controllers/get-videos/get-videos.controller';
-import { CreateVideoReadHandler } from '@videomatt/videos/videos/infrastructure/handlers/domain/create-video-read.handler';
-import { SequelizeVideoRepository } from '@videomatt/videos/videos/infrastructure/repositories/sequelize-video.repository';
-import { SNSVideoEventProducer } from '@videomatt/videos/videos/infrastructure/broker/producer/sns-video-event.producer';
+import { getEnvs } from '@videomatt/shared/infrastructure/envs/init-envs';
+import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/sequelize-db';
 import { CreateVideoReadUseCase } from '@videomatt/videos/videos/application/create-video/create-video-read.use-case';
-import { RedisVideoRepository } from '@videomatt/videos/videos/infrastructure/repositories/redis-video.repository';
-import { CreateVideoHandler } from '@videomatt/videos/videos/infrastructure/handlers/domain/create-video.handler';
-import { GetVideosHandler } from '@videomatt/videos/videos/infrastructure/handlers/query/get-videos.handler';
 import { CreateVideoUseCase } from '@videomatt/videos/videos/application/create-video/create-video.use-case';
 import { GetVideosUseCase } from '@videomatt/videos/videos/application/get-videos/get-videos.use-case';
-import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/sequelize-db';
+import { IncreaseAmountOfCommentsUseCase } from '@videomatt/videos/videos/application/increase-amount-of-comments/increase-amount-of-comments.use-case';
+import { SQSEventVideoCreatedConsumer } from '@videomatt/videos/videos/infrastructure/broker/consumers/sqs-event-video-created.consumer';
+import { SNSVideoEventProducer } from '@videomatt/videos/videos/infrastructure/broker/producer/sns-video-event.producer';
+import { InMemoryVideoEventPublisher } from '@videomatt/videos/videos/infrastructure/broker/publishers/in-memory-video-event.publisher';
+import { InMemoryEventCommentAddedSubscriber } from '@videomatt/videos/videos/infrastructure/broker/subscriber/in-memory-event-comment-added.subscriber';
+import { InMemoryEventVideoCreatedSubscriber } from '@videomatt/videos/videos/infrastructure/broker/subscriber/in-memory-event-video-created.subscriber';
+import { CreateVideoController } from '@videomatt/videos/videos/infrastructure/controllers/create-video/create-video.controller';
+import { GetVideosController } from '@videomatt/videos/videos/infrastructure/controllers/get-videos/get-videos.controller';
 import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
-import { getEnvs } from '@videomatt/shared/infrastructure/envs/init-envs';
+import { CreateVideoReadHandler } from '@videomatt/videos/videos/infrastructure/handlers/domain/create-video-read.handler';
+import { CreateVideoHandler } from '@videomatt/videos/videos/infrastructure/handlers/domain/create-video.handler';
+import { IncreaseAmountOfCommentsHandler } from '@videomatt/videos/videos/infrastructure/handlers/increase-amount-of-comments.handler';
+import { GetVideosHandler } from '@videomatt/videos/videos/infrastructure/handlers/query/get-videos.handler';
+import { SequelizeGetVideosRepository } from '@videomatt/videos/videos/infrastructure/repositories/get-videos/sequelize-get-videos.repository';
+import { RedisVideoRepository } from '@videomatt/videos/videos/infrastructure/repositories/redis-video.repository';
+import { SequelizeVideoReadRepository } from '@videomatt/videos/videos/infrastructure/repositories/sequelize-video-read.repository';
+import { SequelizeVideoRepository } from '@videomatt/videos/videos/infrastructure/repositories/sequelize-video.repository';
 
 export class DIVideos {
     constructor(private readonly db: PostgresDB) {}

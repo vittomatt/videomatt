@@ -1,10 +1,10 @@
-import { UserCreatedEvent } from '@videomatt/users/domain/events/user-created.event';
-import { AggregateRoot } from '@videomatt/shared/domain/aggregate-root';
-
 import { UserAmountOfVideo } from './user-amount-of-videos';
 import { UserFirstName } from './user-first-name';
-import { UserLastName } from './user-last-name';
 import { UserId } from './user-id';
+import { UserLastName } from './user-last-name';
+
+import { AggregateRoot } from '@videomatt/shared/domain/aggregate-root';
+import { UserCreatedEvent } from '@videomatt/users/domain/events/user-created.event';
 
 export class User extends AggregateRoot {
     constructor(

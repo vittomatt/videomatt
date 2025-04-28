@@ -1,8 +1,8 @@
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
-import { VideoCommentDBModel } from '@videomatt/videos/video-comment/infrastructure/models/video-comment.db-model';
 import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/sequelize-db';
 import { USER_TABLE_NAME } from '@videomatt/users/infrastructure/models/user.db-model';
+import { VideoCommentDBModel } from '@videomatt/videos/video-comment/infrastructure/models/video-comment.db-model';
 
 export const VIDEO_TABLE_NAME = 'videos';
 

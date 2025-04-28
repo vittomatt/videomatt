@@ -1,11 +1,11 @@
-import { inject, injectable } from 'tsyringe';
 import { Request, Response } from 'express';
+import { inject, injectable } from 'tsyringe';
 
-import { InMemoryCommandEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-command.event-bus';
-import { VideoAlreadyExistsError } from '@videomatt/videos/videos/domain/errors/video-already-exists.error';
 import { HttpResponse } from '@videomatt/shared/infrastructure/controllers/http-response';
-import { CreateVideoDTO } from '@videomatt/videos/videos/domain/dtos/create-video.dto';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
+import { InMemoryCommandEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-command.event-bus';
+import { CreateVideoDTO } from '@videomatt/videos/videos/domain/dtos/create-video.dto';
+import { VideoAlreadyExistsError } from '@videomatt/videos/videos/domain/errors/video-already-exists.error';
 
 @injectable()
 export class CreateVideoController {

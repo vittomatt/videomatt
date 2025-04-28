@@ -1,10 +1,10 @@
 import { inject, injectable } from 'tsyringe';
 
-import { VideoReadRepository } from '@videomatt/videos/videos/domain/repositories/video-read.repository';
-import { FilterOperator, Filters } from '@videomatt/shared/domain/repositories/filters';
-import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
-import { VideoRead } from '@videomatt/videos/videos/domain/models/read/video.read';
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
+import { FilterOperator, Filters } from '@videomatt/shared/domain/repositories/filters';
+import { VideoRead } from '@videomatt/videos/videos/domain/models/read/video.read';
+import { VideoReadRepository } from '@videomatt/videos/videos/domain/repositories/video-read.repository';
+import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 
 @injectable()
 export class CreateVideoReadUseCase {

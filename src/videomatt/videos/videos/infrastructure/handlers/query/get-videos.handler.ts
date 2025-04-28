@@ -1,13 +1,13 @@
 import { inject, injectable } from 'tsyringe';
 
-import { InMemoryQueryEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-query.event-bus';
-import { GetVideosUseCase } from '@videomatt/videos/videos/application/get-videos/get-videos.use-case';
-import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
-import { VideoRead } from '@videomatt/videos/videos/domain/models/read/video.read';
-import { GetVideosDTO } from '@videomatt/videos/videos/domain/dtos/get-videos.dto';
+import { DTO } from '@videomatt/shared/domain/dtos/dto';
 import { QueryHandler } from '@videomatt/shared/domain/event-bus/query.handler';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
-import { DTO } from '@videomatt/shared/domain/dtos/dto';
+import { InMemoryQueryEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-query.event-bus';
+import { GetVideosUseCase } from '@videomatt/videos/videos/application/get-videos/get-videos.use-case';
+import { GetVideosDTO } from '@videomatt/videos/videos/domain/dtos/get-videos.dto';
+import { VideoRead } from '@videomatt/videos/videos/domain/models/read/video.read';
+import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 
 @injectable()
 export class GetVideosHandler implements QueryHandler<VideoRead[]> {

@@ -1,12 +1,13 @@
 import { SNSClient } from '@aws-sdk/client-sns';
+
 import { inject, injectable } from 'tsyringe';
 
-import { SNSEventProducer } from '@videomatt/shared/infrastructure/broker/sns-event.producer';
-import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 import { DomainEventBus } from '@videomatt/shared/domain/event-bus/domain-event-bus';
 import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain.event';
-import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { Logger } from '@videomatt/shared/domain/logger/logger';
+import { SNSEventProducer } from '@videomatt/shared/infrastructure/broker/sns-event.producer';
+import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
+import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 
 @injectable()
 export class SNSVideoEventProducer extends SNSEventProducer {

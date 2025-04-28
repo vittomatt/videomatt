@@ -3,11 +3,11 @@ import 'reflect-metadata';
 import { expect } from 'chai';
 import sinon from 'sinon';
 
+import { DomainEventBus } from '@videomatt/shared/domain/event-bus/domain-event-bus';
 import { CreateUserUseCase } from '@videomatt/users/application/create-user/create-user.use-case';
 import { UserAlreadyExistsError } from '@videomatt/users/domain/errors/user-already-exists.error';
-import { UserRepository } from '@videomatt/users/domain/repositories/user.repository';
-import { DomainEventBus } from '@videomatt/shared/domain/event-bus/domain-event-bus';
 import { User } from '@videomatt/users/domain/models/write/user';
+import { UserRepository } from '@videomatt/users/domain/repositories/user.repository';
 
 describe('CreateUserUseCase', () => {
     let repository: sinon.SinonStubbedInstance<UserRepository<User>>;
@@ -24,7 +24,7 @@ describe('CreateUserUseCase', () => {
             publish: sinon.stub(),
         } as unknown as sinon.SinonStubbedInstance<DomainEventBus>;
 
-        useCase = new CreateUserUseCase(repository as any, eventBus as any);
+        useCase = new CreateUserUseCase(repository, eventBus);
     });
 
     afterEach(() => sinon.restore());

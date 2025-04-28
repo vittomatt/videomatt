@@ -1,5 +1,5 @@
-import { InvalidURLFormatError } from '@videomatt/videos/videos/domain/errors/invalid-url.error';
 import { BaseValueObject } from '@videomatt/shared/domain/value-object';
+import { InvalidURLFormatError } from '@videomatt/videos/videos/domain/errors/invalid-url.error';
 
 export class VideoURL extends BaseValueObject {
     constructor(public readonly value: string) {

@@ -1,11 +1,11 @@
-import { inject, injectable } from 'tsyringe';
 import { Request, Response } from 'express';
+import { inject, injectable } from 'tsyringe';
 
-import { InMemoryCommandEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-command.event-bus';
-import { UserAlreadyExistsError } from '@videomatt/users/domain/errors/user-already-exists.error';
 import { HttpResponse } from '@videomatt/shared/infrastructure/controllers/http-response';
-import { CreateUserDTO } from '@videomatt/users/domain/dtos/create-user.dto';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
+import { InMemoryCommandEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-command.event-bus';
+import { CreateUserDTO } from '@videomatt/users/domain/dtos/create-user.dto';
+import { UserAlreadyExistsError } from '@videomatt/users/domain/errors/user-already-exists.error';
 
 @injectable()
 export class CreateUserController {

@@ -1,10 +1,10 @@
 import { inject, injectable } from 'tsyringe';
 
-import { IncreaseAmountOfVideosUseCase } from '@videomatt/users/application/increase-amount-of-videos/increase-amount-of-videos.use-case';
-import { VideoCreatedEvent } from '@videomatt/videos/videos/domain/events/video-created.event';
 import { DomainHandler } from '@videomatt/shared/domain/broker/domain-handler';
 import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain.event';
+import { IncreaseAmountOfVideosUseCase } from '@videomatt/users/application/increase-amount-of-videos/increase-amount-of-videos.use-case';
 import { USER_TOKEN } from '@videomatt/users/infrastructure/di/tokens-user';
+import { VideoCreatedEvent } from '@videomatt/videos/videos/domain/events/video-created.event';
 
 @injectable()
 export class IncreaseAmountOfVideosHandler implements DomainHandler<void> {

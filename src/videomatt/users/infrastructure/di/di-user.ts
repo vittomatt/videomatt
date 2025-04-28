@@ -1,16 +1,16 @@
 import { container } from 'tsyringe';
 
+import { getEnvs } from '@videomatt/shared/infrastructure/envs/init-envs';
+import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/sequelize-db';
+import { CreateUserUseCase } from '@videomatt/users/application/create-user/create-user.use-case';
 import { IncreaseAmountOfVideosUseCase } from '@videomatt/users/application/increase-amount-of-videos/increase-amount-of-videos.use-case';
-import { IncreaseAmountOfVideosHandler } from '@videomatt/users/infrastructure/handlers/domain/increase-amount-of-videos.handler';
 import { SQSEventUserCreatedConsumer } from '@videomatt/users/infrastructure/broker/consumers/sqs-event-user-created.consumer';
-import { SequelizeUserRepository } from '@videomatt/users/infrastructure/repositories/sequelize-user.repository';
 import { SNSUserEventProducer } from '@videomatt/users/infrastructure/broker/producer/sns-user-event.producer';
 import { CreateUserController } from '@videomatt/users/infrastructure/controllers/create-user.controller';
-import { CreateUserHandler } from '@videomatt/users/infrastructure/handlers/command/create-user.handler';
-import { CreateUserUseCase } from '@videomatt/users/application/create-user/create-user.use-case';
-import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/sequelize-db';
 import { USER_TOKEN } from '@videomatt/users/infrastructure/di/tokens-user';
-import { getEnvs } from '@videomatt/shared/infrastructure/envs/init-envs';
+import { CreateUserHandler } from '@videomatt/users/infrastructure/handlers/command/create-user.handler';
+import { IncreaseAmountOfVideosHandler } from '@videomatt/users/infrastructure/handlers/domain/increase-amount-of-videos.handler';
+import { SequelizeUserRepository } from '@videomatt/users/infrastructure/repositories/sequelize-user.repository';
 
 export class DIUsers {
     constructor(private readonly db: PostgresDB) {}

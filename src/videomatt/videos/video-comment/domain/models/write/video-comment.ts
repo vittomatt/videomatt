@@ -1,8 +1,8 @@
-import { VideoId } from '@videomatt/videos/videos/domain/models/write/video-id';
-import { UserId } from '@videomatt/users/domain/models/write/user-id';
-
-import { VideoCommentText } from './video-comment-text';
 import { VideoCommentId } from './video-comment-id';
+import { VideoCommentText } from './video-comment-text';
+
+import { UserId } from '@videomatt/users/domain/models/write/user-id';
+import { VideoId } from '@videomatt/videos/videos/domain/models/write/video-id';
 
 export class VideoComment {
     constructor(

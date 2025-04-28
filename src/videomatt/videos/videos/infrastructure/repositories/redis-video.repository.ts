@@ -1,16 +1,16 @@
+import { SequelizeVideoRepository } from './sequelize-video.repository';
+
 import { inject, injectable } from 'tsyringe';
 
-import { VideoCommentDBModel } from '@videomatt/videos/video-comment/infrastructure/models/video-comment.db-model';
-import { VIDEO_COMMENT_TOKENS } from '@videomatt/videos/video-comment/infrastructure/di/tokens-video-comment';
-import { VideoRepository } from '@videomatt/videos/videos/domain/repositories/video.repository';
-import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
-import { RedisDB } from '@videomatt/shared/infrastructure/persistence/redis-db';
-import { Video } from '@videomatt/videos/videos/domain/models/write/video';
+import { Logger } from '@videomatt/shared/domain/logger/logger';
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
-import { Logger } from '@videomatt/shared/domain/logger/logger';
-
-import { SequelizeVideoRepository } from './sequelize-video.repository';
+import { RedisDB } from '@videomatt/shared/infrastructure/persistence/redis-db';
+import { VIDEO_COMMENT_TOKENS } from '@videomatt/videos/video-comment/infrastructure/di/tokens-video-comment';
+import { VideoCommentDBModel } from '@videomatt/videos/video-comment/infrastructure/models/video-comment.db-model';
+import { Video } from '@videomatt/videos/videos/domain/models/write/video';
+import { VideoRepository } from '@videomatt/videos/videos/domain/repositories/video.repository';
+import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 
 @injectable()
 export class RedisVideoRepository implements VideoRepository<Video> {

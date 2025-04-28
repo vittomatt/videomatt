@@ -1,9 +1,9 @@
-import { Includeable as SequelizeIncludeable, Op, Order as SequelizeOrder } from 'sequelize';
+import { Op, Includeable as SequelizeIncludeable, Order as SequelizeOrder } from 'sequelize';
 
-import { VideoCommentDBModel } from '@videomatt/videos/video-comment/infrastructure/models/video-comment.db-model';
+import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 import { FilterOperator, Filters } from '@videomatt/shared/domain/repositories/filters';
 import { Order, OrderType } from '@videomatt/shared/domain/repositories/order';
-import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
+import { VideoCommentDBModel } from '@videomatt/videos/video-comment/infrastructure/models/video-comment.db-model';
 
 type FilterValue = string | number | boolean;
 

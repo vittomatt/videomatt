@@ -1,5 +1,4 @@
 // eslint.config.js (CommonJS style)
-const simpleImportSort = require('eslint-plugin-simple-import-sort');
 const tseslint = require('@typescript-eslint/eslint-plugin');
 const tsParser = require('@typescript-eslint/parser');
 const prettier = require('eslint-plugin-prettier');
@@ -14,7 +13,6 @@ module.exports = [
         },
         plugins: {
             '@typescript-eslint': tseslint,
-            'simple-import-sort': simpleImportSort,
             prettier: prettier,
         },
         rules: {
@@ -22,20 +20,6 @@ module.exports = [
             ...prettier.configs.recommended.rules,
             '@typescript-eslint/no-unused-vars': 'off',
             '@typescript-eslint/no-explicit-any': 'warn',
-            'simple-import-sort/imports': [
-                'warn',
-                {
-                    groups: [
-                        ['^\\u0000?reflect-metadata$'],
-                        ['^\\u0000'],
-                        ['^node:'],
-                        ['^@(?!videomatt)(?:[\\w-]+)', '^(?!src/)[\\w-]+'], // external
-                        ['^@videomatt'], // internal @videomatt
-                        ['^src/'],
-                        ['^\\.'], // relative imports
-                    ],
-                },
-            ],
         },
     },
     {

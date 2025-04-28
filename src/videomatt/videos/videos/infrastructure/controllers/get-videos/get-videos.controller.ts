@@ -1,11 +1,11 @@
-import { inject, injectable } from 'tsyringe';
 import { Request, Response } from 'express';
+import { inject, injectable } from 'tsyringe';
 
-import { InMemoryQueryEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-query.event-bus';
-import { HttpResponse } from '@videomatt/shared/infrastructure/controllers/http-response';
-import { GetVideosDTO } from '@videomatt/videos/videos/domain/dtos/get-videos.dto';
 import { DomainError } from '@videomatt/shared/domain/errors/domain.error';
+import { HttpResponse } from '@videomatt/shared/infrastructure/controllers/http-response';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
+import { InMemoryQueryEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-query.event-bus';
+import { GetVideosDTO } from '@videomatt/videos/videos/domain/dtos/get-videos.dto';
 
 @injectable()
 export class GetVideosController {

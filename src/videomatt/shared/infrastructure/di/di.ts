@@ -1,20 +1,22 @@
 import { SNSClient } from '@aws-sdk/client-sns';
 import { SQSClient } from '@aws-sdk/client-sqs';
+
 import { container } from 'tsyringe';
 
+import { DomainEventBus } from '@videomatt/shared/domain/event-bus/domain-event-bus';
+import { ErrorController } from '@videomatt/shared/infrastructure/controllers/error.controller';
+import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
+import { getEnvs } from '@videomatt/shared/infrastructure/envs/init-envs';
 import { InMemoryCommandEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-command.event-bus';
 import { InMemoryDomainEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-domain.event-bus';
 import { InMemoryQueryEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-query.event-bus';
-import { DIVideoComments } from '@videomatt/videos/video-comment/infrastructure/di/di-video-comment';
-import { ErrorController } from '@videomatt/shared/infrastructure/controllers/error.controller';
-import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/sequelize-db';
-import { DomainEventBus } from '@videomatt/shared/domain/event-bus/domain-event-bus';
-import { RedisDB } from '@videomatt/shared/infrastructure/persistence/redis-db';
-import { DIVideos } from '@videomatt/videos/videos/infrastructure/di/di-video';
-import { getEnvs } from '@videomatt/shared/infrastructure/envs/init-envs';
 import { PinoLogger } from '@videomatt/shared/infrastructure/logger/pino';
+import { RedisDB } from '@videomatt/shared/infrastructure/persistence/redis-db';
+import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/sequelize-db';
 import { DIUsers } from '@videomatt/users/infrastructure/di/di-user';
-import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
+import { DIVideoComments } from '@videomatt/videos/video-comment/infrastructure/di/di-video-comment';
+import { DIVideos } from '@videomatt/videos/videos/infrastructure/di/di-video';
+
 import { SQSWorker } from 'src/workers';
 
 export class DI {
