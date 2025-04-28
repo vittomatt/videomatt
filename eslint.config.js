@@ -26,27 +26,22 @@ module.exports = [
                 'warn',
                 {
                     groups: [
-                        // 1) reflect-metadata
                         ['^\\u0000?reflect-metadata$'],
-
-                        // 2) otros side-effect imports
                         ['^\\u0000'],
-
-                        // 3) Node built-ins
                         ['^node:'],
-
-                        // 4) npm packages (scoped que NO sean @videomatt, o no-scoped),
-                        //    **sin aceptar slash extra**.
-                        ['^@(?!videomatt)[^/]+(?:\\/[^/]+)?$', '^[^./@][^/]+$'],
-
-                        // 5) tu alias interno y tus rutas absolutas
-                        ['^@videomatt', '^src/'],
-
-                        // 6) imports relativos
-                        ['^\\.'],
+                        ['^@(?!videomatt)(?:[\\w-]+)', '^(?!src/)[\\w-]+'], // external
+                        ['^@videomatt'], // internal @videomatt
+                        ['^src/'],
+                        ['^\\.'], // relative imports
                     ],
                 },
             ],
+        },
+    },
+    {
+        files: ['**/*.test.ts'],
+        rules: {
+            '@typescript-eslint/no-unused-expressions': 'off',
         },
     },
 ];
