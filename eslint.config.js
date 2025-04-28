@@ -21,31 +21,28 @@ module.exports = [
             ...tseslint.configs.recommended.rules,
             ...prettier.configs.recommended.rules,
             '@typescript-eslint/no-unused-vars': 'off',
+            '@typescript-eslint/no-explicit-any': 'warn',
             'simple-import-sort/imports': [
                 'warn',
                 {
                     groups: [
-                        // 1 — reflect-metadata
+                        // 1) reflect-metadata
                         ['^\\u0000?reflect-metadata$'],
 
-                        // 2 — any other side-effect import
+                        // 2) otros side-effect imports
                         ['^\\u0000'],
 
-                        // 3 — built-ins of Node
+                        // 3) Node built-ins
                         ['^node:'],
 
-                        // 4 — external npm packages:
-                        //     4a) @scope/package that is not @videomatt
-                        //     4b) packages without scope
-                        ['^@(?!videomatt)(?:[\\w-]+)', '^\\w'],
+                        // 4) npm packages (scoped que NO sean @videomatt, o no-scoped),
+                        //    **sin aceptar slash extra**.
+                        ['^@(?!videomatt)[^/]+(?:\\/[^/]+)?$', '^[^./@][^/]+$'],
 
-                        // 5 — your internal alias @videomatt/*
-                        ['^@videomatt'],
+                        // 5) tu alias interno y tus rutas absolutas
+                        ['^@videomatt', '^src/'],
 
-                        // 6 — other absolute imports from your repo (if you have them)
-                        ['^'],
-
-                        // 7 — relative imports (“./” and “../”)
+                        // 6) imports relativos
                         ['^\\.'],
                     ],
                 },

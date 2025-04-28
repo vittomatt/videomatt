@@ -29,6 +29,6 @@ describe('CreateUserUseCase', () => {
     afterEach(() => sinon.restore());
 
     it('should workd', async () => {
-        expect(true).to.be.true;
+        // expect(true).to.be.true;
     });
 });
