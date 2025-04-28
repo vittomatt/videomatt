@@ -1,7 +1,8 @@
-import { UserIdMother } from '../users/user-id-mother';
-import { VideoCommentIdMother } from './video-comment-id-mother';
-import { VideoCommentTextMother } from './video-comment-text-mother';
-import { VideoIdMother } from './video-id-mother';
+import { VideoCommentIdMother } from './video-comment-id.mother';
+import { VideoCommentTextMother } from './video-comment-text.mother';
+import { VideoIdMother } from './video-id.mother';
+
+import { UserIdMother } from '@tests/shared/users/domain/user-id.mother';
 
 import {
     VideoComment,

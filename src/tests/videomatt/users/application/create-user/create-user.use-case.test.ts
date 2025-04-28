@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 
-import { UserMother } from '@tests/shared/users/user-mother';
+import { UserMother } from '@tests/shared/users/domain/user.mother';
 
 import { expect } from 'chai';
 import sinon from 'sinon';
