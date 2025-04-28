@@ -1,3 +1,8 @@
+import { SNSClient } from '@aws-sdk/client-sns';
+import { SQSClient } from '@aws-sdk/client-sqs';
+import { SQSWorker } from 'src/workers';
+import { container } from 'tsyringe';
+
 import { InMemoryCommandEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-command.event-bus';
 import { InMemoryDomainEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-domain.event-bus';
 import { InMemoryQueryEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-query.event-bus';
@@ -11,10 +16,6 @@ import { getEnvs } from '@videomatt/shared/infrastructure/envs/init-envs';
 import { PinoLogger } from '@videomatt/shared/infrastructure/logger/pino';
 import { DIUsers } from '@videomatt/users/infrastructure/di/di-user';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
-import { SNSClient } from '@aws-sdk/client-sns';
-import { SQSClient } from '@aws-sdk/client-sqs';
-import { SQSWorker } from 'src/workers';
-import { container } from 'tsyringe';
 
 export class DI {
     constructor(

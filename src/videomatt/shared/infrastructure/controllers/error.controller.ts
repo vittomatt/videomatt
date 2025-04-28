@@ -1,6 +1,7 @@
-import { HttpResponse } from '@videomatt/shared/infrastructure/controllers/http-response';
 import { NextFunction, Request, Response } from 'express';
 import { injectable } from 'tsyringe';
+
+import { HttpResponse } from '@videomatt/shared/infrastructure/controllers/http-response';
 
 @injectable()
 export class ErrorController {

@@ -1,3 +1,6 @@
+import { inject, injectable } from 'tsyringe';
+import { Sequelize } from 'sequelize';
+
 import { SequelizeCriteriaConverter } from '@videomatt/shared/infrastructure/repositories/sequelize-criteria.converter';
 import { VideoReadRepository } from '@videomatt/videos/videos/domain/repositories/video-read.repository';
 import { VideoDBModelRead } from '@videomatt/videos/videos/infrastructure/models/video.db-read-model';
@@ -7,8 +10,6 @@ import { RedisDB } from '@videomatt/shared/infrastructure/persistence/redis-db';
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { Logger } from '@videomatt/shared/domain/logger/logger';
-import { inject, injectable } from 'tsyringe';
-import { Sequelize } from 'sequelize';
 
 @injectable()
 export class SequelizeVideoReadRepository implements VideoReadRepository<VideoRead> {

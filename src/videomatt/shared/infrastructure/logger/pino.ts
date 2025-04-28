@@ -1,7 +1,8 @@
-import { Logger as LocalLogger } from '@videomatt/shared/domain/logger/logger';
 import pinoHttp, { HttpLogger } from 'pino-http';
 import { injectable } from 'tsyringe';
 import pino, { Logger } from 'pino';
+
+import { Logger as LocalLogger } from '@videomatt/shared/domain/logger/logger';
 
 @injectable()
 export class PinoLogger implements LocalLogger {

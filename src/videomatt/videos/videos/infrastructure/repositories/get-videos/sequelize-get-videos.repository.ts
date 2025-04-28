@@ -1,11 +1,12 @@
+import { inject, injectable } from 'tsyringe';
+import { QueryTypes } from 'sequelize';
+
 import { GetVideosRepository } from '@videomatt/videos/videos/domain/repositories/get-videos.repository';
 import { VideoDBModelRead } from '@videomatt/videos/videos/infrastructure/models/video.db-read-model';
 import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/sequelize-db';
 import { VideoRead } from '@videomatt/videos/videos/domain/models/read/video.read';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { Logger } from '@videomatt/shared/domain/logger/logger';
-import { inject, injectable } from 'tsyringe';
-import { QueryTypes } from 'sequelize';
 
 @injectable()
 export class SequelizeGetVideosRepository implements GetVideosRepository<VideoRead[]> {

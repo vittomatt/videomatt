@@ -1,5 +1,6 @@
-import { getEnvs } from '@videomatt/shared/infrastructure/envs/init-envs';
 import { createClient, RedisClientType } from 'redis';
+
+import { getEnvs } from '@videomatt/shared/infrastructure/envs/init-envs';
 
 export class RedisDB {
     private readonly client: RedisClientType;

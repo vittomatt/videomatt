@@ -1,10 +1,14 @@
+import expressAsyncHandler from 'express-async-handler';
+import { inject, injectable } from 'tsyringe';
+import { Express } from 'express';
+
 import {
-    AddCommentToVideoParamValidatorDto,
     AddCommentToVideoBodyValidatorDto,
+    AddCommentToVideoParamValidatorDto,
 } from '@videomatt/videos/video-comment/infrastructure/controllers/add-comment-to-video/add-comment-to-video.validator';
 import {
-    CreateVideoParamValidatorDto,
     CreateVideoBodyValidatorDto,
+    CreateVideoParamValidatorDto,
 } from '@videomatt/videos/videos/infrastructure/controllers/create-video/create-video.validator';
 import { AddCommentToVideoController } from '@videomatt/videos/video-comment/infrastructure/controllers/add-comment-to-video/add-comment-to-video.controller';
 import { CreateVideoController } from '@videomatt/videos/videos/infrastructure/controllers/create-video/create-video.controller';
@@ -13,9 +17,6 @@ import { GetVideosController } from '@videomatt/videos/videos/infrastructure/con
 import { VIDEO_COMMENT_TOKENS } from '@videomatt/videos/video-comment/infrastructure/di/tokens-video-comment';
 import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 import { validateDto } from '@videomatt/shared/infrastructure/controllers/validator';
-import expressAsyncHandler from 'express-async-handler';
-import { inject, injectable } from 'tsyringe';
-import { Express } from 'express';
 
 @injectable()
 export class VideoRoutes {

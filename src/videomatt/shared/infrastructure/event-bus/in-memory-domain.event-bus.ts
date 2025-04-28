@@ -1,8 +1,9 @@
-import { RemoteEventProducer } from '@videomatt/shared/domain/broker/remote-event.producer';
+import { singleton } from 'tsyringe';
+
 import { LocalEventPublisher } from '@videomatt/shared/domain/broker/local-event.publisher';
+import { RemoteEventProducer } from '@videomatt/shared/domain/broker/remote-event.producer';
 import { DomainEventBus } from '@videomatt/shared/domain/event-bus/domain-event-bus';
 import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain.event';
-import { singleton } from 'tsyringe';
 
 @singleton()
 export class InMemoryDomainEventBus implements DomainEventBus {

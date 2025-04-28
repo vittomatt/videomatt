@@ -1,9 +1,10 @@
 import 'reflect-metadata';
 
+import { inject, injectable } from 'tsyringe';
+
 import { SQSEventConsumer } from '@videomatt/shared/infrastructure/broker/sqs-event.consumer';
 import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 import { USER_TOKEN } from '@videomatt/users/infrastructure/di/tokens-user';
-import { injectable, inject } from 'tsyringe';
 
 @injectable()
 export class SQSWorker {

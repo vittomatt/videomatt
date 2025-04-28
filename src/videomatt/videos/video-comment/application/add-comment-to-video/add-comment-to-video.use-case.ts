@@ -1,3 +1,5 @@
+import { inject, injectable } from 'tsyringe';
+
 import { VideoNotFoundError } from '@videomatt/videos/videos/domain/errors/video-not-found.error';
 import { VideoComment } from '@videomatt/videos/video-comment/domain/models/write/video-comment';
 import { VideoRepository } from '@videomatt/videos/videos/domain/repositories/video.repository';
@@ -5,7 +7,6 @@ import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-v
 import { DomainEventBus } from '@videomatt/shared/domain/event-bus/domain-event-bus';
 import { Video } from '@videomatt/videos/videos/domain/models/write/video';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
-import { inject, injectable } from 'tsyringe';
 
 @injectable()
 export class AddCommentToVideoUseCase {

@@ -1,3 +1,7 @@
+import asyncHandler from 'express-async-handler';
+import { inject, injectable } from 'tsyringe';
+import { Express } from 'express';
+
 import {
     CreateUserBodyValidatorDto,
     CreateUserParamValidatorDto,
@@ -5,9 +9,6 @@ import {
 import { CreateUserController } from '@videomatt/users/infrastructure/controllers/create-user.controller';
 import { validateDto } from '@videomatt/shared/infrastructure/controllers/validator';
 import { USER_TOKEN } from '@videomatt/users/infrastructure/di/tokens-user';
-import asyncHandler from 'express-async-handler';
-import { inject, injectable } from 'tsyringe';
-import { Express } from 'express';
 
 @injectable()
 export class UserRoutes {

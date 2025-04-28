@@ -1,10 +1,11 @@
+import { inject, injectable } from 'tsyringe';
+
 import { UserAlreadyExistsError } from '@videomatt/users/domain/errors/user-already-exists.error';
 import { UserRepository } from '@videomatt/users/domain/repositories/user.repository';
 import { DomainEventBus } from '@videomatt/shared/domain/event-bus/domain-event-bus';
 import { USER_TOKEN } from '@videomatt/users/infrastructure/di/tokens-user';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { User } from '@videomatt/users/domain/models/write/user';
-import { inject, injectable } from 'tsyringe';
 
 @injectable()
 export class CreateUserUseCase {

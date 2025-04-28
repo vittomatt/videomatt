@@ -1,5 +1,6 @@
-import { DomainError } from '@videomatt/shared/domain/errors/domain.error';
 import { Response } from 'express';
+
+import { DomainError } from '@videomatt/shared/domain/errors/domain.error';
 
 export class HttpResponse {
     static domainError(res: Response, error: DomainError, statusCode: number): Response {

@@ -1,3 +1,5 @@
+import { inject, injectable } from 'tsyringe';
+
 import { InMemoryCommandEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-command.event-bus';
 import { CreateUserUseCase } from '@videomatt/users/application/create-user/create-user.use-case';
 import { UserAlreadyExistsError } from '@videomatt/users/domain/errors/user-already-exists.error';
@@ -7,7 +9,6 @@ import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain.event';
 import { CreateUserDTO } from '@videomatt/users/domain/dtos/create-user.dto';
 import { USER_TOKEN } from '@videomatt/users/infrastructure/di/tokens-user';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
-import { inject, injectable } from 'tsyringe';
 
 @injectable()
 export class CreateUserHandler implements CommandHandler<UserAlreadyExistsError> {

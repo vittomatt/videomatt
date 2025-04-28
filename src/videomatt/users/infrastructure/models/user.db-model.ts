@@ -1,5 +1,6 @@
-import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/sequelize-db';
 import { DataTypes, Model, Sequelize } from 'sequelize';
+
+import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/sequelize-db';
 
 export const USER_TABLE_NAME = 'users';
 

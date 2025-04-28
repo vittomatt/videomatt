@@ -1,3 +1,5 @@
+import { container } from 'tsyringe';
+
 import { IncreaseAmountOfVideosUseCase } from '@videomatt/users/application/increase-amount-of-videos/increase-amount-of-videos.use-case';
 import { IncreaseAmountOfVideosHandler } from '@videomatt/users/infrastructure/handlers/domain/increase-amount-of-videos.handler';
 import { SQSEventUserCreatedConsumer } from '@videomatt/users/infrastructure/broker/consumers/sqs-event-user-created.consumer';
@@ -9,7 +11,6 @@ import { CreateUserUseCase } from '@videomatt/users/application/create-user/crea
 import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/sequelize-db';
 import { USER_TOKEN } from '@videomatt/users/infrastructure/di/tokens-user';
 import { getEnvs } from '@videomatt/shared/infrastructure/envs/init-envs';
-import { container } from 'tsyringe';
 
 export class DIUsers {
     constructor(private readonly db: PostgresDB) {}

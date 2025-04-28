@@ -1,3 +1,5 @@
+import { inject, injectable } from 'tsyringe';
+
 import { VideoCommentDBModel } from '@videomatt/videos/video-comment/infrastructure/models/video-comment.db-model';
 import { VIDEO_COMMENT_TOKENS } from '@videomatt/videos/video-comment/infrastructure/di/tokens-video-comment';
 import { VideoRepository } from '@videomatt/videos/videos/domain/repositories/video.repository';
@@ -5,10 +7,10 @@ import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-v
 import { RedisDB } from '@videomatt/shared/infrastructure/persistence/redis-db';
 import { Video } from '@videomatt/videos/videos/domain/models/write/video';
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';
-import { SequelizeVideoRepository } from './sequelize-video.repository';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { Logger } from '@videomatt/shared/domain/logger/logger';
-import { inject, injectable } from 'tsyringe';
+
+import { SequelizeVideoRepository } from './sequelize-video.repository';
 
 @injectable()
 export class RedisVideoRepository implements VideoRepository<Video> {

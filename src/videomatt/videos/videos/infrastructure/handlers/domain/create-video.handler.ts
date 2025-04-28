@@ -1,3 +1,5 @@
+import { inject, injectable } from 'tsyringe';
+
 import { InMemoryCommandEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-command.event-bus';
 import { CreateVideoUseCase } from '@videomatt/videos/videos/application/create-video/create-video.use-case';
 import { VideoAlreadyExistsError } from '@videomatt/videos/videos/domain/errors/video-already-exists.error';
@@ -7,7 +9,6 @@ import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-v
 import { CommandHandler } from '@videomatt/shared/domain/event-bus/command.handler';
 import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain.event';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
-import { inject, injectable } from 'tsyringe';
 
 @injectable()
 export class CreateVideoHandler implements CommandHandler<VideoAlreadyExistsError> {

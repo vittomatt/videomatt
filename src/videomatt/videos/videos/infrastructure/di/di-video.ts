@@ -1,3 +1,5 @@
+import { container } from 'tsyringe';
+
 import { InMemoryEventCommentAddedSubscriber } from '@videomatt/videos/videos/infrastructure/broker/subscriber/in-memory-event-comment-added.subscriber';
 import { InMemoryEventVideoCreatedSubscriber } from '@videomatt/videos/videos/infrastructure/broker/subscriber/in-memory-event-video-created.subscriber';
 import { IncreaseAmountOfCommentsUseCase } from '@videomatt/videos/videos/application/increase-amount-of-comments/increase-amount-of-comments.use-case';
@@ -20,7 +22,6 @@ import { GetVideosUseCase } from '@videomatt/videos/videos/application/get-video
 import { PostgresDB } from '@videomatt/shared/infrastructure/persistence/sequelize-db';
 import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
 import { getEnvs } from '@videomatt/shared/infrastructure/envs/init-envs';
-import { container } from 'tsyringe';
 
 export class DIVideos {
     constructor(private readonly db: PostgresDB) {}

@@ -1,5 +1,6 @@
-import { VideoCommentDBModel } from '@videomatt/videos/video-comment/infrastructure/models/video-comment.db-model';
 import { Includeable as SequelizeIncludeable, Op, Order as SequelizeOrder } from 'sequelize';
+
+import { VideoCommentDBModel } from '@videomatt/videos/video-comment/infrastructure/models/video-comment.db-model';
 import { FilterOperator, Filters } from '@videomatt/shared/domain/repositories/filters';
 import { Order, OrderType } from '@videomatt/shared/domain/repositories/order';
 import { Criteria } from '@videomatt/shared/domain/repositories/criteria';

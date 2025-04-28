@@ -1,3 +1,5 @@
+import { inject, injectable } from 'tsyringe';
+
 import { InMemoryQueryEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-query.event-bus';
 import { GetVideosUseCase } from '@videomatt/videos/videos/application/get-videos/get-videos.use-case';
 import { VIDEO_TOKEN } from '@videomatt/videos/videos/infrastructure/di/tokens-video';
@@ -6,7 +8,6 @@ import { GetVideosDTO } from '@videomatt/videos/videos/domain/dtos/get-videos.dt
 import { QueryHandler } from '@videomatt/shared/domain/event-bus/query.handler';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { DTO } from '@videomatt/shared/domain/dtos/dto';
-import { inject, injectable } from 'tsyringe';
 
 @injectable()
 export class GetVideosHandler implements QueryHandler<VideoRead[]> {

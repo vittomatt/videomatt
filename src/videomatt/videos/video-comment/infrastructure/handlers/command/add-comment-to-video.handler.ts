@@ -1,3 +1,5 @@
+import { inject, injectable } from 'tsyringe';
+
 import { AddCommentToVideoUseCase } from '@videomatt/videos/video-comment/application/add-comment-to-video/add-comment-to-video.use-case';
 import { VideoCommentAddedEvent } from '@videomatt/videos/video-comment/domain/events/video-comment-added.event';
 import { InMemoryCommandEventBus } from '@videomatt/shared/infrastructure/event-bus/in-memory-command.event-bus';
@@ -7,7 +9,6 @@ import { VideoNotFoundError } from '@videomatt/videos/videos/domain/errors/video
 import { CommandHandler } from '@videomatt/shared/domain/event-bus/command.handler';
 import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain.event';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
-import { inject, injectable } from 'tsyringe';
 
 @injectable()
 export class AddCommentToVideoHandler implements CommandHandler<VideoNotFoundError> {

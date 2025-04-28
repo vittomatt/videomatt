@@ -1,3 +1,5 @@
+import { inject, singleton } from 'tsyringe';
+
 import { InMemoryEventCommentAddedSubscriber } from '@videomatt/videos/videos/infrastructure/broker/subscriber/in-memory-event-comment-added.subscriber';
 import { InMemoryEventVideoCreatedSubscriber } from '@videomatt/videos/videos/infrastructure/broker/subscriber/in-memory-event-video-created.subscriber';
 import { VideoCommentAddedEvent } from '@videomatt/videos/video-comment/domain/events/video-comment-added.event';
@@ -9,7 +11,6 @@ import { DomainEventBus } from '@videomatt/shared/domain/event-bus/domain-event-
 import { DomainEvent } from '@videomatt/shared/domain/event-bus/domain.event';
 import { TOKEN } from '@videomatt/shared/infrastructure/di/tokens';
 import { Logger } from '@videomatt/shared/domain/logger/logger';
-import { inject, singleton } from 'tsyringe';
 
 @singleton()
 export class InMemoryVideoEventPublisher implements LocalEventPublisher {
