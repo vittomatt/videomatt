@@ -47,6 +47,21 @@ services:
             - '6379:6379'
         networks:
             - videonet
+    localstack:
+        container_name: localstack
+        image: localstack/localstack
+        restart: unless-stopped
+        ports:
+            - '127.0.0.1:4566:4566'
+            - '127.0.0.1:4510-4559:4510-4559'
+        environment:
+            - SERVICES=events,sqs
+            - DEBUG=true
+        volumes:
+            - './volume:/var/lib/localstack'
+            - '/var/run/docker.sock:/var/run/docker.sock'
+        networks:
+            - videonet
 networks:
     videonet:
         driver: bridge
