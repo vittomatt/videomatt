@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 
+import { faker } from '@faker-js/faker';
 import { UserMother } from '@tests/shared/users/domain/user.mother';
 
 import { expect } from 'chai';
@@ -20,6 +21,9 @@ describe('CreateUserUseCase', () => {
         repository = {
             searchById: sinon.stub(),
             add: sinon.stub(),
+            remove: sinon.stub(),
+            update: sinon.stub(),
+            search: sinon.stub(),
         } as sinon.SinonStubbedInstance<UserRepository<User>>;
 
         eventBus = {
@@ -32,17 +36,22 @@ describe('CreateUserUseCase', () => {
     afterEach(() => sinon.restore());
 
     it('should return UserAlreadyExistsError if the user already exists', async () => {
-        const existingUser = UserMother.create();
-        (repository.searchById as sinon.SinonStub).resolves(existingUser);
+        // Given
+        const userId = faker.string.uuid();
+        const existingUser = UserMother.create({ id: userId });
 
+        repository.searchById.resolves(existingUser);
+
+        // When
         const result = await useCase.execute({
-            id: existingUser.id.value,
+            id: userId,
             firstName: existingUser.firstName.value,
             lastName: existingUser.lastName.value,
         });
 
+        // Then
         expect(result).to.be.instanceOf(UserAlreadyExistsError);
-        expect(repository.add.called).to.be.false;
-        expect(eventBus.publish.called).to.be.false;
+        expect(repository.searchById).to.have.been.calledOnceWithExactly(userId);
+        expect(eventBus.publish).to.not.have.been.called;
     });
 });
