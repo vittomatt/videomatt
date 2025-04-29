@@ -9,6 +9,7 @@ import sinon from 'sinon';
 import { DomainEventBus } from '@videomatt/shared/domain/event-bus/domain-event-bus';
 import { CreateUserUseCase } from '@videomatt/users/application/create-user/create-user.use-case';
 import { UserAlreadyExistsError } from '@videomatt/users/domain/errors/user-already-exists.error';
+import { UserCreatedEvent } from '@videomatt/users/domain/events/user-created.event';
 import { User } from '@videomatt/users/domain/models/write/user';
 import { UserRepository } from '@videomatt/users/domain/repositories/user.repository';
 
@@ -43,15 +44,36 @@ describe('CreateUserUseCase', () => {
         repository.searchById.resolves(existingUser);
 
         // When
-        const result = await useCase.execute({
-            id: userId,
-            firstName: existingUser.firstName.value,
-            lastName: existingUser.lastName.value,
-        });
+        const result = await useCase.execute(existingUser.toPrimitives());
 
         // Then
         expect(result).to.be.instanceOf(UserAlreadyExistsError);
         expect(repository.searchById).to.have.been.calledOnceWithExactly(userId);
         expect(eventBus.publish).to.not.have.been.called;
+    });
+
+    it('should create a new user if it does not exist', async () => {
+        // Given
+        const userId = faker.string.uuid();
+        const newUser = UserMother.create({ id: userId });
+
+        repository.searchById.resolves(null);
+
+        // When
+        await useCase.execute(newUser.toPrimitives());
+
+        // Then
+        expect(repository.searchById).to.have.been.calledOnceWithExactly(userId);
+        expect(repository.add).to.have.been.calledOnce;
+
+        const addedUser: User = repository.add.firstCall.args[0];
+        expect(addedUser).to.be.instanceOf(User);
+        expect(addedUser.id.value).to.equal(userId);
+
+        expect(eventBus.publish).to.have.been.calledOnce;
+
+        const publishedEvents = eventBus.publish.firstCall.args[0];
+        const [firstEvent] = publishedEvents;
+        expect(firstEvent).to.be.instanceOf(UserCreatedEvent);
     });
 });

@@ -10,7 +10,7 @@ export class InMemoryCommandEventBus {
         [key: string]: CommandHandler<DomainError>;
     } = {};
 
-    registerHandler<T extends DTO>(dto: string, handler: CommandHandler<DomainError>): void {
+    registerHandler(dto: string, handler: CommandHandler<DomainError>): void {
         this.handlers[dto] = handler;
     }
 
