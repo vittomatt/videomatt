@@ -1,6 +1,5 @@
 import { faker } from '@faker-js/faker';
-
-import { UserId } from '@videomatt/users/domain/models/write/user-id';
+import { UserId } from '@users/domain/models/write/user-id';
 
 export class UserIdMother {
     static create(value?: string): UserId {

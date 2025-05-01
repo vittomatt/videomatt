@@ -1,6 +1,5 @@
 import { faker } from '@faker-js/faker';
-
-import { VideoDescription } from '@videomatt/videos/videos/domain/models/write/video-description';
+import { VideoDescription } from '@videos/videos/domain/models/write/video-description';
 
 export class VideoDescriptionMother {
     static create(value?: string): VideoDescription {

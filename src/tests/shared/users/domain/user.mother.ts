@@ -3,7 +3,7 @@ import { UserFirstNameMother } from './user-first-name.mother';
 import { UserIdMother } from './user-id.mother';
 import { UserLastNameMother } from './user-last-name.mother';
 
-import { User, UserPrimitives } from '@videomatt/users/domain/models/write/user';
+import { User, UserPrimitives } from '@users/domain/models/write/user';
 
 export class UserMother {
     static create(params?: Partial<UserPrimitives>): User {

@@ -3,11 +3,7 @@ import { VideoCommentTextMother } from './video-comment-text.mother';
 import { VideoIdMother } from './video-id.mother';
 
 import { UserIdMother } from '@tests/shared/users/domain/user-id.mother';
-
-import {
-    VideoComment,
-    VideoCommentPrimitives,
-} from '@videomatt/videos/video-comment/domain/models/write/video-comment';
+import { VideoComment, VideoCommentPrimitives } from '@videos/video-comment/domain/models/write/video-comment';
 
 export class VideoCommentMother {
     static create(params?: Partial<VideoCommentPrimitives>): VideoComment {

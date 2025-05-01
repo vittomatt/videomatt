@@ -1,0 +1,20 @@
+FROM node:20.11.0
+
+RUN apt-get update && apt-get install -y awscli
+
+WORKDIR /app
+
+COPY package*.json ./
+
+# Install husky globally to prevent prepare script failure
+RUN npm install -g husky
+RUN npm ci
+
+COPY . .
+
+RUN mkdir -p dist
+RUN npm run build
+
+EXPOSE 3000
+
+CMD ["npm", "run", "start:users"]

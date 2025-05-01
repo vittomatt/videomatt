@@ -5,8 +5,7 @@ import { VideoTitleMother } from './video-title.mother';
 import { VideoUrlMother } from './video-url.mother';
 
 import { UserIdMother } from '@tests/shared/users/domain/user-id.mother';
-
-import { Video, VideoPrimitives } from '@videomatt/videos/videos/domain/models/write/video';
+import { Video, VideoPrimitives } from '@videos/videos/domain/models/write/video';
 
 export class VideoMother {
     static create(params?: Partial<VideoPrimitives>): Video {

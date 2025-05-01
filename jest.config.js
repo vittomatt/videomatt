@@ -3,7 +3,9 @@ module.exports = {
     roots: ['<rootDir>/src'],
     testEnvironment: 'node',
     moduleNameMapper: {
-        '^@videomatt/(.*)$': '<rootDir>/src/videomatt/$1',
+        '^@users/(.*)$': '<rootDir>/src/users/$1',
+        '^@videos/(.*)$': '<rootDir>/src/videos/$1',
+        '^@shared/(.*)$': '<rootDir>/src/shared/$1',
         '^@tests/(.*)$': '<rootDir>/src/tests/$1',
     },
     modulePaths: ['<rootDir>/src'],

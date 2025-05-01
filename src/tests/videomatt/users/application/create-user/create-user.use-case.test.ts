@@ -1,17 +1,16 @@
 import 'reflect-metadata';
 
 import { faker } from '@faker-js/faker';
+import { DomainEventBus } from '@shared/domain/event-bus/domain-event-bus';
 import { UserMother } from '@tests/shared/users/domain/user.mother';
+import { CreateUserUseCase } from '@users/application/create-user/create-user.use-case';
+import { UserAlreadyExistsError } from '@users/domain/errors/user-already-exists.error';
+import { UserCreatedEvent } from '@users/domain/events/user-created.event';
+import { User } from '@users/domain/models/write/user';
+import { UserRepository } from '@users/domain/repositories/user.repository';
 
 import { expect } from 'chai';
 import sinon from 'sinon';
-
-import { DomainEventBus } from '@videomatt/shared/domain/event-bus/domain-event-bus';
-import { CreateUserUseCase } from '@videomatt/users/application/create-user/create-user.use-case';
-import { UserAlreadyExistsError } from '@videomatt/users/domain/errors/user-already-exists.error';
-import { UserCreatedEvent } from '@videomatt/users/domain/events/user-created.event';
-import { User } from '@videomatt/users/domain/models/write/user';
-import { UserRepository } from '@videomatt/users/domain/repositories/user.repository';
 
 describe('CreateUserUseCase', () => {
     let repository: sinon.SinonStubbedInstance<UserRepository<User>>;

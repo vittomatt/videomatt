@@ -1,6 +1,5 @@
 import { faker } from '@faker-js/faker';
-
-import { VideoURL } from '@videomatt/videos/videos/domain/models/write/video-url';
+import { VideoURL } from '@videos/videos/domain/models/write/video-url';
 
 export class VideoUrlMother {
     static create(value?: string): VideoURL {
