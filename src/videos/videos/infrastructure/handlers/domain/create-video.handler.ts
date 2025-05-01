@@ -1,11 +1,11 @@
 import { CommandHandler } from '@shared/domain/event-bus/command.handler';
 import { DomainEvent } from '@shared/domain/event-bus/domain.event';
+import { VideoCreatedEvent } from '@shared/domain/events/video-created.event';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { InMemoryCommandEventBus } from '@shared/infrastructure/event-bus/in-memory-command.event-bus';
 import { CreateVideoUseCase } from '@videos/videos/application/create-video/create-video.use-case';
 import { CreateVideoDTO } from '@videos/videos/domain/dtos/create-video.dto';
 import { VideoAlreadyExistsError } from '@videos/videos/domain/errors/video-already-exists.error';
-import { VideoCreatedEvent } from '@videos/videos/domain/events/video-created.event';
 import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/tokens-video';
 
 import { inject, injectable } from 'tsyringe';

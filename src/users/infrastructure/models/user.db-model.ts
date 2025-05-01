@@ -1,4 +1,4 @@
-import { PostgresDB } from '@shared/infrastructure/persistence/sequelize-db';
+import { PostgresUserDB } from '@users/infrastructure/persistence/sequelize-user.db';
 
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
@@ -45,9 +45,7 @@ export class UserDBModel extends Model {
         );
     }
 
-    public static associate(models: PostgresDB) {
-        this.hasMany(models.getVideoModel(), { foreignKey: 'userId' });
-    }
+    public static associate(models: PostgresUserDB) {}
 
     toPrimitives() {
         return {

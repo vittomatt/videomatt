@@ -1,9 +1,9 @@
 import { UserAmountOfVideo } from './user-amount-of-videos';
 import { UserFirstName } from './user-first-name';
-import { UserId } from './user-id';
 import { UserLastName } from './user-last-name';
 
 import { AggregateRoot } from '@shared/domain/aggregate-root';
+import { UserId } from '@shared/domain/models/write/user-id';
 import { UserCreatedEvent } from '@users/domain/events/user-created.event';
 
 export class User extends AggregateRoot {

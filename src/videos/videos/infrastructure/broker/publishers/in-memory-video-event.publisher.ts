@@ -2,10 +2,10 @@ import { LocalEventPublisher } from '@shared/domain/broker/local-event.publisher
 import { LocalEventSubscriber } from '@shared/domain/broker/local-event.subscriber';
 import { DomainEventBus } from '@shared/domain/event-bus/domain-event-bus';
 import { DomainEvent } from '@shared/domain/event-bus/domain.event';
+import { VideoCreatedEvent } from '@shared/domain/events/video-created.event';
 import { Logger } from '@shared/domain/logger/logger';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { VideoCommentAddedEvent } from '@videos/video-comment/domain/events/video-comment-added.event';
-import { VideoCreatedEvent } from '@videos/videos/domain/events/video-created.event';
 import { InMemoryEventCommentAddedSubscriber } from '@videos/videos/infrastructure/broker/subscriber/in-memory-event-comment-added.subscriber';
 import { InMemoryEventVideoCreatedSubscriber } from '@videos/videos/infrastructure/broker/subscriber/in-memory-event-video-created.subscriber';
 import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/tokens-video';
@@ -29,6 +29,7 @@ export class InMemoryVideoEventPublisher implements LocalEventPublisher {
 
     async publish(event: DomainEvent) {
         try {
+            // FITU HERE
             const handlers = this.handlers[event.eventName];
             await this.consume(event, handlers || []);
             this.logger.info(`Event ${event.eventName} sent`);

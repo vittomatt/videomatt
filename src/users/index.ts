@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 
 import { getEnvs } from '@shared/infrastructure/envs/init-envs';
-import { App } from '@users/users-app';
+import { App } from '@users/users.app';
 
 import express from 'express';
 

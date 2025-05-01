@@ -2,6 +2,7 @@ import { DeleteMessageCommand, Message, ReceiveMessageCommand, SQSClient } from 
 import { DomainHandler } from '@shared/domain/broker/domain-handler';
 import { RemoteEventConsumer } from '@shared/domain/broker/remote-event.consumer';
 import { Logger } from '@shared/domain/logger/logger';
+import { Worker } from '@shared/worker';
 
 const RETRY_QUEUE_SUFFIX = '_retry';
 
@@ -10,8 +11,11 @@ export class SQSEventConsumer implements RemoteEventConsumer {
         protected readonly sqsClient: SQSClient,
         protected readonly sqsUrl: string,
         protected readonly logger: Logger,
+        protected readonly worker: Worker,
         protected readonly handler?: DomainHandler<void>
-    ) {}
+    ) {
+        this.worker.registerConsumer(this);
+    }
 
     async consume() {
         const queues: string[] = [this.sqsUrl, `${this.sqsUrl}${RETRY_QUEUE_SUFFIX}`];

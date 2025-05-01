@@ -1,88 +1,92 @@
-import { EventBridgeUserEventProducer } from '../broker/producer/event-bridge-user-event.producer';
-
+import { EventBridgeClient } from '@aws-sdk/client-eventbridge';
+import { SNSClient } from '@aws-sdk/client-sns';
+import { SQSClient } from '@aws-sdk/client-sqs';
+import { fromIni } from '@aws-sdk/credential-provider-ini';
+import { ErrorController } from '@shared/infrastructure/controllers/error.controller';
+import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { getEnvs } from '@shared/infrastructure/envs/init-envs';
-import { PostgresDB } from '@shared/infrastructure/persistence/sequelize-db';
-import { CreateUserUseCase } from '@users/application/create-user/create-user.use-case';
-import { IncreaseAmountOfVideosUseCase } from '@users/application/increase-amount-of-videos/increase-amount-of-videos.use-case';
-import { SQSEventUserCreatedConsumer } from '@users/infrastructure/broker/consumers/sqs-event-user-created.consumer';
-import { CreateUserController } from '@users/infrastructure/controllers/create-user.controller';
-import { USER_TOKEN } from '@users/infrastructure/di/tokens-user';
-import { CreateUserHandler } from '@users/infrastructure/handlers/command/create-user.handler';
-import { IncreaseAmountOfVideosHandler } from '@users/infrastructure/handlers/domain/increase-amount-of-videos.handler';
-import { SequelizeUserRepository } from '@users/infrastructure/repositories/sequelize-user.repository';
+import { InMemoryCommandEventBus } from '@shared/infrastructure/event-bus/in-memory-command.event-bus';
+import { InMemoryDomainEventBus } from '@shared/infrastructure/event-bus/in-memory-domain.event-bus';
+import { InMemoryQueryEventBus } from '@shared/infrastructure/event-bus/in-memory-query.event-bus';
+import { PinoLogger } from '@shared/infrastructure/logger/pino';
+import { RedisDB } from '@shared/infrastructure/persistence/redis-db';
+import { DIUsers } from '@users/infrastructure/di/di-user-modules';
+import { PostgresUserDB } from '@users/infrastructure/persistence/sequelize-user.db';
+import { SQSWorker } from '@users/users.worker';
 
 import { container } from 'tsyringe';
 
-export class DIUsers {
-    constructor(private readonly db: PostgresDB) {}
+export class DI {
+    constructor(
+        private readonly db: PostgresUserDB,
+        private readonly redis: RedisDB
+    ) {}
 
     public initDI() {
         this.initDBDependencies();
-        this.initControllersDependencies();
-        this.initUseCasesDependencies();
-        this.initRepositoriesDependencies();
+        this.initSingletonDependencies();
+        this.initSharedDependencies();
         this.initBrokerDependencies();
-        this.initHandlersDependencies();
-    }
-
-    public initSingletons() {
-        container.resolve(USER_TOKEN.EVENT_BRIDGE_EVENT_PRODUCER);
-        container.resolve(USER_TOKEN.CREATE_USER_HANDLER);
+        this.initControllersDependencies();
+        this.initModules();
+        this.initSingletons();
     }
 
     private initDBDependencies() {
-        container.register(USER_TOKEN.DB_MODEL, {
-            useValue: this.db.getUserModel(),
+        container.register(TOKEN.DB, {
+            useValue: this.db,
+        });
+        container.register(TOKEN.REDIS, {
+            useValue: this.redis,
         });
     }
 
-    private initControllersDependencies() {
-        container.register(USER_TOKEN.CREATE_USER_CONTROLLER, {
-            useClass: CreateUserController,
-        });
+    private initSingletonDependencies() {
+        container.registerSingleton(TOKEN.DOMAIN_EVENT_BUS, InMemoryDomainEventBus);
+        container.registerSingleton(TOKEN.COMMAND_EVENT_BUS, InMemoryCommandEventBus);
+        container.registerSingleton(TOKEN.QUERY_EVENT_BUS, InMemoryQueryEventBus);
+        container.registerSingleton(TOKEN.WORKER_USER, SQSWorker);
     }
 
-    private initUseCasesDependencies() {
-        container.register(USER_TOKEN.INCREASE_AMOUNT_OF_VIDEOS_USE_CASE, {
-            useClass: IncreaseAmountOfVideosUseCase,
-        });
-        container.register(USER_TOKEN.CREATE_USER_USE_CASE, {
-            useClass: CreateUserUseCase,
-        });
-    }
-
-    private initRepositoriesDependencies() {
-        container.register(USER_TOKEN.REPOSITORY, {
-            useClass: SequelizeUserRepository,
+    private initSharedDependencies() {
+        container.register(TOKEN.LOGGER, {
+            useClass: PinoLogger,
         });
     }
 
     private initBrokerDependencies() {
-        // Event Bridge
-        container.register(USER_TOKEN.EVENT_BRIDGE_USER_TOPIC_ARN, {
-            useValue: getEnvs().EVENT_BRIDGE_USER_TOPIC_ARN,
-        });
-        container.register(USER_TOKEN.EVENT_BRIDGE_EVENT_PRODUCER, {
-            useClass: EventBridgeUserEventProducer,
-        });
+        const { AWS_REGION, AWS_PROFILE, AWS_SQS_ENDPOINT, AWS_SNS_ENDPOINT, AWS_EVENT_BRIDGE_ENDPOINT } = getEnvs();
 
-        // SQS
-        container.register(USER_TOKEN.SQS_USER_CREATED_QUEUE_URL, {
-            useValue: getEnvs().SQS_USER_CREATED_QUEUE_URL,
-        });
+        const awsConfig = {
+            region: AWS_REGION,
+            credentials: fromIni({
+                profile: AWS_PROFILE,
+            }),
+            useQueueUrlAsEndpoint: false,
+        };
 
-        // Consumers
-        container.register(USER_TOKEN.SQS_EVENT_USER_CREATED_CONSUMER, {
-            useClass: SQSEventUserCreatedConsumer,
+        container.register(TOKEN.SNS_CLIENT, {
+            useValue: new SNSClient({ ...awsConfig, endpoint: AWS_SNS_ENDPOINT }),
+        });
+        container.register(TOKEN.SQS_CLIENT, {
+            useValue: new SQSClient({ ...awsConfig, endpoint: AWS_SQS_ENDPOINT }),
+        });
+        container.register(TOKEN.EVENT_BRIDGE_CLIENT, {
+            useValue: new EventBridgeClient({ ...awsConfig, endpoint: AWS_EVENT_BRIDGE_ENDPOINT }),
         });
     }
 
-    private initHandlersDependencies() {
-        container.register(USER_TOKEN.CREATE_USER_HANDLER, {
-            useClass: CreateUserHandler,
+    private initControllersDependencies() {
+        container.register(TOKEN.ERROR_CONTROLLER, {
+            useClass: ErrorController,
         });
-        container.register(USER_TOKEN.INCREASE_AMOUNT_OF_VIDEOS_HANDLER, {
-            useClass: IncreaseAmountOfVideosHandler,
-        });
+    }
+
+    private initModules() {
+        new DIUsers(this.db).initDI();
+    }
+
+    public initSingletons() {
+        new DIUsers(this.db).initSingletons();
     }
 }

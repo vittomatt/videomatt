@@ -1,7 +1,6 @@
 import { Logger } from '@shared/domain/logger/logger';
 import { Criteria } from '@shared/domain/repositories/criteria';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
-import { RedisDB } from '@shared/infrastructure/persistence/redis-db';
 import { SequelizeCriteriaConverter } from '@shared/infrastructure/repositories/sequelize-criteria.converter';
 import { VideoRead } from '@videos/videos/domain/models/read/video.read';
 import { VideoReadRepository } from '@videos/videos/domain/repositories/video-read.repository';
@@ -15,8 +14,7 @@ import { inject, injectable } from 'tsyringe';
 export class SequelizeVideoReadRepository implements VideoReadRepository<VideoRead> {
     constructor(
         @inject(VIDEO_TOKEN.DB_MODEL_READ) private readonly dbVideoRead: typeof VideoDBModelRead,
-        @inject(TOKEN.LOGGER) private readonly logger: Logger,
-        @inject(TOKEN.REDIS) private readonly redis: RedisDB
+        @inject(TOKEN.LOGGER) private readonly logger: Logger
     ) {}
 
     async add(video: VideoRead) {

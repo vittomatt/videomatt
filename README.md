@@ -1,5 +1,6 @@
 # To run the project
 
+- Install dependencies `npm ci`
 - Copy `.env.example` as `.env` or `.env.docker.example` as `.env.docker`
 - Run: `docker compose up`
 

@@ -1,7 +1,7 @@
 import { VideoCommentId } from './video-comment-id';
 import { VideoCommentText } from './video-comment-text';
 
-import { UserId } from '@users/domain/models/write/user-id';
+import { UserId } from '@shared/domain/models/write/user-id';
 import { VideoId } from '@videos/videos/domain/models/write/video-id';
 
 export class VideoComment {

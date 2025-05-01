@@ -1,5 +1,4 @@
-import { PostgresDB } from '@shared/infrastructure/persistence/sequelize-db';
-import { USER_TABLE_NAME } from '@users/infrastructure/models/user.db-model';
+import { PostgresVideosDB } from '@videos/videos/infrastructure/persistence/sequelize-videos.db';
 
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
@@ -35,10 +34,6 @@ export class VideoDBModelRead extends Model {
                 userId: {
                     type: DataTypes.UUID,
                     allowNull: false,
-                    references: {
-                        model: USER_TABLE_NAME,
-                        key: 'id',
-                    },
                 },
                 amountOfComments: {
                     type: DataTypes.INTEGER,
@@ -60,9 +55,7 @@ export class VideoDBModelRead extends Model {
         );
     }
 
-    public static associate(models: PostgresDB) {
-        this.belongsTo(models.getUserModel(), { foreignKey: 'userId' });
-    }
+    public static associate(models: PostgresVideosDB) {}
 
     toPrimitives() {
         return {

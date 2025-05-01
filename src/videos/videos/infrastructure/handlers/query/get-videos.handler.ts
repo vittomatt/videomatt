@@ -10,7 +10,7 @@ import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/tokens-video';
 import { inject, injectable } from 'tsyringe';
 
 @injectable()
-export class GetVideosHandler implements QueryHandler<VideoRead[]> {
+export class GetVideosQueryHandler implements QueryHandler<VideoRead[]> {
     constructor(
         @inject(VIDEO_TOKEN.GET_VIDEOS_USE_CASE)
         private readonly useCase: GetVideosUseCase,

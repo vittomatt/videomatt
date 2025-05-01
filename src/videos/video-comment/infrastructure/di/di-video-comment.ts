@@ -1,13 +1,13 @@
-import { PostgresDB } from '@shared/infrastructure/persistence/sequelize-db';
 import { AddCommentToVideoUseCase } from '@videos/video-comment/application/add-comment-to-video/add-comment-to-video.use-case';
 import { AddCommentToVideoController } from '@videos/video-comment/infrastructure/controllers/add-comment-to-video/add-comment-to-video.controller';
 import { VIDEO_COMMENT_TOKENS } from '@videos/video-comment/infrastructure/di/tokens-video-comment';
 import { AddCommentToVideoHandler } from '@videos/video-comment/infrastructure/handlers/command/add-comment-to-video.handler';
+import { PostgresVideosDB } from '@videos/videos/infrastructure/persistence/sequelize-videos.db';
 
 import { container } from 'tsyringe';
 
 export class DIVideoComments {
-    constructor(private readonly db: PostgresDB) {}
+    constructor(private readonly db: PostgresVideosDB) {}
 
     public initDI() {
         this.initDBDependencies();

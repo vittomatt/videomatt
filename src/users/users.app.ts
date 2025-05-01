@@ -1,11 +1,12 @@
 import { Logger } from '@shared/domain/logger/logger';
-import { DI } from '@shared/infrastructure/di/di';
+import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { getEnvs, initEnvs } from '@shared/infrastructure/envs/init-envs';
 import { PinoLogger } from '@shared/infrastructure/logger/pino';
 import { RedisDB } from '@shared/infrastructure/persistence/redis-db';
-import { PostgresDB } from '@shared/infrastructure/persistence/sequelize-db';
+import { Worker } from '@shared/worker';
+import { DI } from '@users/infrastructure/di/di-user';
+import { PostgresUserDB } from '@users/infrastructure/persistence/sequelize-user.db';
 import { initRoutes } from '@users/infrastructure/routes/init-routes';
-import { SQSWorker } from '@users/users-worker';
 
 import express, { Express } from 'express';
 import helmet from 'helmet';
@@ -14,7 +15,7 @@ import { container } from 'tsyringe';
 export class App {
     constructor(private readonly expressApp: Express) {}
 
-    init(): { logger: Logger; db: PostgresDB; redis: RedisDB } {
+    init(): { logger: Logger; db: PostgresUserDB; redis: RedisDB } {
         initEnvs();
 
         // Init middlewares
@@ -30,7 +31,7 @@ export class App {
             USERS_POSTGRES_NAME,
             USERS_POSTGRES_PORT,
         } = envs;
-        const db = new PostgresDB({
+        const db = new PostgresUserDB({
             dbHost: USERS_DB_HOST,
             dbUser: USERS_POSTGRES_USER,
             dbPassword: USERS_POSTGRES_PASSWORD,
@@ -47,12 +48,12 @@ export class App {
         di.initDI();
 
         // Init routes
-        const logger = container.resolve(PinoLogger);
+        const logger = container.resolve<PinoLogger>(TOKEN.LOGGER);
         this.expressApp.use(logger.getInstance());
         initRoutes(this.expressApp);
 
         // Init workers
-        const worker = container.resolve(SQSWorker);
+        const worker = container.resolve<Worker>(TOKEN.WORKER_USER);
         worker.start();
 
         return { logger, db, redis };

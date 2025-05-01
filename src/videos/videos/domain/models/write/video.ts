@@ -4,10 +4,10 @@ import { VideoTitle } from './video-title';
 import { VideoURL } from './video-url';
 
 import { AggregateRoot } from '@shared/domain/aggregate-root';
-import { UserId } from '@users/domain/models/write/user-id';
+import { VideoCreatedEvent } from '@shared/domain/events/video-created.event';
+import { UserId } from '@shared/domain/models/write/user-id';
 import { VideoCommentAddedEvent } from '@videos/video-comment/domain/events/video-comment-added.event';
 import { VideoComment, VideoCommentPrimitives } from '@videos/video-comment/domain/models/write/video-comment';
-import { VideoCreatedEvent } from '@videos/videos/domain/events/video-created.event';
 
 export class Video extends AggregateRoot {
     constructor(

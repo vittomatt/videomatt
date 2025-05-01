@@ -1,10 +1,11 @@
 import { Logger } from '@shared/domain/logger/logger';
-import { DI } from '@shared/infrastructure/di/di';
+import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { getEnvs, initEnvs } from '@shared/infrastructure/envs/init-envs';
 import { PinoLogger } from '@shared/infrastructure/logger/pino';
 import { RedisDB } from '@shared/infrastructure/persistence/redis-db';
-import { PostgresDB } from '@shared/infrastructure/persistence/sequelize-db';
-import { SQSWorker } from '@videos/videos-worker';
+import { Worker } from '@shared/worker';
+import { DI } from '@videos/videos/infrastructure/di/di-video';
+import { PostgresVideosDB } from '@videos/videos/infrastructure/persistence/sequelize-videos.db';
 import { initRoutes } from '@videos/videos/infrastructure/routes/init-routes';
 
 import express, { Express } from 'express';
@@ -14,7 +15,7 @@ import { container } from 'tsyringe';
 export class App {
     constructor(private readonly expressApp: Express) {}
 
-    init(): { logger: Logger; db: PostgresDB; redis: RedisDB } {
+    init(): { logger: Logger; db: PostgresVideosDB; redis: RedisDB } {
         initEnvs();
 
         // Init middlewares
@@ -30,7 +31,7 @@ export class App {
             VIDEOS_POSTGRES_NAME,
             VIDEOS_POSTGRES_PORT,
         } = envs;
-        const db = new PostgresDB({
+        const db = new PostgresVideosDB({
             dbHost: VIDEOS_DB_HOST,
             dbUser: VIDEOS_POSTGRES_USER,
             dbPassword: VIDEOS_POSTGRES_PASSWORD,
@@ -47,12 +48,12 @@ export class App {
         di.initDI();
 
         // Init routes
-        const logger = container.resolve(PinoLogger);
+        const logger = container.resolve<PinoLogger>(TOKEN.LOGGER);
         this.expressApp.use(logger.getInstance());
         initRoutes(this.expressApp);
 
         // Init workers
-        const worker = container.resolve(SQSWorker);
+        const worker = container.resolve<Worker>(TOKEN.WORKER_VIDEO);
         worker.start();
 
         return { logger, db, redis };

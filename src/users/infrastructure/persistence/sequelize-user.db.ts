@@ -1,0 +1,79 @@
+import { UserDBModel } from '@users/infrastructure/models/user.db-model';
+
+import { Sequelize } from 'sequelize';
+
+export class PostgresUserDB {
+    private readonly instance: Sequelize;
+    private userModel!: typeof UserDBModel;
+
+    constructor({
+        dbHost,
+        dbUser,
+        dbPassword,
+        dbName,
+        dbPort,
+    }: {
+        dbHost: string;
+        dbUser: string;
+        dbPassword: string;
+        dbName: string;
+        dbPort: number;
+    }) {
+        this.instance = new Sequelize(dbName, dbUser, dbPassword, {
+            host: dbHost,
+            port: dbPort,
+            dialect: 'postgres',
+            logging: true,
+            dialectOptions: {
+                connectTimeout: 10000,
+            },
+            pool: {
+                max: 5,
+                min: 0,
+                acquire: 30000,
+                idle: 10000,
+            },
+        });
+    }
+
+    public initDB() {
+        this.initModels();
+        this.initAssociations();
+    }
+
+    private initModels() {
+        this.userModel = UserDBModel.initModel(this.instance);
+    }
+
+    private initAssociations() {}
+
+    public async syncDB() {
+        try {
+            await this.instance.sync();
+            console.log('✅ Database synchronized successfully');
+        } catch (error) {
+            console.error('❌ Error synchronizing database:', error);
+            throw error;
+        }
+    }
+
+    public getDB(): Sequelize {
+        if (!this.instance) {
+            throw new Error('Database not initialized');
+        }
+        return this.instance;
+    }
+
+    public async closeDB() {
+        if (this.instance) {
+            await this.instance.close();
+        }
+    }
+
+    public getUserModel(): typeof UserDBModel {
+        if (!this.userModel) {
+            throw new Error('User model not initialized');
+        }
+        return this.userModel;
+    }
+}

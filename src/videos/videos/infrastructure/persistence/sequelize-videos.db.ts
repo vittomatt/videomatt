@@ -1,15 +1,13 @@
-import { UserDBModel } from '@users/infrastructure/models/user.db-model';
 import { VideoCommentDBModel } from '@videos/video-comment/infrastructure/models/video-comment.db-model';
 import { VideoDBModel } from '@videos/videos/infrastructure/models/video.db-model';
 import { VideoDBModelRead } from '@videos/videos/infrastructure/models/video.db-read-model';
 
 import { Sequelize } from 'sequelize';
 
-export class PostgresDB {
+export class PostgresVideosDB {
     private readonly instance: Sequelize;
     private videoModel!: typeof VideoDBModel;
     private videoCommentModel!: typeof VideoCommentDBModel;
-    private userModel!: typeof UserDBModel;
     private videoModelRead!: typeof VideoDBModelRead;
 
     constructor({
@@ -29,7 +27,16 @@ export class PostgresDB {
             host: dbHost,
             port: dbPort,
             dialect: 'postgres',
-            logging: false,
+            logging: true,
+            dialectOptions: {
+                connectTimeout: 10000,
+            },
+            pool: {
+                max: 5,
+                min: 0,
+                acquire: 30000,
+                idle: 10000,
+            },
         });
     }
 
@@ -40,16 +47,13 @@ export class PostgresDB {
 
     private initModels() {
         this.videoModel = VideoDBModel.initModel(this.instance);
-        this.userModel = UserDBModel.initModel(this.instance);
         this.videoCommentModel = VideoCommentDBModel.initModel(this.instance);
         this.videoModelRead = VideoDBModelRead.initModel(this.instance);
     }
 
     private initAssociations() {
         this.videoModel.associate(this);
-        this.userModel.associate(this);
         this.videoCommentModel.associate(this);
-        this.videoModelRead.associate(this);
     }
 
     public async syncDB() {
@@ -80,13 +84,6 @@ export class PostgresDB {
             throw new Error('Video model not initialized');
         }
         return this.videoModel;
-    }
-
-    public getUserModel(): typeof UserDBModel {
-        if (!this.userModel) {
-            throw new Error('User model not initialized');
-        }
-        return this.userModel;
     }
 
     public getVideoCommentModel(): typeof VideoCommentDBModel {

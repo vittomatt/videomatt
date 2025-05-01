@@ -1,6 +1,6 @@
 import { LocalEventSubscriber } from '@shared/domain/broker/local-event.subscriber';
 import { DomainEvent } from '@shared/domain/event-bus/domain.event';
-import { VideoCreatedEvent } from '@videos/videos/domain/events/video-created.event';
+import { VideoCreatedEvent } from '@shared/domain/events/video-created.event';
 import { InMemoryVideoEventPublisher } from '@videos/videos/infrastructure/broker/publishers/in-memory-video-event.publisher';
 import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/tokens-video';
 import { CreateVideoReadHandler } from '@videos/videos/infrastructure/handlers/domain/create-video-read.handler';

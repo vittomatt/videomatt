@@ -1,6 +1,5 @@
-import { PostgresDB } from '@shared/infrastructure/persistence/sequelize-db';
-import { USER_TABLE_NAME } from '@users/infrastructure/models/user.db-model';
 import { VideoCommentDBModel } from '@videos/video-comment/infrastructure/models/video-comment.db-model';
+import { PostgresVideosDB } from '@videos/videos/infrastructure/persistence/sequelize-videos.db';
 
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
@@ -36,10 +35,6 @@ export class VideoDBModel extends Model {
                 userId: {
                     type: DataTypes.UUID,
                     allowNull: false,
-                    references: {
-                        model: USER_TABLE_NAME,
-                        key: 'id',
-                    },
                 },
                 createdAt: {
                     type: DataTypes.DATE,
@@ -56,8 +51,7 @@ export class VideoDBModel extends Model {
         );
     }
 
-    public static associate(models: PostgresDB) {
-        this.belongsTo(models.getUserModel(), { foreignKey: 'userId' });
+    public static associate(models: PostgresVideosDB) {
         this.hasMany(models.getVideoCommentModel(), { foreignKey: 'videoId' });
     }
 

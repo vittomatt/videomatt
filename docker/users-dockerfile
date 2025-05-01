@@ -6,8 +6,6 @@ WORKDIR /app
 
 COPY package*.json ./
 
-# Install husky globally to prevent prepare script failure
-RUN npm install -g husky
 RUN npm ci
 
 COPY . .
