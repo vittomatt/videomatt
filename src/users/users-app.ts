@@ -4,7 +4,7 @@ import { getEnvs, initEnvs } from '@shared/infrastructure/envs/init-envs';
 import { PinoLogger } from '@shared/infrastructure/logger/pino';
 import { RedisDB } from '@shared/infrastructure/persistence/redis-db';
 import { PostgresDB } from '@shared/infrastructure/persistence/sequelize-db';
-import { initRoutes } from '@shared/infrastructure/routes/init-routes';
+import { initRoutes } from '@users/infrastructure/routes/init-routes';
 import { SQSWorker } from '@users/users-worker';
 
 import express, { Express } from 'express';
