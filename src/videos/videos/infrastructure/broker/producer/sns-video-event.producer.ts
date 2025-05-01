@@ -24,6 +24,6 @@ export class SNSVideoEventProducer extends SNSEventProducer {
     }
 
     isValidEvent(event: DomainEvent): boolean {
-        return event.getEntity() === 'video';
+        return event.getEntity() === 'videos';
     }
 }

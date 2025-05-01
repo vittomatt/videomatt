@@ -21,14 +21,16 @@ const envSchema = z.object({
     REDIS_PORT: z.coerce.number(),
 
     SNS_VIDEO_TOPIC_ARN: z.string(),
-    SNS_USER_TOPIC_ARN: z.string(),
+    EVENT_BRIDGE_USER_TOPIC_ARN: z.string(),
 
     SQS_USER_CREATED_QUEUE_URL: z.string(),
     SQS_VIDEO_CREATED_QUEUE_URL: z.string(),
 
     AWS_REGION: z.string(),
     AWS_PROFILE: z.string(),
-    AWS_ENDPOINT: z.string(),
+    AWS_SNS_ENDPOINT: z.string(),
+    AWS_SQS_ENDPOINT: z.string(),
+    AWS_EVENT_BRIDGE_ENDPOINT: z.string(),
 
     USERS_PORT: z.coerce.number().default(3000),
     VIDEOS_PORT: z.coerce.number().default(3001),

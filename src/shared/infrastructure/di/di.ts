@@ -1,3 +1,4 @@
+import { EventBridgeClient } from '@aws-sdk/client-eventbridge';
 import { SNSClient } from '@aws-sdk/client-sns';
 import { SQSClient } from '@aws-sdk/client-sqs';
 import { fromIni } from '@aws-sdk/credential-provider-ini';
@@ -57,11 +58,10 @@ export class DI {
     }
 
     private initBrokerDependencies() {
-        const { AWS_REGION, AWS_PROFILE, AWS_ENDPOINT } = getEnvs();
+        const { AWS_REGION, AWS_PROFILE, AWS_SQS_ENDPOINT, AWS_SNS_ENDPOINT, AWS_EVENT_BRIDGE_ENDPOINT } = getEnvs();
 
         const awsConfig = {
             region: AWS_REGION,
-            endpoint: AWS_ENDPOINT,
             credentials: fromIni({
                 profile: AWS_PROFILE,
             }),
@@ -75,10 +75,13 @@ export class DI {
             useClass: VideoSQSWorker,
         });
         container.register(TOKEN.SNS_CLIENT, {
-            useValue: new SNSClient(awsConfig),
+            useValue: new SNSClient({ ...awsConfig, endpoint: AWS_SNS_ENDPOINT }),
         });
         container.register(TOKEN.SQS_CLIENT, {
-            useValue: new SQSClient(awsConfig),
+            useValue: new SQSClient({ ...awsConfig, endpoint: AWS_SQS_ENDPOINT }),
+        });
+        container.register(TOKEN.EVENT_BRIDGE_CLIENT, {
+            useValue: new EventBridgeClient({ ...awsConfig, endpoint: AWS_EVENT_BRIDGE_ENDPOINT }),
         });
     }
 

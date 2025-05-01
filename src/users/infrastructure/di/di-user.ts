@@ -1,9 +1,10 @@
+import { EventBridgeUserEventProducer } from '../broker/producer/event-bridge-user-event.producer';
+
 import { getEnvs } from '@shared/infrastructure/envs/init-envs';
 import { PostgresDB } from '@shared/infrastructure/persistence/sequelize-db';
 import { CreateUserUseCase } from '@users/application/create-user/create-user.use-case';
 import { IncreaseAmountOfVideosUseCase } from '@users/application/increase-amount-of-videos/increase-amount-of-videos.use-case';
 import { SQSEventUserCreatedConsumer } from '@users/infrastructure/broker/consumers/sqs-event-user-created.consumer';
-import { SNSUserEventProducer } from '@users/infrastructure/broker/producer/sns-user-event.producer';
 import { CreateUserController } from '@users/infrastructure/controllers/create-user.controller';
 import { USER_TOKEN } from '@users/infrastructure/di/tokens-user';
 import { CreateUserHandler } from '@users/infrastructure/handlers/command/create-user.handler';
@@ -25,7 +26,7 @@ export class DIUsers {
     }
 
     public initSingletons() {
-        container.resolve(USER_TOKEN.SNS_EVENT_PRODUCER);
+        container.resolve(USER_TOKEN.EVENT_BRIDGE_EVENT_PRODUCER);
         container.resolve(USER_TOKEN.CREATE_USER_HANDLER);
     }
 
@@ -57,12 +58,12 @@ export class DIUsers {
     }
 
     private initBrokerDependencies() {
-        // SNS
-        container.register(USER_TOKEN.SNS_TOPIC_ARN, {
-            useValue: getEnvs().SNS_USER_TOPIC_ARN,
+        // Event Bridge
+        container.register(USER_TOKEN.EVENT_BRIDGE_USER_TOPIC_ARN, {
+            useValue: getEnvs().EVENT_BRIDGE_USER_TOPIC_ARN,
         });
-        container.register(USER_TOKEN.SNS_EVENT_PRODUCER, {
-            useClass: SNSUserEventProducer,
+        container.register(USER_TOKEN.EVENT_BRIDGE_EVENT_PRODUCER, {
+            useClass: EventBridgeUserEventProducer,
         });
 
         // SQS

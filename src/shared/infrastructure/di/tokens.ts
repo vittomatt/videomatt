@@ -10,4 +10,5 @@ export const TOKEN = {
     WORKER_VIDEO: Symbol('WORKER_VIDEO'),
     SNS_CLIENT: Symbol('SNS_CLIENT'),
     SQS_CLIENT: Symbol('SQS_CLIENT'),
+    EVENT_BRIDGE_CLIENT: Symbol('EVENT_BRIDGE_CLIENT'),
 };

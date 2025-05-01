@@ -47,8 +47,8 @@ export class SQSEventConsumer implements RemoteEventConsumer {
         this.logger.info(`Message received: ${message.Body}`);
 
         const parsedBody = JSON.parse(message.Body as string);
-        const parsedMessage = JSON.parse(parsedBody.Message as string);
-        await this.handler?.handle(parsedMessage.payload);
+        const parsedMessage = parsedBody.detail;
+        await this.handler?.handle(parsedMessage);
 
         if (message.ReceiptHandle) {
             await this.deleteMessage(this.sqsUrl, message.ReceiptHandle);
