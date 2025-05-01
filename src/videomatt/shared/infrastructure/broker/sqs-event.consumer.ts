@@ -39,7 +39,7 @@ export class SQSEventConsumer implements RemoteEventConsumer {
                 await this.handleMessage(message);
             }
         } catch (error) {
-            this.logger.error('Error reading messages from SQS');
+            this.logger.error(`Error reading messages from SQS: ${error}`);
         }
     }
 

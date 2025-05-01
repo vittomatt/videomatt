@@ -5,6 +5,9 @@ RUN apt-get update && apt-get install -y awscli
 WORKDIR /app
 
 COPY package*.json ./
+
+# Install husky globally to prevent prepare script failure
+RUN npm install -g husky
 RUN npm ci
 
 COPY . .

@@ -16,8 +16,11 @@ services:
             - .:/app
             - /app/node_modules
             - /app/dist
+            - ${HOME}/.aws:/root/.aws:ro
         depends_on:
             db:
+                condition: service_healthy
+            localstack:
                 condition: service_healthy
         networks:
             - videonet
@@ -52,8 +55,8 @@ services:
         image: localstack/localstack
         restart: unless-stopped
         ports:
-            - '127.0.0.1:4566:4566'
-            - '127.0.0.1:4510-4559:4510-4559'
+            - '4566:4566'
+            - '4510-4559:4510-4559'
         environment:
             - SERVICES=events,sqs
             - DEBUG=true
