@@ -7,11 +7,8 @@ services:
             dockerfile: docker/users-dockerfile
         ports:
             - '3000:3000'
-        environment:
-            - USERS_DB_HOST=db-users
-            - REDIS_HOST=redis
         env_file:
-            - .env
+            - .env.docker
         volumes:
             - .:/app
             - /app/node_modules
@@ -30,11 +27,8 @@ services:
             dockerfile: docker/videos-dockerfile
         ports:
             - '3001:3001'
-        environment:
-            - VIDEOS_DB_HOST=db-videos
-            - REDIS_HOST=redis
         env_file:
-            - .env
+            - .env.docker
         volumes:
             - .:/app
             - /app/node_modules
@@ -107,7 +101,7 @@ services:
             - '4566:4566'
             - '4510-4559:4510-4559'
         environment:
-            - SERVICES=events,sqs
+            - SERVICES=events,sqs,sns
             - DEBUG=true
         volumes:
             - './volume:/var/lib/localstack'

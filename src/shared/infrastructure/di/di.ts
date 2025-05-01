@@ -57,13 +57,15 @@ export class DI {
     }
 
     private initBrokerDependencies() {
-        const { AWS_REGION, AWS_PROFILE } = getEnvs();
+        const { AWS_REGION, AWS_PROFILE, AWS_ENDPOINT } = getEnvs();
 
         const awsConfig = {
             region: AWS_REGION,
+            endpoint: AWS_ENDPOINT,
             credentials: fromIni({
                 profile: AWS_PROFILE,
             }),
+            useQueueUrlAsEndpoint: false,
         };
 
         container.register(TOKEN.WORKER_USER, {

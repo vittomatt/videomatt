@@ -3,7 +3,7 @@ import { config as dotenvSafeConfig } from 'dotenv-safe';
 import { z } from 'zod';
 
 const envSchema = z.object({
-    NODE_ENV: z.enum(['dev', 'prod']).default('dev'),
+    NODE_ENV: z.enum(['docker', 'dev', 'prod']).default('dev'),
 
     USERS_DB_HOST: z.string(),
     USERS_POSTGRES_USER: z.string(),
@@ -28,6 +28,7 @@ const envSchema = z.object({
 
     AWS_REGION: z.string(),
     AWS_PROFILE: z.string(),
+    AWS_ENDPOINT: z.string(),
 
     USERS_PORT: z.coerce.number().default(3000),
     VIDEOS_PORT: z.coerce.number().default(3001),
@@ -38,11 +39,18 @@ export type EnvVars = z.infer<typeof envSchema>;
 let envConfig: EnvVars | null = null;
 
 export function initEnvs() {
-    dotenv.config({ path: '.env', override: true });
+    const env = process.env.NODE_ENV ?? 'dev';
+    const path = {
+        docker: '.env.docker',
+        dev: '.env',
+        prod: '.env.prod',
+    }[env];
+
+    dotenv.config({ path, override: true });
 
     if (process.env.NODE_ENV !== 'prod') {
         dotenvSafeConfig({
-            path: '.env',
+            path,
             example: '.env.example',
             allowEmptyValues: false,
         });
