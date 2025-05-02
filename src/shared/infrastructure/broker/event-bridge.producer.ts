@@ -19,19 +19,15 @@ export abstract class EventBridgeEventProducer implements RemoteEventProducer {
                 return;
             }
 
-            const detail = {
-                name: 'videomatt.users.1.event.user.created',
-                ...event,
-                occurredOn: event.occurredOn.toISOString(),
-            };
+            const payload = this.getPayload(event);
 
             const command = new PutEventsCommand({
                 Entries: [
                     {
-                        Source: 'videomatt.users',
-                        DetailType: 'UserCreated',
+                        Source: 'videomatt',
+                        DetailType: event.eventName,
                         EventBusName: 'default',
-                        Detail: JSON.stringify(detail),
+                        Detail: payload,
                     },
                 ],
             });
@@ -41,6 +37,14 @@ export abstract class EventBridgeEventProducer implements RemoteEventProducer {
         } catch (error) {
             this.logger.error(`Error publishing event ${event.eventName}:`);
         }
+    }
+
+    private getPayload(event: DomainEvent) {
+        return JSON.stringify({
+            name: 'videomatt.users.1.event.user.created',
+            ...event,
+            occurredOn: event.occurredOn.toISOString(),
+        });
     }
 
     abstract getTopic(): string;

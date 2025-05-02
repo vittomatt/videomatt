@@ -19,11 +19,11 @@ export abstract class SNSEventProducer implements RemoteEventProducer {
                 return;
             }
 
+            const payload = this.getPayload(event);
+
             const command = new PublishCommand({
                 TopicArn: this.getTopic(),
-                Message: JSON.stringify({
-                    payload: { ...event, occurredOn: event.occurredOn.toISOString() },
-                }),
+                Message: payload,
                 Subject: event.eventName,
                 MessageAttributes: {
                     EventType: {
@@ -38,6 +38,12 @@ export abstract class SNSEventProducer implements RemoteEventProducer {
         } catch (error) {
             this.logger.error(`Error publishing event ${event.eventName}:`);
         }
+    }
+
+    private getPayload(event: DomainEvent) {
+        return JSON.stringify({
+            payload: { ...event, occurredOn: event.occurredOn.toISOString() },
+        });
     }
 
     abstract getTopic(): string;

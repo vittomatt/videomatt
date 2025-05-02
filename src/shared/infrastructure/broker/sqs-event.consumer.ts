@@ -50,13 +50,30 @@ export class SQSEventConsumer implements RemoteEventConsumer {
         this.logger.info(`Queue URL: ${this.sqsUrl}`);
         this.logger.info(`Message received: ${message.Body}`);
 
-        const parsedBody = JSON.parse(message.Body as string);
-        const parsedMessage = parsedBody.detail;
-        await this.handler?.handle(parsedMessage);
+        const parsedMessage = this.parseMessage(message);
+        if (parsedMessage) {
+            await this.handler?.handle(parsedMessage);
+        }
 
         if (message.ReceiptHandle) {
             await this.deleteMessage(this.sqsUrl, message.ReceiptHandle);
         }
+    }
+
+    private parseMessage(message: Message): any | null {
+        const parsedBody = JSON.parse(message.Body as string);
+
+        if (!parsedBody.detail && !parsedBody.Message) {
+            return null;
+        }
+
+        // EventBridge
+        if (parsedBody.detail) {
+            return parsedBody.detail;
+        }
+
+        // SQS
+        return JSON.parse(parsedBody.Message as string);
     }
 
     private async deleteMessage(queueUrl: string, receiptHandle: string) {
