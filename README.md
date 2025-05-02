@@ -4,6 +4,10 @@
 - Copy `.env.example` as `.env` or `.env.docker.example` as `.env.docker`
 - Run: `docker compose up`
 
+# Structure
+
+![Events Architecture](events.jpg)
+
 # Create SQS
 
 ```
@@ -81,7 +85,7 @@ aws sns subscribe \
 aws events put-rule \
 --endpoint-url=http://localhost:4566 \
 --region us-east-1 \
---name videomatt-users \
+--name videomatt_users \
 --event-bus-name default \
 --event-pattern '{"detail": {"name": ["videomatt.users.1.event.user.created"]}}'
 ```
@@ -93,7 +97,7 @@ aws sqs set-queue-attributes \
 --endpoint-url=http://localhost:4566 \
 --region us-east-1 \
 --queue-url http://localhost:4566/000000000000/videomatt_users_1_event_user_created \
---attributes '{"Policy":"{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"AllowEventBridgeSendMessage\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"events.amazonaws.com\"},\"Action\":\"sqs:SendMessage\",\"Resource\":\"arn:aws:sqs:us-east-1:000000000000:videomatt_users_1_event_user_created\",\"Condition\":{\"ArnEquals\":{\"aws:SourceArn\":\"arn:aws:events:us-east-1:000000000000:rule/videomatt-users\"}}}]}"}'
+--attributes '{"Policy":"{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"AllowEventBridgeSendMessage\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"events.amazonaws.com\"},\"Action\":\"sqs:SendMessage\",\"Resource\":\"arn:aws:sqs:us-east-1:000000000000:videomatt_users_1_event_user_created\",\"Condition\":{\"ArnEquals\":{\"aws:SourceArn\":\"arn:aws:events:us-east-1:000000000000:rule/videomatt_users\"}}}]}"}'
 ```
 
 # Create the event bridge targets
@@ -103,6 +107,6 @@ aws events put-targets \
 --endpoint-url=http://localhost:4566 \
 --region us-east-1 \
 --event-bus-name default \
---rule videomatt-users \
+--rule videomatt_users \
 --targets Id=UserCreatedTarget,Arn=arn:aws:sqs:us-east-1:000000000000:videomatt_users_1_event_user_created
 ```
