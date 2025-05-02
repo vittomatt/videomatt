@@ -1,13 +1,21 @@
-import 'reflect-metadata';
-
 import { RemoteEventConsumer } from '@shared/domain/broker/remote-event.consumer';
+import { Logger } from '@shared/domain/logger/logger';
+import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { Worker } from '@shared/worker';
 
-import { singleton } from 'tsyringe';
+import { inject, singleton } from 'tsyringe';
 
 @singleton()
-export class SQSWorker implements Worker {
+export class SQSWorker extends Worker {
     private readonly consumers: RemoteEventConsumer[] = [];
+    private isRunning = false;
+
+    constructor(
+        @inject(TOKEN.LOGGER)
+        private readonly logger: Logger
+    ) {
+        super();
+    }
 
     registerConsumer(consumer: RemoteEventConsumer): void {
         this.consumers.push(consumer);
@@ -18,8 +26,14 @@ export class SQSWorker implements Worker {
             return;
         }
 
-        while (true) {
-            await Promise.allSettled(this.consumers.map((consumer) => consumer.consume()));
+        this.isRunning = true;
+        while (this.isRunning) {
+            try {
+                await Promise.allSettled(this.consumers.map((consumer) => consumer.consume()));
+            } catch (error) {
+                this.logger.error(`Error en consume(): ${error}`);
+                await this.sleep(2000);
+            }
         }
     }
 }

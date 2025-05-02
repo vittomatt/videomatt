@@ -54,7 +54,10 @@ export class App {
 
         // Init workers
         const worker = container.resolve<Worker>(TOKEN.WORKER_USER);
-        worker.start();
+        worker.start().catch((error) => {
+            logger.error(`Worker fatal error: ${error}`);
+            process.exit(1);
+        });
 
         return { logger, db, redis };
     }
