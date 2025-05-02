@@ -67,7 +67,10 @@ export class DI {
         };
 
         container.register(TOKEN.SNS_CLIENT, {
-            useValue: new SNSClient({ ...awsConfig, endpoint: AWS_SNS_ENDPOINT }),
+            useValue: new SNSClient({
+                ...awsConfig,
+                endpoint: AWS_SNS_ENDPOINT,
+            }),
         });
         container.register(TOKEN.SQS_CLIENT, {
             useValue: new SQSClient({ ...awsConfig, endpoint: AWS_SQS_ENDPOINT }),

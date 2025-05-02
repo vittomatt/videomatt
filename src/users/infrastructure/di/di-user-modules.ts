@@ -8,6 +8,7 @@ import { CreateUserController } from '@users/infrastructure/controllers/create-u
 import { USER_TOKEN } from '@users/infrastructure/di/tokens-user';
 import { CreateUserHandler } from '@users/infrastructure/handlers/command/create-user.handler';
 import { IncreaseAmountOfVideosHandler } from '@users/infrastructure/handlers/domain/increase-amount-of-videos.handler';
+import { UserCreatedHandler } from '@users/infrastructure/handlers/domain/user-created.handler';
 import { PostgresUserDB } from '@users/infrastructure/persistence/sequelize-user.db';
 import { SequelizeUserRepository } from '@users/infrastructure/repositories/sequelize-user.repository';
 
@@ -84,6 +85,9 @@ export class DIUsers {
         });
         container.register(USER_TOKEN.INCREASE_AMOUNT_OF_VIDEOS_HANDLER, {
             useClass: IncreaseAmountOfVideosHandler,
+        });
+        container.register(USER_TOKEN.USER_CREATED_HANDLER, {
+            useClass: UserCreatedHandler,
         });
     }
 

@@ -100,6 +100,14 @@ aws sqs set-queue-attributes \
 --attributes '{"Policy":"{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"AllowEventBridgeSendMessage\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"events.amazonaws.com\"},\"Action\":\"sqs:SendMessage\",\"Resource\":\"arn:aws:sqs:us-east-1:000000000000:videomatt_users_1_event_user_created\",\"Condition\":{\"ArnEquals\":{\"aws:SourceArn\":\"arn:aws:events:us-east-1:000000000000:rule/videomatt_users\"}}}]}"}'
 ```
 
+```
+aws sqs set-queue-attributes \
+--endpoint-url=http://localhost:4566 \
+--region us-east-1 \
+--queue-url http://localhost:4566/000000000000/videomatt_videos_1_event_video_created \
+--attributes '{"Policy":"{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"AllowEventBridgeSendMessage\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"sns.amazonaws.com\"},\"Action\":\"sqs:SendMessage\",\"Resource\":\"arn:aws:sqs:us-east-1:000000000000:videomatt_videos_1_event_video_created\",\"Condition\":{\"ArnEquals\":{\"aws:SourceArn\":\"arn:aws:sns:us-east-1:000000000000:videomatt_videos\"}}}]}"}'
+```
+
 # Create the event bridge targets
 
 ```

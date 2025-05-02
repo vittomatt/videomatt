@@ -1,6 +1,7 @@
 import { DeleteMessageCommand, Message, ReceiveMessageCommand, SQSClient } from '@aws-sdk/client-sqs';
 import { DomainHandler } from '@shared/domain/broker/domain-handler';
 import { RemoteEventConsumer } from '@shared/domain/broker/remote-event.consumer';
+import { DomainEvent } from '@shared/domain/event-bus/domain.event';
 import { Logger } from '@shared/domain/logger/logger';
 import { Worker } from '@shared/worker';
 
@@ -60,7 +61,7 @@ export class SQSEventConsumer implements RemoteEventConsumer {
         }
     }
 
-    private parseMessage(message: Message): any | null {
+    private parseMessage(message: Message): DomainEvent | null {
         const parsedBody = JSON.parse(message.Body as string);
 
         if (!parsedBody.detail && !parsedBody.Message) {

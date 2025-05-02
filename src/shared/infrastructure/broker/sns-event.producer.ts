@@ -36,14 +36,12 @@ export abstract class SNSEventProducer implements RemoteEventProducer {
             await this.snsClient.send(command);
             this.logger.info(`Event ${event.eventName} sent to SNS`);
         } catch (error) {
-            this.logger.error(`Error publishing event ${event.eventName}:`);
+            this.logger.error(`Error publishing event ${event.eventName}: ${error}`);
         }
     }
 
     private getPayload(event: DomainEvent) {
-        return JSON.stringify({
-            payload: { ...event, occurredOn: event.occurredOn.toISOString() },
-        });
+        return JSON.stringify({ ...event, occurredOn: event.occurredOn.toISOString() });
     }
 
     abstract getTopic(): string;
