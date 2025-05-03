@@ -1,7 +1,14 @@
-# To run the project
+# To run the project locally
 
 - Install dependencies `npm ci`
-- Copy `.env.example` as `.env` or `.env.docker.example` as `.env.docker`
+- Copy `.env.example` as `.env`
+- Run: `docker compose up redis db-users db-videos`
+- Run `npm run dev:users`
+- Run `npm run dev:videos`
+
+# To run the project with docker
+
+- Copy `.env.docker.example` as `.env.docker`
 - Run: `docker compose up`
 
 # Structure
