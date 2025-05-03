@@ -3,6 +3,7 @@ import { RemoteEventProducer } from '@shared/domain/broker/remote-event.producer
 import { DomainEventBus } from '@shared/domain/event-bus/domain-event-bus';
 import { DomainEvent } from '@shared/domain/event-bus/domain.event';
 import { Logger } from '@shared/domain/logger/logger';
+import { SQSSerializer } from '@shared/infrastructure/broker/sqs.serializer';
 
 export abstract class SNSEventProducer implements RemoteEventProducer {
     protected constructor(
@@ -19,29 +20,31 @@ export abstract class SNSEventProducer implements RemoteEventProducer {
                 return;
             }
 
-            const payload = this.getPayload(event);
-
-            const command = new PublishCommand({
-                TopicArn: this.getTopic(),
-                Message: payload,
-                Subject: event.eventName,
-                MessageAttributes: {
-                    EventType: {
-                        DataType: 'String',
-                        StringValue: event.eventName,
-                    },
-                },
-            });
-
+            const command = this.createCommand(event);
             await this.snsClient.send(command);
+
             this.logger.info(`Event ${event.eventName} sent to SNS`);
         } catch (error) {
             this.logger.error(`Error publishing event ${event.eventName}: ${error}`);
         }
     }
 
-    private getPayload(event: DomainEvent) {
-        return JSON.stringify({ ...event, occurredOn: event.occurredOn.toISOString() });
+    private createCommand(event: DomainEvent): PublishCommand {
+        const payload = SQSSerializer.serialize(event);
+
+        const command = new PublishCommand({
+            TopicArn: this.getTopic(),
+            Message: payload,
+            Subject: event.eventName,
+            MessageAttributes: {
+                EventType: {
+                    DataType: 'String',
+                    StringValue: event.eventName,
+                },
+            },
+        });
+
+        return command;
     }
 
     abstract getTopic(): string;

@@ -1,8 +1,8 @@
 import { DeleteMessageCommand, Message, ReceiveMessageCommand, SQSClient } from '@aws-sdk/client-sqs';
 import { DomainHandler } from '@shared/domain/broker/domain-handler';
 import { RemoteEventConsumer } from '@shared/domain/broker/remote-event.consumer';
-import { DomainEvent } from '@shared/domain/event-bus/domain.event';
 import { Logger } from '@shared/domain/logger/logger';
+import { SQSSerializer } from '@shared/infrastructure/broker/sqs.serializer';
 import { Worker } from '@shared/worker';
 
 const RETRY_QUEUE_SUFFIX = '_retry';
@@ -51,7 +51,7 @@ export class SQSEventConsumer implements RemoteEventConsumer {
         this.logger.info(`Queue URL: ${this.sqsUrl}`);
         this.logger.info(`Message received: ${message.Body}`);
 
-        const parsedMessage = this.parseMessage(message);
+        const parsedMessage = SQSSerializer.deserialize(message);
         if (parsedMessage) {
             await this.handler?.handle(parsedMessage);
         }
@@ -59,22 +59,6 @@ export class SQSEventConsumer implements RemoteEventConsumer {
         if (message.ReceiptHandle) {
             await this.deleteMessage(this.sqsUrl, message.ReceiptHandle);
         }
-    }
-
-    private parseMessage(message: Message): DomainEvent | null {
-        const parsedBody = JSON.parse(message.Body as string);
-
-        if (!parsedBody.detail && !parsedBody.Message) {
-            return null;
-        }
-
-        // EventBridge
-        if (parsedBody.detail) {
-            return parsedBody.detail;
-        }
-
-        // SQS
-        return JSON.parse(parsedBody.Message as string);
     }
 
     private async deleteMessage(queueUrl: string, receiptHandle: string) {
