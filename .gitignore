@@ -1,6 +1,21 @@
+# Build files
 node_modules
 dist
+
+# Environment variables
 .env*
 !.env.example
 !.env.docker.example
+
+# Docker
 volume
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
