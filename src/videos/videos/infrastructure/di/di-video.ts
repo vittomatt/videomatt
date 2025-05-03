@@ -6,6 +6,7 @@ import { ErrorController } from '@shared/infrastructure/controllers/error.contro
 import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { getEnvs } from '@shared/infrastructure/envs/init-envs';
 import { InMemoryCommandEventBus } from '@shared/infrastructure/event-bus/in-memory-command.event-bus';
+import { InMemoryDeferredDomainEventBus } from '@shared/infrastructure/event-bus/in-memory-deferred-domain.event-bus';
 import { InMemoryDomainEventBus } from '@shared/infrastructure/event-bus/in-memory-domain.event-bus';
 import { InMemoryQueryEventBus } from '@shared/infrastructure/event-bus/in-memory-query.event-bus';
 import { DomainEventFailover } from '@shared/infrastructure/events/failover-domain-event';
@@ -48,6 +49,7 @@ export class DI {
 
     private initSingletonDependencies() {
         container.registerSingleton(TOKEN.DOMAIN_EVENT_BUS, InMemoryDomainEventBus);
+        container.registerSingleton(TOKEN.DEFERRED_DOMAIN_EVENT_BUS, InMemoryDeferredDomainEventBus);
         container.registerSingleton(TOKEN.COMMAND_EVENT_BUS, InMemoryCommandEventBus);
         container.registerSingleton(TOKEN.QUERY_EVENT_BUS, InMemoryQueryEventBus);
         container.registerSingleton(TOKEN.WORKER_VIDEO, SQSWorker);

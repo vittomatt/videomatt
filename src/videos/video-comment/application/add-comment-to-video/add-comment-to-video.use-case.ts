@@ -12,7 +12,7 @@ import { inject, injectable } from 'tsyringe';
 export class AddCommentToVideoUseCase {
     constructor(
         @inject(VIDEO_TOKEN.REPOSITORY) private readonly repository: VideoRepository<Video>,
-        @inject(TOKEN.DOMAIN_EVENT_BUS) private readonly eventBus: DomainEventBus
+        @inject(TOKEN.DEFERRED_DOMAIN_EVENT_BUS) private readonly eventBus: DomainEventBus
     ) {}
 
     async execute({
