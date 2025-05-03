@@ -1,3 +1,4 @@
+import { FailOverDomainEventsDBModel } from '@shared/infrastructure/models/failover-domain-events.db-model';
 import { UserDBModel } from '@users/infrastructure/models/user.db-model';
 
 import { Sequelize } from 'sequelize';
@@ -43,6 +44,7 @@ export class PostgresUserDB {
 
     private initModels() {
         this.userModel = UserDBModel.initModel(this.instance);
+        FailOverDomainEventsDBModel.initModel(this.instance);
     }
 
     private initAssociations() {}

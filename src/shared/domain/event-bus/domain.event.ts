@@ -1,10 +1,12 @@
 export type EventPrefix = 'video' | 'user';
 
 export abstract class DomainEvent {
+    public readonly id: string;
     public abstract readonly eventName: string;
     public readonly occurredOn: Date;
 
-    protected constructor(occurredOn?: Date) {
+    protected constructor(id: string, occurredOn?: Date) {
+        this.id = id;
         this.occurredOn = occurredOn ?? new Date();
     }
 

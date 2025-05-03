@@ -5,13 +5,13 @@ export class VideoCommentAddedEvent extends DomainEvent {
     public readonly eventName = VideoCommentAddedEvent.eventName;
 
     private constructor(
-        public readonly id: string,
+        public id: string,
         public readonly text: string,
         public readonly userId: string,
         public readonly videoId: string,
         public readonly commentId: string
     ) {
-        super();
+        super(id);
     }
 
     static create({

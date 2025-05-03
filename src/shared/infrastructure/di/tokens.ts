@@ -1,5 +1,7 @@
 export const TOKEN = {
     DB: Symbol('DB'),
+    DB_INSTANCE: Symbol('DB_INSTANCE'),
+    FAILOVER_DOMAIN_EVENTS: Symbol('FAILOVER_DOMAIN_EVENTS'),
     REDIS: Symbol('REDIS'),
     LOGGER: Symbol('LOGGER'),
     ERROR_CONTROLLER: Symbol('ERROR_CONTROLLER'),

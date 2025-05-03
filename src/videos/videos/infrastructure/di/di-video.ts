@@ -8,6 +8,7 @@ import { getEnvs } from '@shared/infrastructure/envs/init-envs';
 import { InMemoryCommandEventBus } from '@shared/infrastructure/event-bus/in-memory-command.event-bus';
 import { InMemoryDomainEventBus } from '@shared/infrastructure/event-bus/in-memory-domain.event-bus';
 import { InMemoryQueryEventBus } from '@shared/infrastructure/event-bus/in-memory-query.event-bus';
+import { DomainEventFailover } from '@shared/infrastructure/events/failover-domain-event';
 import { PinoLogger } from '@shared/infrastructure/logger/pino';
 import { RedisDB } from '@shared/infrastructure/persistence/redis-db';
 import { DIVideoComments } from '@videos/video-comment/infrastructure/di/di-video-comment';
@@ -37,6 +38,9 @@ export class DI {
         container.register(TOKEN.DB, {
             useValue: this.db,
         });
+        container.register(TOKEN.DB_INSTANCE, {
+            useValue: this.db.getDB(),
+        });
         container.register(TOKEN.REDIS, {
             useValue: this.redis,
         });
@@ -52,6 +56,9 @@ export class DI {
     private initSharedDependencies() {
         container.register(TOKEN.LOGGER, {
             useClass: PinoLogger,
+        });
+        container.register(TOKEN.FAILOVER_DOMAIN_EVENTS, {
+            useClass: DomainEventFailover,
         });
     }
 

@@ -18,7 +18,7 @@ export class InMemoryEventCommentAddedSubscriber implements LocalEventSubscriber
         this.publisher.registerHandler(VideoCommentAddedEvent.eventName, this);
     }
 
-    async consume(event: DomainEvent): Promise<void> {
+    async consume(event: DomainEvent) {
         this.handler.handle(event);
     }
 }

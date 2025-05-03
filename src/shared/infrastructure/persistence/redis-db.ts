@@ -36,7 +36,7 @@ export class RedisDB {
         }
     }
 
-    public async setValue(key: string, value: string): Promise<void> {
+    public async setValue(key: string, value: string) {
         try {
             await this.client.set(key, value);
             console.log(`✅ Key ${key} set successfully`);
@@ -46,7 +46,7 @@ export class RedisDB {
         }
     }
 
-    public async deleteValue(key: string): Promise<void> {
+    public async deleteValue(key: string) {
         try {
             await this.client.del(key);
             console.log(`✅ Key ${key} deleted successfully`);

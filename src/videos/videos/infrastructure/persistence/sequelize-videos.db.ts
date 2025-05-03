@@ -1,3 +1,4 @@
+import { FailOverDomainEventsDBModel } from '@shared/infrastructure/models/failover-domain-events.db-model';
 import { VideoCommentDBModel } from '@videos/video-comment/infrastructure/models/video-comment.db-model';
 import { VideoDBModel } from '@videos/videos/infrastructure/models/video.db-model';
 import { VideoDBModelRead } from '@videos/videos/infrastructure/models/video.db-read-model';
@@ -49,6 +50,7 @@ export class PostgresVideosDB {
         this.videoModel = VideoDBModel.initModel(this.instance);
         this.videoCommentModel = VideoCommentDBModel.initModel(this.instance);
         this.videoModelRead = VideoDBModelRead.initModel(this.instance);
+        FailOverDomainEventsDBModel.initModel(this.instance);
     }
 
     private initAssociations() {

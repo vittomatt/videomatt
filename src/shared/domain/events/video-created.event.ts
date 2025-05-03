@@ -5,14 +5,14 @@ export class VideoCreatedEvent extends DomainEvent {
     public readonly eventName = VideoCreatedEvent.eventName;
 
     private constructor(
-        public readonly id: string,
+        public id: string,
         public readonly title: string,
         public readonly description: string,
         public readonly url: string,
         public readonly userId: string,
         public readonly videoId: string
     ) {
-        super();
+        super(id);
     }
 
     static create({

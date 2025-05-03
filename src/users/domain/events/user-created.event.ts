@@ -5,11 +5,11 @@ export class UserCreatedEvent extends DomainEvent {
     public readonly eventName = UserCreatedEvent.eventName;
 
     private constructor(
-        public readonly id: string,
+        public id: string,
         public readonly firstName: string,
         public readonly lastName: string
     ) {
-        super();
+        super(id);
     }
 
     static create({ id, firstName, lastName }: { id: string; firstName: string; lastName: string }): UserCreatedEvent {

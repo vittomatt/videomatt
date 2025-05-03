@@ -18,7 +18,7 @@ export class InMemoryEventVideoCreatedSubscriber implements LocalEventSubscriber
         this.publisher.registerHandler(VideoCreatedEvent.eventName, this);
     }
 
-    async consume(event: DomainEvent): Promise<void> {
+    async consume(event: DomainEvent) {
         this.handler.handle(event);
     }
 }
