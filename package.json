@@ -19,6 +19,9 @@
     "keywords": [],
     "author": "",
     "license": "ISC",
+    "engines": {
+        "node": "20.11.0"
+    },
     "dependencies": {
         "@aws-sdk/client-eventbridge": "^3.800.0",
         "@aws-sdk/client-sns": "^3.731.1",
