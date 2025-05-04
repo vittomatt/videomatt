@@ -25,18 +25,28 @@ export class App {
         // Init DB
         const envs = getEnvs();
         const {
-            VIDEOS_DB_HOST,
-            VIDEOS_POSTGRES_USER,
-            VIDEOS_POSTGRES_PASSWORD,
-            VIDEOS_POSTGRES_NAME,
-            VIDEOS_POSTGRES_PORT,
+            VIDEOS_DB_POSTGRES_HOST,
+            VIDEOS_DB_POSTGRES_USER,
+            VIDEOS_DB_POSTGRES_PASSWORD,
+            VIDEOS_DB_POSTGRES_NAME,
+            VIDEOS_DB_POSTGRES_PORT,
+            VIDEOS_DB_REPLICA_POSTGRES_HOST,
+            VIDEOS_DB_REPLICA_POSTGRES_USER,
+            VIDEOS_DB_REPLICA_POSTGRES_PASSWORD,
+            VIDEOS_DB_REPLICA_POSTGRES_NAME,
+            VIDEOS_DB_REPLICA_POSTGRES_PORT,
         } = envs;
         const db = new PostgresVideosDB({
-            dbHost: VIDEOS_DB_HOST,
-            dbUser: VIDEOS_POSTGRES_USER,
-            dbPassword: VIDEOS_POSTGRES_PASSWORD,
-            dbName: VIDEOS_POSTGRES_NAME,
-            dbPort: VIDEOS_POSTGRES_PORT,
+            dbHost: VIDEOS_DB_POSTGRES_HOST,
+            dbUser: VIDEOS_DB_POSTGRES_USER,
+            dbPassword: VIDEOS_DB_POSTGRES_PASSWORD,
+            dbName: VIDEOS_DB_POSTGRES_NAME,
+            dbPort: VIDEOS_DB_POSTGRES_PORT,
+            dbReplicaHost: VIDEOS_DB_REPLICA_POSTGRES_HOST,
+            dbReplicaUser: VIDEOS_DB_REPLICA_POSTGRES_USER,
+            dbReplicaPassword: VIDEOS_DB_REPLICA_POSTGRES_PASSWORD,
+            dbReplicaName: VIDEOS_DB_REPLICA_POSTGRES_NAME,
+            dbReplicaPort: VIDEOS_DB_REPLICA_POSTGRES_PORT,
         });
         db.initDB();
 

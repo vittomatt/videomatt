@@ -25,18 +25,28 @@ export class App {
         // Init DB
         const envs = getEnvs();
         const {
-            USERS_DB_HOST,
-            USERS_POSTGRES_USER,
-            USERS_POSTGRES_PASSWORD,
-            USERS_POSTGRES_NAME,
-            USERS_POSTGRES_PORT,
+            USERS_DB_POSTGRES_HOST,
+            USERS_DB_POSTGRES_USER,
+            USERS_DB_POSTGRES_PASSWORD,
+            USERS_DB_POSTGRES_NAME,
+            USERS_DB_POSTGRES_PORT,
+            USERS_DB_REPLICA_POSTGRES_HOST,
+            USERS_DB_REPLICA_POSTGRES_USER,
+            USERS_DB_REPLICA_POSTGRES_PASSWORD,
+            USERS_DB_REPLICA_POSTGRES_NAME,
+            USERS_DB_REPLICA_POSTGRES_PORT,
         } = envs;
         const db = new PostgresUserDB({
-            dbHost: USERS_DB_HOST,
-            dbUser: USERS_POSTGRES_USER,
-            dbPassword: USERS_POSTGRES_PASSWORD,
-            dbName: USERS_POSTGRES_NAME,
-            dbPort: USERS_POSTGRES_PORT,
+            dbHost: USERS_DB_POSTGRES_HOST,
+            dbUser: USERS_DB_POSTGRES_USER,
+            dbPassword: USERS_DB_POSTGRES_PASSWORD,
+            dbName: USERS_DB_POSTGRES_NAME,
+            dbPort: USERS_DB_POSTGRES_PORT,
+            dbReplicaHost: USERS_DB_REPLICA_POSTGRES_HOST,
+            dbReplicaUser: USERS_DB_REPLICA_POSTGRES_USER,
+            dbReplicaPassword: USERS_DB_REPLICA_POSTGRES_PASSWORD,
+            dbReplicaName: USERS_DB_REPLICA_POSTGRES_NAME,
+            dbReplicaPort: USERS_DB_REPLICA_POSTGRES_PORT,
         });
         db.initDB();
 

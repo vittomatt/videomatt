@@ -46,17 +46,51 @@ services:
         container_name: postgres-users
         restart: unless-stopped
         environment:
-            - POSTGRES_USER=${USERS_POSTGRES_USER}
-            - POSTGRES_PASSWORD=${USERS_POSTGRES_PASSWORD}
-            - POSTGRES_DB=${USERS_POSTGRES_NAME}
+            - POSTGRES_USER=${USERS_DB_POSTGRES_USER}
+            - POSTGRES_PASSWORD=${USERS_DB_POSTGRES_PASSWORD}
+            - POSTGRES_DB=${USERS_DB_POSTGRES_NAME}
         ports:
             - '5432:5432'
         volumes:
             - db_data_users:/var/lib/postgresql/data
+            - ./docker/replica-init.sh:/docker-entrypoint-initdb.d/replica-init.sh:ro
         networks:
             - videonet
         healthcheck:
-            test: ['CMD-SHELL', 'pg_isready -U ${USERS_POSTGRES_USER} -d ${USERS_POSTGRES_NAME} -h localhost || exit 1']
+            test:
+                [
+                    'CMD-SHELL',
+                    'pg_isready -U ${USERS_DB_POSTGRES_USER} -d ${USERS_DB_POSTGRES_NAME} -h localhost || exit 1',
+                ]
+            interval: 5s
+            timeout: 3s
+            retries: 3
+            start_period: 5s
+    db-users-replica:
+        image: postgres:15-alpine
+        container_name: postgres-users-replica
+        restart: unless-stopped
+        environment:
+            - POSTGRES_USER=${USERS_DB_REPLICA_POSTGRES_USER}
+            - POSTGRES_PASSWORD=${USERS_DB_REPLICA_POSTGRES_PASSWORD}
+            - POSTGRES_DB=${USERS_DB_REPLICA_POSTGRES_NAME}
+            - PGDATA=/var/lib/postgresql/data/pgdata
+        ports:
+            - '5433:5432'
+        volumes:
+            - db_data_users_replica:/var/lib/postgresql/data/pgdata
+            - ./docker/replica-setup.sh:/docker-entrypoint-initdb.d/replica-setup.sh:ro
+        depends_on:
+            db-users:
+                condition: service_healthy
+        networks:
+            - videonet
+        healthcheck:
+            test:
+                [
+                    'CMD-SHELL',
+                    'pg_isready -U ${USERS_DB_REPLICA_POSTGRES_USER} -d ${USERS_DB_REPLICA_POSTGRES_NAME} -h localhost || exit 1',
+                ]
             interval: 5s
             timeout: 3s
             retries: 3
@@ -66,19 +100,50 @@ services:
         container_name: postgres-videos
         restart: unless-stopped
         environment:
-            - POSTGRES_USER=${VIDEOS_POSTGRES_USER}
-            - POSTGRES_PASSWORD=${VIDEOS_POSTGRES_PASSWORD}
-            - POSTGRES_DB=${VIDEOS_POSTGRES_NAME}
-            - PGPORT=5433
+            - POSTGRES_USER=${VIDEOS_DB_POSTGRES_USER}
+            - POSTGRES_PASSWORD=${VIDEOS_DB_POSTGRES_PASSWORD}
+            - POSTGRES_DB=${VIDEOS_DB_POSTGRES_NAME}
         ports:
-            - '5433:5433'
+            - '5434:5432'
         volumes:
             - db_data_videos:/var/lib/postgresql/data
         networks:
             - videonet
         healthcheck:
             test:
-                ['CMD-SHELL', 'pg_isready -U ${VIDEOS_POSTGRES_USER} -d ${VIDEOS_POSTGRES_NAME} -h localhost || exit 1']
+                [
+                    'CMD-SHELL',
+                    'pg_isready -U ${VIDEOS_DB_POSTGRES_USER} -d ${VIDEOS_DB_POSTGRES_NAME} -h localhost || exit 1',
+                ]
+            interval: 5s
+            timeout: 3s
+            retries: 3
+            start_period: 5s
+    db-videos-replica:
+        image: postgres:15-alpine
+        container_name: postgres-videos-replica
+        restart: unless-stopped
+        environment:
+            - POSTGRES_USER=${VIDEOS_DB_REPLICA_POSTGRES_USER}
+            - POSTGRES_PASSWORD=${VIDEOS_DB_REPLICA_POSTGRES_PASSWORD}
+            - POSTGRES_DB=${VIDEOS_DB_REPLICA_POSTGRES_NAME}
+            - PGDATA=/var/lib/postgresql/data/pgdata
+        ports:
+            - '5435:5432'
+        volumes:
+            - db_data_videos_replica:/var/lib/postgresql/data/pgdata
+            - ./docker/replica-setup.sh:/docker-entrypoint-initdb.d/replica-setup.sh:ro
+        depends_on:
+            db-videos:
+                condition: service_healthy
+        networks:
+            - videonet
+        healthcheck:
+            test:
+                [
+                    'CMD-SHELL',
+                    'pg_isready -U ${VIDEOS_DB_REPLICA_POSTGRES_USER} -d ${VIDEOS_DB_REPLICA_POSTGRES_NAME} -h localhost || exit 1',
+                ]
             interval: 5s
             timeout: 3s
             retries: 3
@@ -114,5 +179,7 @@ networks:
 
 volumes:
     db_data_users:
+    db_data_users_replica:
     db_data_videos:
+    db_data_videos_replica:
     redis_data:
