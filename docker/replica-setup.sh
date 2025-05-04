@@ -5,10 +5,10 @@ set -e
 rm -rf "$PGDATA"/*
 
 # Make base backup
-PGPASSWORD="${USERS_POSTGRES_PASSWORD}" \
+PGPASSWORD="${DB_REPLICA_PASSWORD}" \
 pg_basebackup \
-  -h db-users \
-  -U replica_user \
+  -h ${DB_HOST} \
+  -U ${DB_REPLICA_USER} \
   -D "$PGDATA" \
   -Fp -Xs -P -R
 

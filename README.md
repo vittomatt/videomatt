@@ -1,3 +1,12 @@
+# Structure
+
+![Events Architecture](events.jpg)
+
+# To run the project with docker
+
+- Copy `.env.docker.example` as `.env.docker`
+- Run: `make run`
+
 # To run the project locally
 
 - Install dependencies `npm ci`
@@ -6,48 +15,39 @@
 - Run `npm run dev:users`
 - Run `npm run dev:videos`
 
-# To run the project with docker
+## Create the infrastructure
 
-- Copy `.env.docker.example` as `.env.docker`
-- Run: `docker compose up`
-
-# Structure
-
-![Events Architecture](events.jpg)
-
-# Create the infrastructure
-
-## Terraform
+### Terraform
 
 - Install the client and go to folder
 - `cd terraform`
 
-### LocalStack
+#### LocalStack
 
 ```
 unset AWS_PROFILE
 export AWS_ACCESS_KEY_ID=test
 export AWS_SECRET_ACCESS_KEY=test
 
-terraform init -backend=false
-terraform plan -var-file=local.tfvars
-terraform apply -var-file=local.tfvars -auto-approve
+terraform -chdir=terraform init -backend=false
+terraform -chdir=terraform plan -var-file=local.tfvars
+terraform -chdir=terraform apply -var-file=local.tfvars -auto-approve
 ```
 
-### AWS
+#### AWS
 
 ```
 unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY
 export AWS_PROFILE=videomatt
 
-terraform init # (podés configurar backend remoto si querés)
-terraform plan -var-file=aws.tfvars
-terraform apply -var-file=aws.tfvars
+terraform -chdir=terraform init -backend=false
+terraform -chdir=terraform plan -var-file=aws.tfvars
+terraform -chdir=terraform apply -var-file=aws.tfvars
 ```
 
-## Script
+### Script
 
-### Create SQS
+#### Create SQS
 
 ```
 aws sqs create-queue \
@@ -95,7 +95,7 @@ aws sqs create-queue \
 --attributes '{"RedrivePolicy":"{\"deadLetterTargetArn\":\"arn:aws:sqs:us-east-1:000000000000:videomatt_videos_1_event_video_created_retry\",\"maxReceiveCount\":\"1\"}"}'
 ```
 
-### Create SNS topics
+#### Create SNS topics
 
 ```
 aws sns create-topic \
@@ -106,7 +106,7 @@ aws sns create-topic \
 --query 'TopicArn'
 ```
 
-### Create subscription
+#### Create subscription
 
 ```
 aws sns subscribe \
@@ -118,7 +118,7 @@ aws sns subscribe \
 --attributes '{"FilterPolicy":"{\"EventType\":[\"videomatt.videos.1.event.video.created\"]}"}'
 ```
 
-### Create the event bridge rules
+#### Create the event bridge rules
 
 ```
 aws events put-rule \
@@ -129,7 +129,7 @@ aws events put-rule \
 --event-pattern '{"detail": {"name": ["videomatt.users.1.event.user.created"]}}'
 ```
 
-### Create policy
+#### Create policy
 
 ```
 aws sqs set-queue-attributes \
@@ -147,7 +147,7 @@ aws sqs set-queue-attributes \
 --attributes '{"Policy":"{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"AllowEventBridgeSendMessage\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"sns.amazonaws.com\"},\"Action\":\"sqs:SendMessage\",\"Resource\":\"arn:aws:sqs:us-east-1:000000000000:videomatt_videos_1_event_video_created\",\"Condition\":{\"ArnEquals\":{\"aws:SourceArn\":\"arn:aws:sns:us-east-1:000000000000:videomatt_videos\"}}}]}"}'
 ```
 
-### Create the event bridge targets
+#### Create the event bridge targets
 
 ```
 aws events put-targets \
