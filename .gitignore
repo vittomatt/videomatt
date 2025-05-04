@@ -7,9 +7,6 @@ dist
 !.env.example
 !.env.docker.example
 
-# Docker
-volume
-
 # Terraform
 .terraform/
 *.tfstate

@@ -180,8 +180,8 @@ services:
             - SERVICES=events,sqs,sns
             - DEBUG=true
         volumes:
-            - './volume:/var/lib/localstack'
-            - '/var/run/docker.sock:/var/run/docker.sock'
+            - localstack_data:/var/lib/localstack
+            - /var/run/docker.sock:/var/run/docker.sock
         networks:
             - videonet
 
@@ -195,3 +195,4 @@ volumes:
     db_data_videos:
     db_data_videos_replica:
     redis_data:
+    localstack_data:
