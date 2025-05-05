@@ -1,3 +1,4 @@
+import { UnexpectedError } from '@shared/domain/errors/unexpected.error';
 import { FailOverDomainEventsDBModel } from '@shared/infrastructure/models/failover-domain-events.db-model';
 import { UserDBModel } from '@users/infrastructure/models/user.db-model';
 
@@ -87,7 +88,7 @@ export class PostgresUserDB {
 
     public getDB(): Sequelize {
         if (!this.instance) {
-            throw new Error('Database not initialized');
+            throw new UnexpectedError('Database not initialized');
         }
         return this.instance;
     }
@@ -100,7 +101,7 @@ export class PostgresUserDB {
 
     public getUserModel(): typeof UserDBModel {
         if (!this.userModel) {
-            throw new Error('User model not initialized');
+            throw new UnexpectedError('User model not initialized');
         }
         return this.userModel;
     }

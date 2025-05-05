@@ -1,3 +1,5 @@
+import { UnexpectedError } from '@shared/domain/errors/unexpected.error';
+
 import dotenv from 'dotenv';
 import { config as dotenvSafeConfig } from 'dotenv-safe';
 import { z } from 'zod';
@@ -73,7 +75,7 @@ export function initEnvs() {
     const parsed = envSchema.safeParse(process.env);
     if (!parsed.success) {
         console.error('❌ Invalid environment variables:', parsed.error.format());
-        throw new Error('Invalid environment variables');
+        throw new UnexpectedError('Invalid environment variables');
     }
 
     envConfig = parsed.data;
@@ -82,7 +84,7 @@ export function initEnvs() {
 
 export function getEnvs(): EnvVars {
     if (!envConfig) {
-        throw new Error('You must call initEnvs() before getEnvs()');
+        throw new UnexpectedError('You must call initEnvs() before getEnvs()');
     }
     return envConfig;
 }

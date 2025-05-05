@@ -1,3 +1,4 @@
+import { VideoNotFoundError } from '@videos/videos/domain/errors/video-not-found.error';
 import { VideoRead } from '@videos/videos/domain/models/read/video.read';
 import { VideoReadRepository } from '@videos/videos/domain/repositories/video-read.repository';
 import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/tokens-video';
@@ -18,7 +19,7 @@ export class IncreaseAmountOfCommentsUseCase {
 
         const video = await this.repository.searchById(videoId);
         if (!video) {
-            throw new Error('Video not found');
+            throw new VideoNotFoundError();
         }
 
         video.increaseAmountOfComments();

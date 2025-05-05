@@ -1,6 +1,9 @@
 import { DomainError } from '@shared/domain/errors/domain.error';
 
 export class UserAlreadyExistsError extends DomainError {
-    public readonly type = 'UserAlreadyExistsError';
-    public readonly message = 'User already exists';
+    static readonly type = 'UserAlreadyExistsError';
+
+    constructor() {
+        super(UserAlreadyExistsError.type, 'User already exists');
+    }
 }

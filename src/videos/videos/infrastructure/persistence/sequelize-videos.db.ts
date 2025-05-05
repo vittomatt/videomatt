@@ -1,3 +1,4 @@
+import { UnexpectedError } from '@shared/domain/errors/unexpected.error';
 import { FailOverDomainEventsDBModel } from '@shared/infrastructure/models/failover-domain-events.db-model';
 import { VideoCommentDBModel } from '@videos/video-comment/infrastructure/models/video-comment.db-model';
 import { VideoDBModel } from '@videos/videos/infrastructure/models/video.db-model';
@@ -96,7 +97,7 @@ export class PostgresVideosDB {
 
     public getDB(): Sequelize {
         if (!this.instance) {
-            throw new Error('Database not initialized');
+            throw new UnexpectedError('Database not initialized');
         }
         return this.instance;
     }
@@ -109,21 +110,21 @@ export class PostgresVideosDB {
 
     public getVideoModel(): typeof VideoDBModel {
         if (!this.videoModel) {
-            throw new Error('Video model not initialized');
+            throw new UnexpectedError('Video model not initialized');
         }
         return this.videoModel;
     }
 
     public getVideoCommentModel(): typeof VideoCommentDBModel {
         if (!this.videoCommentModel) {
-            throw new Error('Video comment model not initialized');
+            throw new UnexpectedError('Video comment model not initialized');
         }
         return this.videoCommentModel;
     }
 
     public getVideoModelRead(): typeof VideoDBModelRead {
         if (!this.videoModelRead) {
-            throw new Error('Video model read not initialized');
+            throw new UnexpectedError('Video model read not initialized');
         }
         return this.videoModelRead;
     }

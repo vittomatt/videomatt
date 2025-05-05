@@ -1,3 +1,4 @@
+import { UnexpectedError } from '@shared/domain/errors/unexpected.error';
 import { Criteria } from '@shared/domain/repositories/criteria';
 import { FilterOperator, Filters } from '@shared/domain/repositories/filters';
 import { Order, OrderType } from '@shared/domain/repositories/order';
@@ -63,7 +64,7 @@ export class SequelizeCriteriaConverter {
             const value = filter.value;
 
             if (!operatorMap[operator]) {
-                throw new Error(`Not supported operator: ${operator}`);
+                throw new UnexpectedError(`Not supported operator: ${operator}`);
             }
 
             if (!where[field]) {
@@ -100,7 +101,7 @@ export class SequelizeCriteriaConverter {
 
         this.include.forEach((include) => {
             if (!includeMap[include]) {
-                throw new Error(`Not supported include: ${include}`);
+                throw new UnexpectedError(`Not supported include: ${include}`);
             }
 
             allIncludes.push(includeMap[include]);

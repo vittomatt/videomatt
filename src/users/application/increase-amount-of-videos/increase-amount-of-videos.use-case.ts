@@ -1,3 +1,4 @@
+import { UserNotFoundError } from '@users/domain/errors/user-not-found.error';
 import { User } from '@users/domain/models/write/user';
 import { UserRepository } from '@users/domain/repositories/user.repository';
 import { USER_TOKEN } from '@users/infrastructure/di/tokens-user';
@@ -11,7 +12,7 @@ export class IncreaseAmountOfVideosUseCase {
     async execute(userId: string, videoId: string) {
         const user = await this.userRepository.searchById(userId);
         if (!user) {
-            throw new Error('User not found');
+            throw new UserNotFoundError();
         }
 
         user.increaseAmountOfVideos();

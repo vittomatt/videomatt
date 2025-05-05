@@ -1,6 +1,12 @@
-export abstract class DomainError extends Error {
-    abstract type: string;
-    abstract message: string;
+import { ExpectedError } from '@shared/domain/errors/expected.error';
+
+export abstract class DomainError extends ExpectedError {
+    constructor(
+        public readonly type: string,
+        message: string
+    ) {
+        super(message);
+    }
 
     toPrimitives(): {
         type: string;
