@@ -1,6 +1,3 @@
-import { VideoCommentDBModel } from '@videos/video-comment/infrastructure/models/video-comment.db-model';
-import { PostgresVideosDB } from '@videos/videos/infrastructure/persistence/sequelize-videos.db';
-
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export const VIDEO_TABLE_NAME = 'videos';
@@ -11,7 +8,6 @@ export class VideoDBModel extends Model {
     public description!: string;
     public url!: string;
     public userId!: string;
-    public comments!: VideoCommentDBModel[];
 
     public static initModel(sequelize: Sequelize): typeof VideoDBModel {
         return VideoDBModel.init(
@@ -51,10 +47,6 @@ export class VideoDBModel extends Model {
         );
     }
 
-    public static associate(models: PostgresVideosDB) {
-        this.hasMany(models.getVideoCommentModel(), { foreignKey: 'videoId' });
-    }
-
     toPrimitives() {
         return {
             id: this.id,
@@ -62,7 +54,7 @@ export class VideoDBModel extends Model {
             description: this.description,
             url: this.url,
             userId: this.userId,
-            comments: this.comments,
+            comments: [],
         };
     }
 }

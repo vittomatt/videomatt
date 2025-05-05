@@ -8,13 +8,14 @@ import express from 'express';
 const expressApp = express();
 const app = new App(expressApp);
 
-const { logger, db, redis } = app.init();
+const { logger, db, mongoDB, redis } = app.init();
 
 const port = getEnvs().VIDEOS_PORT;
 const appInstance = app.getInstance();
 
 appInstance.listen(port, async () => {
     await db.syncDB();
+    await mongoDB.connectDB();
     logger.info(`Server running on http://localhost:${port}`);
 });
 

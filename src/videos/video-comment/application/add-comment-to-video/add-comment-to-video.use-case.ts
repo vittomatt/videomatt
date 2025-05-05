@@ -1,6 +1,7 @@
 import { DomainEventBus } from '@shared/domain/event-bus/domain-event-bus';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { VideoComment } from '@videos/video-comment/domain/models/write/video-comment';
+import { VideoCommentRepository } from '@videos/video-comment/infrastructure/repositories/video-comment.repository';
 import { VideoNotFoundError } from '@videos/videos/domain/errors/video-not-found.error';
 import { Video } from '@videos/videos/domain/models/write/video';
 import { VideoRepository } from '@videos/videos/domain/repositories/video.repository';
@@ -12,6 +13,8 @@ import { inject, injectable } from 'tsyringe';
 export class AddCommentToVideoUseCase {
     constructor(
         @inject(VIDEO_TOKEN.REPOSITORY) private readonly repository: VideoRepository<Video>,
+        @inject(VIDEO_TOKEN.VIDEO_COMMENT_REPOSITORY)
+        private readonly videoCommentRepository: VideoCommentRepository<VideoComment>,
         @inject(TOKEN.DEFERRED_DOMAIN_EVENT_BUS) private readonly eventBus: DomainEventBus
     ) {}
 
@@ -26,7 +29,7 @@ export class AddCommentToVideoUseCase {
         videoId: string;
         userId: string;
     }): Promise<VideoNotFoundError | void> {
-        const commentExists = await this.repository.searchById(id);
+        const commentExists = await this.videoCommentRepository.searchById(id);
         if (commentExists) {
             return;
         }
@@ -37,9 +40,9 @@ export class AddCommentToVideoUseCase {
         }
 
         const newComment = VideoComment.create({ id, text, userId, videoId });
+        await this.videoCommentRepository.add(newComment);
         video.addComment(newComment);
 
-        await this.repository.update(video);
         await this.eventBus.publish(video.pullDomainEvents());
     }
 }

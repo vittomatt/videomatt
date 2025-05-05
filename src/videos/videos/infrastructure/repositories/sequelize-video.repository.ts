@@ -3,8 +3,6 @@ import { Criteria } from '@shared/domain/repositories/criteria';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { RedisDB } from '@shared/infrastructure/persistence/redis-db';
 import { SequelizeCriteriaConverter } from '@shared/infrastructure/repositories/sequelize-criteria.converter';
-import { VIDEO_COMMENT_TOKENS } from '@videos/video-comment/infrastructure/di/tokens-video-comment';
-import { VideoCommentDBModel } from '@videos/video-comment/infrastructure/models/video-comment.db-model';
 import { Video } from '@videos/videos/domain/models/write/video';
 import { VideoRepository } from '@videos/videos/domain/repositories/video.repository';
 import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/tokens-video';
@@ -16,7 +14,6 @@ import { inject, injectable } from 'tsyringe';
 export class SequelizeVideoRepository implements VideoRepository<Video> {
     constructor(
         @inject(VIDEO_TOKEN.DB_MODEL) private readonly dbVideo: typeof VideoDBModel,
-        @inject(VIDEO_COMMENT_TOKENS.DB_MODEL) private readonly dbVideoComment: typeof VideoCommentDBModel,
         @inject(TOKEN.LOGGER) private readonly logger: Logger,
         @inject(TOKEN.REDIS) private readonly redis: RedisDB
     ) {}
@@ -32,6 +29,7 @@ export class SequelizeVideoRepository implements VideoRepository<Video> {
 
     async remove(video: Video) {
         const id = video.id.value;
+
         try {
             await this.dbVideo.destroy({ where: { id } });
         } catch (error) {
@@ -41,12 +39,9 @@ export class SequelizeVideoRepository implements VideoRepository<Video> {
 
     async update(video: Video) {
         const videoPrimitives = video.toPrimitives();
-        const commentPrimitives = video.comments.map((comment) => comment.toPrimitives());
 
         try {
             await this.dbVideo.update(videoPrimitives, { where: { id: videoPrimitives.id } });
-            const promises = commentPrimitives.map((commentPrimitive) => this.dbVideoComment.create(commentPrimitive));
-            await Promise.all(promises);
         } catch (error) {
             this.logger.error(`Error updating video: ${error}`);
         }

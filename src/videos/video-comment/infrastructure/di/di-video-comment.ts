@@ -2,12 +2,12 @@ import { AddCommentToVideoUseCase } from '@videos/video-comment/application/add-
 import { AddCommentToVideoController } from '@videos/video-comment/infrastructure/controllers/add-comment-to-video/add-comment-to-video.controller';
 import { VIDEO_COMMENT_TOKENS } from '@videos/video-comment/infrastructure/di/tokens-video-comment';
 import { AddCommentToVideoHandler } from '@videos/video-comment/infrastructure/handlers/command/add-comment-to-video.handler';
-import { PostgresVideosDB } from '@videos/videos/infrastructure/persistence/sequelize-videos.db';
+import { MongoVideosCommentDB } from '@videos/videos/infrastructure/persistence/mongoose-video-comment.db';
 
 import { container } from 'tsyringe';
 
 export class DIVideoComments {
-    constructor(private readonly db: PostgresVideosDB) {}
+    constructor(private readonly mongoDB: MongoVideosCommentDB) {}
 
     public initDI() {
         this.initDBDependencies();
@@ -22,7 +22,7 @@ export class DIVideoComments {
 
     private initDBDependencies() {
         container.register(VIDEO_COMMENT_TOKENS.DB_MODEL, {
-            useValue: this.db.getVideoCommentModel(),
+            useValue: this.mongoDB.getVideoCommentModel(),
         });
     }
 

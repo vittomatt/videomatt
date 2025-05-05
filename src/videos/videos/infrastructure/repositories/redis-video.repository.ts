@@ -1,14 +1,11 @@
-import { SequelizeVideoRepository } from './sequelize-video.repository';
-
 import { Logger } from '@shared/domain/logger/logger';
 import { Criteria } from '@shared/domain/repositories/criteria';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { RedisDB } from '@shared/infrastructure/persistence/redis-db';
-import { VIDEO_COMMENT_TOKENS } from '@videos/video-comment/infrastructure/di/tokens-video-comment';
-import { VideoCommentDBModel } from '@videos/video-comment/infrastructure/models/video-comment.db-model';
 import { Video } from '@videos/videos/domain/models/write/video';
 import { VideoRepository } from '@videos/videos/domain/repositories/video.repository';
 import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/tokens-video';
+import { SequelizeVideoRepository } from '@videos/videos/infrastructure/repositories/sequelize-video.repository';
 
 import { inject, injectable } from 'tsyringe';
 
@@ -17,7 +14,6 @@ export class RedisVideoRepository implements VideoRepository<Video> {
     constructor(
         @inject(TOKEN.REDIS) private readonly redis: RedisDB,
         @inject(VIDEO_TOKEN.DB_REPOSITORY) private readonly videoRepository: SequelizeVideoRepository,
-        @inject(VIDEO_COMMENT_TOKENS.DB_MODEL) private readonly dbVideoComment: typeof VideoCommentDBModel,
         @inject(TOKEN.LOGGER) private readonly logger: Logger
     ) {}
 
@@ -56,14 +52,9 @@ export class RedisVideoRepository implements VideoRepository<Video> {
         const videoPrimitives = video.toPrimitives();
         const videoSerialized = JSON.stringify(videoPrimitives);
 
-        const commentPrimitives = video.comments.map((comment) => comment.toPrimitives());
-
         try {
             await this.redis.setValue(videoId, videoSerialized);
             await this.videoRepository.update(video);
-
-            const promises = commentPrimitives.map((commentPrimitive) => this.dbVideoComment.create(commentPrimitive));
-            await Promise.all(promises);
         } catch (error) {
             this.logger.error(`Error updating video: ${error}`);
         }

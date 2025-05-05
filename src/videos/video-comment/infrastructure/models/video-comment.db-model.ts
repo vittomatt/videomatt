@@ -1,64 +1,49 @@
-import { VIDEO_TABLE_NAME } from '@videos/videos/infrastructure/models/video.db-model';
-import { PostgresVideosDB } from '@videos/videos/infrastructure/persistence/sequelize-videos.db';
+import { Document, Schema, model } from 'mongoose';
 
-import { DataTypes, Model, Sequelize } from 'sequelize';
+export const VIDEO_COMMENT_COLLECTION_NAME = 'comments';
+export const VIDEO_COMMENT_MODEL_NAME = 'VideoComment';
 
-export const VIDEO_COMMENT_TABLE_NAME = 'comments';
+export interface VideoCommentDBDocument extends Document {
+    _id: string;
+    text: string;
+    videoId: string;
+    userId: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
 
-export class VideoCommentDBModel extends Model {
-    public id!: string;
-    public text!: string;
-    public videoId!: string;
-    public userId!: string;
-
-    public static initModel(sequelize: Sequelize): typeof VideoCommentDBModel {
-        return VideoCommentDBModel.init(
-            {
-                id: {
-                    type: DataTypes.UUID,
-                    primaryKey: true,
-                },
-                text: {
-                    type: DataTypes.STRING,
-                    allowNull: false,
-                },
-                videoId: {
-                    type: DataTypes.UUID,
-                    allowNull: false,
-                    references: {
-                        model: VIDEO_TABLE_NAME,
-                        key: 'id',
-                    },
-                },
-                userId: {
-                    type: DataTypes.UUID,
-                    allowNull: false,
-                },
-                createdAt: {
-                    type: DataTypes.DATE,
-                    allowNull: false,
-                    defaultValue: new Date().toISOString(),
-                },
-                updatedAt: {
-                    type: DataTypes.DATE,
-                    allowNull: false,
-                    defaultValue: new Date().toISOString(),
-                },
-            },
-            { sequelize, modelName: VIDEO_COMMENT_TABLE_NAME }
-        );
+const VideoCommentSchema = new Schema<VideoCommentDBDocument>(
+    {
+        _id: { type: String, required: true, unique: true },
+        text: { type: String, required: true },
+        videoId: { type: String, required: true },
+        userId: { type: String, required: true },
+    },
+    {
+        timestamps: true,
+        collection: VIDEO_COMMENT_COLLECTION_NAME,
     }
+);
 
-    public static associate(models: PostgresVideosDB) {
-        this.belongsTo(models.getVideoModel(), { foreignKey: 'videoId' });
+export class VideoComment {
+    private readonly document: VideoCommentDBDocument;
+
+    constructor(document: VideoCommentDBDocument) {
+        this.document = document;
     }
 
     toPrimitives() {
         return {
-            id: this.id,
-            text: this.text,
-            videoId: this.videoId,
-            userId: this.userId,
+            id: this.document._id,
+            text: this.document.text,
+            videoId: this.document.videoId,
+            userId: this.document.userId,
         };
     }
+
+    get createdAt() {
+        return this.document.createdAt;
+    }
 }
+
+export const VideoCommentModel = model<VideoCommentDBDocument>(VIDEO_COMMENT_MODEL_NAME, VideoCommentSchema);

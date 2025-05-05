@@ -5,6 +5,7 @@ import { PinoLogger } from '@shared/infrastructure/logger/pino';
 import { RedisDB } from '@shared/infrastructure/persistence/redis-db';
 import { Worker } from '@shared/worker';
 import { DI } from '@videos/videos/infrastructure/di/di-video';
+import { MongoVideosCommentDB } from '@videos/videos/infrastructure/persistence/mongoose-video-comment.db';
 import { PostgresVideosDB } from '@videos/videos/infrastructure/persistence/sequelize-videos.db';
 import { initRoutes } from '@videos/videos/infrastructure/routes/init-routes';
 
@@ -15,7 +16,7 @@ import { container } from 'tsyringe';
 export class App {
     constructor(private readonly expressApp: Express) {}
 
-    init(): { logger: Logger; db: PostgresVideosDB; redis: RedisDB } {
+    init(): { logger: Logger; db: PostgresVideosDB; mongoDB: MongoVideosCommentDB; redis: RedisDB } {
         initEnvs();
 
         // Init middlewares
@@ -35,6 +36,11 @@ export class App {
             VIDEOS_DB_REPLICA_POSTGRES_PASSWORD,
             VIDEOS_DB_REPLICA_POSTGRES_NAME,
             VIDEOS_DB_REPLICA_POSTGRES_PORT,
+            VIDEOS_COMMENT_DB_MONGO_HOST,
+            VIDEOS_COMMENT_DB_MONGO_PORT,
+            VIDEOS_COMMENT_DB_MONGO_NAME,
+            VIDEOS_COMMENT_DB_MONGO_USER,
+            VIDEOS_COMMENT_DB_MONGO_PASSWORD,
         } = envs;
         const db = new PostgresVideosDB({
             dbHost: VIDEOS_DB_POSTGRES_HOST,
@@ -50,11 +56,19 @@ export class App {
         });
         db.initDB();
 
+        const mongoDB = new MongoVideosCommentDB({
+            dbHost: VIDEOS_COMMENT_DB_MONGO_HOST,
+            dbUser: VIDEOS_COMMENT_DB_MONGO_USER,
+            dbPassword: VIDEOS_COMMENT_DB_MONGO_PASSWORD,
+            dbName: VIDEOS_COMMENT_DB_MONGO_NAME,
+            dbPort: VIDEOS_COMMENT_DB_MONGO_PORT,
+        });
+
         const redis = new RedisDB();
         redis.connect();
 
         // Init DI
-        const di = new DI(db, redis);
+        const di = new DI(db, mongoDB, redis);
         di.initDI();
 
         // Init routes
@@ -69,7 +83,7 @@ export class App {
             process.exit(1);
         });
 
-        return { logger, db, redis };
+        return { logger, db, mongoDB, redis };
     }
 
     getInstance(): Express {

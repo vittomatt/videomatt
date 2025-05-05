@@ -31,6 +31,12 @@ const envSchema = z.object({
     VIDEOS_DB_REPLICA_POSTGRES_NAME: z.string(),
     VIDEOS_DB_REPLICA_POSTGRES_PORT: z.coerce.number(),
 
+    VIDEOS_COMMENT_DB_MONGO_HOST: z.string(),
+    VIDEOS_COMMENT_DB_MONGO_USER: z.string(),
+    VIDEOS_COMMENT_DB_MONGO_PASSWORD: z.string(),
+    VIDEOS_COMMENT_DB_MONGO_PORT: z.coerce.number(),
+    VIDEOS_COMMENT_DB_MONGO_NAME: z.string(),
+
     REDIS_HOST: z.string(),
     REDIS_PORT: z.coerce.number(),
 

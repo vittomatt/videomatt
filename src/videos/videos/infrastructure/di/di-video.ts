@@ -15,6 +15,7 @@ import { RedisDB } from '@shared/infrastructure/persistence/redis-db';
 import { DIVideoComments } from '@videos/video-comment/infrastructure/di/di-video-comment';
 import { SQSWorker } from '@videos/videos.worker';
 import { DIVideos } from '@videos/videos/infrastructure/di/di-video-modules';
+import { MongoVideosCommentDB } from '@videos/videos/infrastructure/persistence/mongoose-video-comment.db';
 import { PostgresVideosDB } from '@videos/videos/infrastructure/persistence/sequelize-videos.db';
 
 import { container } from 'tsyringe';
@@ -22,6 +23,7 @@ import { container } from 'tsyringe';
 export class DI {
     constructor(
         private readonly db: PostgresVideosDB,
+        private readonly mongoDB: MongoVideosCommentDB,
         private readonly redis: RedisDB
     ) {}
 
@@ -44,6 +46,9 @@ export class DI {
         });
         container.register(TOKEN.REDIS, {
             useValue: this.redis,
+        });
+        container.register(TOKEN.MONGO_DB, {
+            useValue: this.mongoDB,
         });
     }
 
@@ -97,11 +102,11 @@ export class DI {
 
     private initModules() {
         new DIVideos(this.db).initDI();
-        new DIVideoComments(this.db).initDI();
+        new DIVideoComments(this.mongoDB).initDI();
     }
 
     public initSingletons() {
         new DIVideos(this.db).initSingletons();
-        new DIVideoComments(this.db).initSingletons();
+        new DIVideoComments(this.mongoDB).initSingletons();
     }
 }

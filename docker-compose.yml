@@ -159,6 +159,30 @@ services:
             timeout: 3s
             retries: 3
             start_period: 5s
+    db-video-comments:
+        image: mongo:7.0
+        container_name: mongo-video-comments
+        restart: unless-stopped
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=${VIDEOS_COMMENT_DB_MONGO_USER}
+            - MONGO_INITDB_ROOT_PASSWORD=${VIDEOS_COMMENT_DB_MONGO_PASSWORD}
+            - MONGO_INITDB_DATABASE=${VIDEOS_COMMENT_DB_MONGO_NAME}
+        ports:
+            - '27017:27017'
+        volumes:
+            - db_data_video_comments:/data/db
+        networks:
+            - videonet
+        healthcheck:
+            test: >
+                mongosh --username ${VIDEOS_COMMENT_DB_MONGO_USER} \
+                        --password ${VIDEOS_COMMENT_DB_MONGO_PASSWORD} \
+                        --authenticationDatabase admin \
+                        --eval "db.adminCommand('ping')" || exit 1
+            interval: 5s
+            timeout: 3s
+            retries: 3
+            start_period: 5s
     redis:
         image: redis:alpine
         container_name: redis
@@ -194,5 +218,6 @@ volumes:
     db_data_users_replica:
     db_data_videos:
     db_data_videos_replica:
+    db_data_video_comments:
     redis_data:
     localstack_data:

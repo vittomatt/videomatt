@@ -3,21 +3,17 @@ import { Criteria } from '@shared/domain/repositories/criteria';
 import { FilterOperator, Filters } from '@shared/domain/repositories/filters';
 import { Order, OrderType } from '@shared/domain/repositories/order';
 
-import { Op, Order as SequelizeOrder } from 'sequelize';
+type MongoFilter = Record<string, any>;
 
-type FilterValue = string | number | boolean;
-
-type WhereClause = Record<string, Record<symbol, FilterValue>>;
-
-const operatorMap: Record<FilterOperator, symbol> = {
-    [FilterOperator.EQUALS]: Op.eq,
-    [FilterOperator.NOT_EQUALS]: Op.ne,
-    [FilterOperator.GREATER_THAN]: Op.gt,
-    [FilterOperator.LESS_THAN]: Op.lt,
-    [FilterOperator.LIKE]: Op.like,
+const operatorMap: Record<FilterOperator, string> = {
+    [FilterOperator.EQUALS]: '$eq',
+    [FilterOperator.NOT_EQUALS]: '$ne',
+    [FilterOperator.GREATER_THAN]: '$gt',
+    [FilterOperator.LESS_THAN]: '$lt',
+    [FilterOperator.LIKE]: '$regex',
 };
 
-export class SequelizeCriteriaConverter {
+export class MongooseCriteriaConverter {
     private readonly filters: Filters[];
     private readonly order: Order | undefined;
     private readonly offset: number | undefined;
@@ -31,42 +27,41 @@ export class SequelizeCriteriaConverter {
     }
 
     public build(): {
-        where: WhereClause;
-        order: SequelizeOrder | undefined;
-        offset: number | undefined;
+        query: MongoFilter;
+        sort: Record<string, 1 | -1> | undefined;
+        skip: number | undefined;
         limit: number | undefined;
     } {
         return {
-            where: this.buildSequelizeWhere(),
-            order: this.buildSequelizeOrder(),
-            offset: this.offset,
+            query: this.buildMongoWhere(),
+            sort: this.buildMongoSort(),
+            skip: this.offset,
             limit: this.limit,
         };
     }
 
-    private buildSequelizeWhere(): WhereClause {
-        const where: WhereClause = {};
+    private buildMongoWhere(): MongoFilter {
+        const query: MongoFilter = {};
 
         this.filters.forEach((filter) => {
-            const field = filter.field;
-            const operator = filter.operator;
-            const value = filter.value;
+            const { field, operator, value } = filter;
 
-            if (!operatorMap[operator]) {
+            const mongoOperator = operatorMap[operator];
+            if (!mongoOperator) {
                 throw new UnexpectedError(`Not supported operator: ${operator}`);
             }
 
-            if (!where[field]) {
-                where[field] = {};
+            if (operator === FilterOperator.LIKE && typeof value === 'string') {
+                query[field] = { [mongoOperator]: new RegExp(value, 'i') };
+            } else {
+                query[field] = { [mongoOperator]: value };
             }
-
-            where[field][operatorMap[operator]] = value;
         });
 
-        return where;
+        return query;
     }
 
-    private buildSequelizeOrder(): SequelizeOrder | undefined {
+    private buildMongoSort(): Record<string, 1 | -1> | undefined {
         if (!this.order || this.order.isNone()) {
             return;
         }
@@ -78,6 +73,8 @@ export class SequelizeCriteriaConverter {
             return;
         }
 
-        return [[orderBy, orderType]];
+        return {
+            [orderBy]: orderType === OrderType.ASC ? 1 : -1,
+        };
     }
 }

@@ -1,6 +1,5 @@
 import { UnexpectedError } from '@shared/domain/errors/unexpected.error';
 import { FailOverDomainEventsDBModel } from '@shared/infrastructure/models/failover-domain-events.db-model';
-import { VideoCommentDBModel } from '@videos/video-comment/infrastructure/models/video-comment.db-model';
 import { VideoDBModel } from '@videos/videos/infrastructure/models/video.db-model';
 import { VideoDBModelRead } from '@videos/videos/infrastructure/models/video.db-read-model';
 
@@ -9,7 +8,6 @@ import { Sequelize } from 'sequelize';
 export class PostgresVideosDB {
     private readonly instance: Sequelize;
     private videoModel!: typeof VideoDBModel;
-    private videoCommentModel!: typeof VideoCommentDBModel;
     private videoModelRead!: typeof VideoDBModelRead;
 
     constructor({
@@ -75,15 +73,11 @@ export class PostgresVideosDB {
 
     private initModels() {
         this.videoModel = VideoDBModel.initModel(this.instance);
-        this.videoCommentModel = VideoCommentDBModel.initModel(this.instance);
         this.videoModelRead = VideoDBModelRead.initModel(this.instance);
         FailOverDomainEventsDBModel.initModel(this.instance);
     }
 
-    private initAssociations() {
-        this.videoModel.associate(this);
-        this.videoCommentModel.associate(this);
-    }
+    private initAssociations() {}
 
     public async syncDB() {
         try {
@@ -113,13 +107,6 @@ export class PostgresVideosDB {
             throw new UnexpectedError('Video model not initialized');
         }
         return this.videoModel;
-    }
-
-    public getVideoCommentModel(): typeof VideoCommentDBModel {
-        if (!this.videoCommentModel) {
-            throw new UnexpectedError('Video comment model not initialized');
-        }
-        return this.videoCommentModel;
     }
 
     public getVideoModelRead(): typeof VideoDBModelRead {

@@ -27,6 +27,7 @@ export class SequelizeUserRepository implements UserRepository<User> {
 
     async remove(user: User) {
         const id = user.id.value;
+
         try {
             await this.dbUser.destroy({ where: { id } });
         } catch (error) {
@@ -36,6 +37,7 @@ export class SequelizeUserRepository implements UserRepository<User> {
 
     async update(user: User) {
         const userPrimitives = user.toPrimitives();
+
         try {
             await this.dbUser.update(userPrimitives, { where: { id: userPrimitives.id } });
         } catch (error) {

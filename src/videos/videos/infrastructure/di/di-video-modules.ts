@@ -1,4 +1,5 @@
 import { getEnvs } from '@shared/infrastructure/envs/init-envs';
+import { MongoDBVideoCommentRepository } from '@videos/video-comment/infrastructure/repositories/mongoose-video-comment.repository';
 import { CreateVideoReadUseCase } from '@videos/videos/application/create-video/create-video-read.use-case';
 import { CreateVideoUseCase } from '@videos/videos/application/create-video/create-video.use-case';
 import { GetVideosUseCase } from '@videos/videos/application/get-videos/get-videos.use-case';
@@ -107,6 +108,9 @@ export class DIVideos {
         });
         container.register(VIDEO_TOKEN.VIDEO_READ_REPOSITORY, {
             useClass: SequelizeVideoReadRepository,
+        });
+        container.register(VIDEO_TOKEN.VIDEO_COMMENT_REPOSITORY, {
+            useClass: MongoDBVideoCommentRepository,
         });
     }
 
