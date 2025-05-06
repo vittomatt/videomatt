@@ -7,9 +7,11 @@ import { Worker } from '@shared/worker';
 import { DI } from '@users/infrastructure/di/di-user';
 import { PostgresUserDB } from '@users/infrastructure/persistence/sequelize-user.db';
 import { initRoutes } from '@users/infrastructure/routes/init-routes';
+import { swaggerSpec } from '@users/users.swagger';
 
 import express, { Express } from 'express';
 import helmet from 'helmet';
+import swaggerUi from 'swagger-ui-express';
 import { container } from 'tsyringe';
 
 export class App {
@@ -21,6 +23,7 @@ export class App {
         // Init middlewares
         this.expressApp.use(helmet());
         this.expressApp.use(express.json());
+        this.expressApp.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
         // Init DB
         const envs = getEnvs();

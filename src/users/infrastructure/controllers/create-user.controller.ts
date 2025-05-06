@@ -7,6 +7,50 @@ import { UserAlreadyExistsError } from '@users/domain/errors/user-already-exists
 import { Request, Response } from 'express';
 import { inject, injectable } from 'tsyringe';
 
+/**
+ * @swagger
+ * /users/{userId}:
+ *   post:
+ *     summary: Create a new user
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Unique identifier for the user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - firstName
+ *               - lastName
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *                 example: John
+ *               lastName:
+ *                 type: string
+ *                 example: Doe
+ *     responses:
+ *       201:
+ *         description: User created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 userId:
+ *                   type: string
+ *                   example: usr123
+ *       400:
+ *         description: User already exists
+ *       500:
+ *         description: Internal server error
+ */
 @injectable()
 export class CreateUserController {
     constructor(

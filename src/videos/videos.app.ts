@@ -4,6 +4,7 @@ import { getEnvs, initEnvs } from '@shared/infrastructure/envs/init-envs';
 import { PinoLogger } from '@shared/infrastructure/logger/pino';
 import { RedisDB } from '@shared/infrastructure/persistence/redis-db';
 import { Worker } from '@shared/worker';
+import { swaggerSpec } from '@videos/videos.swagger';
 import { DI } from '@videos/videos/infrastructure/di/di-video';
 import { MongoVideosCommentDB } from '@videos/videos/infrastructure/persistence/mongoose-video-comment.db';
 import { PostgresVideosDB } from '@videos/videos/infrastructure/persistence/sequelize-videos.db';
@@ -11,6 +12,7 @@ import { initRoutes } from '@videos/videos/infrastructure/routes/init-routes';
 
 import express, { Express } from 'express';
 import helmet from 'helmet';
+import swaggerUi from 'swagger-ui-express';
 import { container } from 'tsyringe';
 
 export class App {
@@ -22,6 +24,7 @@ export class App {
         // Init middlewares
         this.expressApp.use(helmet());
         this.expressApp.use(express.json());
+        this.expressApp.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
         // Init DB
         const envs = getEnvs();

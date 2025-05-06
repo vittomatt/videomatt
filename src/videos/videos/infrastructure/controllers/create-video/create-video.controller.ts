@@ -7,6 +7,58 @@ import { VideoAlreadyExistsError } from '@videos/videos/domain/errors/video-alre
 import { Request, Response } from 'express';
 import { inject, injectable } from 'tsyringe';
 
+/**
+ * @swagger
+ * /videos/{videoId}:
+ *   post:
+ *     summary: Create a new video
+ *     parameters:
+ *       - in: path
+ *         name: videoId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Unique video id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - title
+ *               - description
+ *               - url
+ *               - userId
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 example: How to cook chicken
+ *               description:
+ *                 type: string
+ *                 example: Video tutorial for cooking chicken
+ *               url:
+ *                 type: string
+ *                 example: https://miapi.com/videos/chicken.mp4
+ *               userId:
+ *                 type: string
+ *                 example: 123e4567-e89b-12d3-a456-426614174000
+ *     responses:
+ *       201:
+ *         description: Video created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 videoId:
+ *                   type: string
+ *                   example: abc123
+ *       400:
+ *         description: The video already exists
+ *       500:
+ *         description: Internal server error
+ */
 @injectable()
 export class CreateVideoController {
     constructor(

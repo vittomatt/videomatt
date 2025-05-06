@@ -8,6 +8,56 @@ import { VideoNotFoundError } from '@videos/videos/domain/errors/video-not-found
 import { Request, Response } from 'express';
 import { inject, injectable } from 'tsyringe';
 
+/**
+ * @swagger
+ * /videos/{videoId}/comments/{commentId}:
+ *   post:
+ *     summary: Add a comment to a video
+ *     parameters:
+ *       - in: path
+ *         name: videoId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Video id
+ *       - in: path
+ *         name: commentId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Comment id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - text
+ *               - userId
+ *             properties:
+ *               text:
+ *                 type: string
+ *                 example: Excellent video, very useful
+ *               userId:
+ *                 type: string
+ *                 example: 321e4567-e89b-12d3-a456-426614174000
+ *     responses:
+ *       201:
+ *         description: Comment added successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 commentId:
+ *                   type: string
+ *                   example: cmt456
+ *       400:
+ *         description: The video was not found
+ *       500:
+ *         description: Internal server error
+ */
 @injectable()
 export class AddCommentToVideoController {
     constructor(
