@@ -1,7 +1,7 @@
 import { UserNotFoundError } from '@users/domain/errors/user-not-found.error';
 import { User } from '@users/domain/models/write/user';
 import { UserRepository } from '@users/domain/repositories/user.repository';
-import { USER_TOKEN } from '@users/infrastructure/di/tokens-user';
+import { USER_TOKEN } from '@users/infrastructure/di/user.tokens';
 
 import { inject, injectable } from 'tsyringe';
 

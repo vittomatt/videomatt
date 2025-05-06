@@ -2,7 +2,7 @@ import { Criteria } from '@shared/domain/repositories/criteria';
 import { FilterOperator, Filters } from '@shared/domain/repositories/filters';
 import { VideoRead } from '@videos/videos/domain/models/read/video.read';
 import { VideoReadRepository } from '@videos/videos/domain/repositories/video-read.repository';
-import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/tokens-video';
+import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 
 import { inject, injectable } from 'tsyringe';
 

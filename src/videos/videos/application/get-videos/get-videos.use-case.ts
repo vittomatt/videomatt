@@ -2,7 +2,7 @@ import { UnexpectedError } from '@shared/domain/errors/unexpected.error';
 import { VideoNotFoundError } from '@videos/videos/domain/errors/video-not-found.error';
 import { VideoRead } from '@videos/videos/domain/models/read/video.read';
 import { GetVideosRepository } from '@videos/videos/domain/repositories/get-videos.repository';
-import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/tokens-video';
+import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 
 import { ResultAsync, errAsync, fromPromise, okAsync } from 'neverthrow';
 import { inject, injectable } from 'tsyringe';

@@ -4,7 +4,7 @@ import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { RedisDB } from '@shared/infrastructure/persistence/redis-db';
 import { Video } from '@videos/videos/domain/models/write/video';
 import { VideoRepository } from '@videos/videos/domain/repositories/video.repository';
-import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/tokens-video';
+import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 import { SequelizeVideoRepository } from '@videos/videos/infrastructure/repositories/sequelize-video.repository';
 
 import { inject, injectable } from 'tsyringe';

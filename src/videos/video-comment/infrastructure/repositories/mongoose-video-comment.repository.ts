@@ -3,7 +3,7 @@ import { Criteria } from '@shared/domain/repositories/criteria';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { MongooseCriteriaConverter } from '@shared/infrastructure/repositories/mongoose-criteria.converte';
 import { VideoComment } from '@videos/video-comment/domain/models/write/video-comment';
-import { VIDEO_COMMENT_TOKENS } from '@videos/video-comment/infrastructure/di/tokens-video-comment';
+import { VIDEO_COMMENT_TOKENS } from '@videos/video-comment/infrastructure/di/video-comment.tokens';
 import { VideoCommentModel } from '@videos/video-comment/infrastructure/models/video-comment.db-model';
 import { VideoCommentRepository } from '@videos/video-comment/infrastructure/repositories/video-comment.repository';
 

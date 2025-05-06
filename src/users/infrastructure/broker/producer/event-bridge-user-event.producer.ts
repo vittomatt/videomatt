@@ -5,7 +5,7 @@ import { Logger } from '@shared/domain/logger/logger';
 import { EventBridgeEventProducer } from '@shared/infrastructure/broker/event-bridge.producer';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { DomainEventFailover } from '@shared/infrastructure/events/failover-domain-event';
-import { USER_TOKEN } from '@users/infrastructure/di/tokens-user';
+import { USER_TOKEN } from '@users/infrastructure/di/user.tokens';
 
 import { inject, injectable } from 'tsyringe';
 

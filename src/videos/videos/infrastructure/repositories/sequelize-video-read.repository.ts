@@ -4,7 +4,7 @@ import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { SequelizeCriteriaConverter } from '@shared/infrastructure/repositories/sequelize-criteria.converter';
 import { VideoRead } from '@videos/videos/domain/models/read/video.read';
 import { VideoReadRepository } from '@videos/videos/domain/repositories/video-read.repository';
-import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/tokens-video';
+import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 import { VideoDBModelRead } from '@videos/videos/infrastructure/models/video.db-read-model';
 
 import { Sequelize } from 'sequelize';

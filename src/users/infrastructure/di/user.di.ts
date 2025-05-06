@@ -11,7 +11,7 @@ import { InMemoryQueryEventBus } from '@shared/infrastructure/event-bus/in-memor
 import { DomainEventFailover } from '@shared/infrastructure/events/failover-domain-event';
 import { PinoLogger } from '@shared/infrastructure/logger/pino';
 import { RedisDB } from '@shared/infrastructure/persistence/redis-db';
-import { DIUsers } from '@users/infrastructure/di/di-user-modules';
+import { DIUsers } from '@users/infrastructure/di/user-modules.di';
 import { PostgresUserDB } from '@users/infrastructure/persistence/sequelize-user.db';
 import { SQSWorker } from '@users/users.worker';
 

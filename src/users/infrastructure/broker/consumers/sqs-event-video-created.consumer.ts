@@ -3,7 +3,7 @@ import { Logger } from '@shared/domain/logger/logger';
 import { SQSEventConsumer } from '@shared/infrastructure/broker/sqs-event.consumer';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { Worker } from '@shared/worker';
-import { USER_TOKEN } from '@users/infrastructure/di/tokens-user';
+import { USER_TOKEN } from '@users/infrastructure/di/user.tokens';
 import { IncreaseAmountOfVideosHandler } from '@users/infrastructure/handlers/domain/increase-amount-of-videos.handler';
 
 import { inject, injectable } from 'tsyringe';

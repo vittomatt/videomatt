@@ -5,7 +5,7 @@ import { VideoCommentRepository } from '@videos/video-comment/infrastructure/rep
 import { VideoNotFoundError } from '@videos/videos/domain/errors/video-not-found.error';
 import { Video } from '@videos/videos/domain/models/write/video';
 import { VideoRepository } from '@videos/videos/domain/repositories/video.repository';
-import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/tokens-video';
+import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 
 import { inject, injectable } from 'tsyringe';
 

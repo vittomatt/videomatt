@@ -4,7 +4,7 @@ import { getEnvs, initEnvs } from '@shared/infrastructure/envs/init-envs';
 import { PinoLogger } from '@shared/infrastructure/logger/pino';
 import { RedisDB } from '@shared/infrastructure/persistence/redis-db';
 import { Worker } from '@shared/worker';
-import { DI } from '@users/infrastructure/di/di-user';
+import { DI } from '@users/infrastructure/di/user.di';
 import { PostgresUserDB } from '@users/infrastructure/persistence/sequelize-user.db';
 import { initRoutes } from '@users/infrastructure/routes/init-routes';
 import { swaggerSpec } from '@users/users.swagger';

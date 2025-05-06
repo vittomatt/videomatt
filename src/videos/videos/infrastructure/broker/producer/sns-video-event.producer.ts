@@ -5,7 +5,7 @@ import { Logger } from '@shared/domain/logger/logger';
 import { SNSEventProducer } from '@shared/infrastructure/broker/sns-event.producer';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { DomainEventFailover } from '@shared/infrastructure/events/failover-domain-event';
-import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/tokens-video';
+import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 
 import { inject, injectable } from 'tsyringe';
 

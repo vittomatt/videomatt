@@ -2,8 +2,8 @@ import { LocalEventSubscriber } from '@shared/domain/broker/local-event.subscrib
 import { DomainEvent } from '@shared/domain/event-bus/domain.event';
 import { VideoCommentAddedEvent } from '@videos/video-comment/domain/events/video-comment-added.event';
 import { InMemoryVideoEventPublisher } from '@videos/videos/infrastructure/broker/publishers/in-memory-video-event.publisher';
-import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/tokens-video';
-import { IncreaseAmountOfCommentsHandler } from '@videos/videos/infrastructure/handlers/increase-amount-of-comments.handler';
+import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
+import { IncreaseAmountOfCommentsHandler } from '@videos/videos/infrastructure/handlers/domain/increase-amount-of-comments.handler';
 
 import { inject, injectable } from 'tsyringe';
 

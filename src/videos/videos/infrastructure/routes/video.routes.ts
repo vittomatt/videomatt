@@ -4,7 +4,7 @@ import {
     AddCommentToVideoBodyValidatorDto,
     AddCommentToVideoParamValidatorDto,
 } from '@videos/video-comment/infrastructure/controllers/add-comment-to-video/add-comment-to-video.validator';
-import { VIDEO_COMMENT_TOKENS } from '@videos/video-comment/infrastructure/di/tokens-video-comment';
+import { VIDEO_COMMENT_TOKENS } from '@videos/video-comment/infrastructure/di/video-comment.tokens';
 import { CreateVideoController } from '@videos/videos/infrastructure/controllers/create-video/create-video.controller';
 import {
     CreateVideoBodyValidatorDto,
@@ -12,7 +12,7 @@ import {
 } from '@videos/videos/infrastructure/controllers/create-video/create-video.validator';
 import { GetVideosController } from '@videos/videos/infrastructure/controllers/get-videos/get-videos.controller';
 import { GetVideosParamValidatorDto } from '@videos/videos/infrastructure/controllers/get-videos/get-videos.validator';
-import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/tokens-video';
+import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 
 import { Express } from 'express';
 import expressAsyncHandler from 'express-async-handler';

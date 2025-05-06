@@ -12,9 +12,9 @@ import { InMemoryQueryEventBus } from '@shared/infrastructure/event-bus/in-memor
 import { DomainEventFailover } from '@shared/infrastructure/events/failover-domain-event';
 import { PinoLogger } from '@shared/infrastructure/logger/pino';
 import { RedisDB } from '@shared/infrastructure/persistence/redis-db';
-import { DIVideoComments } from '@videos/video-comment/infrastructure/di/di-video-comment';
+import { DIVideoComments } from '@videos/video-comment/infrastructure/di/video-comment.di';
 import { SQSWorker } from '@videos/videos.worker';
-import { DIVideos } from '@videos/videos/infrastructure/di/di-video-modules';
+import { DIVideos } from '@videos/videos/infrastructure/di/video-modules.di';
 import { MongoVideosCommentDB } from '@videos/videos/infrastructure/persistence/mongoose-video-comment.db';
 import { PostgresVideosDB } from '@videos/videos/infrastructure/persistence/sequelize-videos.db';
 

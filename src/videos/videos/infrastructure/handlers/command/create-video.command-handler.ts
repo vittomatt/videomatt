@@ -6,12 +6,12 @@ import { InMemoryCommandEventBus } from '@shared/infrastructure/event-bus/in-mem
 import { CreateVideoUseCase } from '@videos/videos/application/create-video/create-video.use-case';
 import { CreateVideoDTO } from '@videos/videos/domain/dtos/create-video.dto';
 import { VideoAlreadyExistsError } from '@videos/videos/domain/errors/video-already-exists.error';
-import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/tokens-video';
+import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 
 import { inject, injectable } from 'tsyringe';
 
 @injectable()
-export class CreateVideoHandler implements CommandHandler<VideoAlreadyExistsError> {
+export class CreateVideoCommandHandler implements CommandHandler<VideoAlreadyExistsError> {
     constructor(
         @inject(VIDEO_TOKEN.PUBLISH_VIDEO_USE_CASE)
         private readonly useCase: CreateVideoUseCase,

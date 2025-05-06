@@ -59,21 +59,17 @@ export class CreateUserController {
     ) {}
 
     async execute(req: Request, res: Response) {
-        try {
-            const { userId } = req.params;
-            const { firstName, lastName } = req.body;
+        const { userId } = req.params;
+        const { firstName, lastName } = req.body;
 
-            const event = CreateUserDTO.create({ id: userId, firstName, lastName });
+        const event = CreateUserDTO.create({ id: userId, firstName, lastName });
 
-            const result = await this.eventBus.publish(event);
+        const result = await this.eventBus.publish(event);
 
-            if (result instanceof UserAlreadyExistsError) {
-                return HttpResponse.domainError(res, result, 400);
-            }
-
-            return res.status(201).send({ userId });
-        } catch (error) {
-            return HttpResponse.internalServerError(res);
+        if (result instanceof UserAlreadyExistsError) {
+            return HttpResponse.domainError(res, result, 400);
         }
+
+        return res.status(201).send({ userId });
     }
 }

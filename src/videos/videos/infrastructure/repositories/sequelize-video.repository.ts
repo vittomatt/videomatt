@@ -5,7 +5,7 @@ import { RedisDB } from '@shared/infrastructure/persistence/redis-db';
 import { SequelizeCriteriaConverter } from '@shared/infrastructure/repositories/sequelize-criteria.converter';
 import { Video } from '@videos/videos/domain/models/write/video';
 import { VideoRepository } from '@videos/videos/domain/repositories/video.repository';
-import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/tokens-video';
+import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 import { VideoDBModel } from '@videos/videos/infrastructure/models/video.db-model';
 
 import { inject, injectable } from 'tsyringe';

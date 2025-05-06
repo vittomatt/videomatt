@@ -67,22 +67,18 @@ export class AddCommentToVideoController {
     ) {}
 
     async execute(req: Request, res: Response) {
-        try {
-            const { commentId, videoId } = req.params;
-            const { text, userId } = req.body;
+        const { commentId, videoId } = req.params;
+        const { text, userId } = req.body;
 
-            const event = AddCommentToVideoDTO.create({ id: commentId, text, videoId, userId });
+        const event = AddCommentToVideoDTO.create({ id: commentId, text, videoId, userId });
 
-            const result = await this.eventBus.publish(event);
-            if (result instanceof VideoNotFoundError) {
-                return HttpResponse.domainError(res, result, 400);
-            }
-
-            await this.domainEventBus.publishDeferredEvents();
-
-            return res.status(201).send({ commentId });
-        } catch (error) {
-            return HttpResponse.internalServerError(res);
+        const result = await this.eventBus.publish(event);
+        if (result instanceof VideoNotFoundError) {
+            return HttpResponse.domainError(res, result, 400);
         }
+
+        await this.domainEventBus.publishDeferredEvents();
+
+        return res.status(201).send({ commentId });
     }
 }

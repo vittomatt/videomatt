@@ -7,7 +7,7 @@ import { GetVideosUseCase } from '@videos/videos/application/get-videos/get-vide
 import { GetVideosDTO } from '@videos/videos/domain/dtos/get-videos.dto';
 import { VideoNotFoundError } from '@videos/videos/domain/errors/video-not-found.error';
 import { VideoRead } from '@videos/videos/domain/models/read/video.read';
-import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/tokens-video';
+import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 
 import { ResultAsync } from 'neverthrow';
 import { inject, injectable } from 'tsyringe';

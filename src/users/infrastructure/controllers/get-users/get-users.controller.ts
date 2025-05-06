@@ -1,25 +1,18 @@
 import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { InMemoryQueryEventBus } from '@shared/infrastructure/event-bus/in-memory-query.event-bus';
-import { GetVideosDTO } from '@videos/videos/domain/dtos/get-videos.dto';
+import { GetUsersDTO } from '@users/domain/dtos/get-users.dto';
 
 import { Request, Response } from 'express';
 import { inject, injectable } from 'tsyringe';
 
 /**
  * @swagger
- * /videos/{userId}:
+ * /users:
  *   get:
- *     summary: Get videos by user id
- *     parameters:
- *       - in: path
- *         name: userId
- *         schema:
- *           type: string
- *         required: true
- *         description: User id
+ *     summary: Get users
  *     responses:
  *       200:
- *         description: List of videos
+ *         description: List of users
  *         content:
  *           application/json:
  *             schema:
@@ -37,13 +30,11 @@ import { inject, injectable } from 'tsyringe';
  *         description: Internal server error
  */
 @injectable()
-export class GetVideosController {
+export class GetUsersController {
     constructor(@inject(TOKEN.QUERY_EVENT_BUS) private readonly eventBus: InMemoryQueryEventBus) {}
 
     async execute(req: Request, res: Response) {
-        const userId = req.params.userId;
-        const event = new GetVideosDTO(userId);
-
+        const event = new GetUsersDTO();
         const result = await this.eventBus.publish(event);
         return res.status(200).json(result);
     }

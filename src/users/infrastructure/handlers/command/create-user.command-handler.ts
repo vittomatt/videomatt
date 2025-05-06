@@ -6,12 +6,12 @@ import { CreateUserUseCase } from '@users/application/create-user/create-user.us
 import { CreateUserDTO } from '@users/domain/dtos/create-user.dto';
 import { UserAlreadyExistsError } from '@users/domain/errors/user-already-exists.error';
 import { UserCreatedEvent } from '@users/domain/events/user-created.event';
-import { USER_TOKEN } from '@users/infrastructure/di/tokens-user';
+import { USER_TOKEN } from '@users/infrastructure/di/user.tokens';
 
 import { inject, injectable } from 'tsyringe';
 
 @injectable()
-export class CreateUserHandler implements CommandHandler<UserAlreadyExistsError> {
+export class CreateUserCommandHandler implements CommandHandler<UserAlreadyExistsError> {
     constructor(
         @inject(USER_TOKEN.CREATE_USER_USE_CASE)
         private readonly useCase: CreateUserUseCase,

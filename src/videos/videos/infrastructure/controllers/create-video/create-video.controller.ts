@@ -67,20 +67,16 @@ export class CreateVideoController {
     ) {}
 
     async execute(req: Request, res: Response) {
-        try {
-            const { videoId } = req.params;
-            const { title, description, url, userId } = req.body;
+        const { videoId } = req.params;
+        const { title, description, url, userId } = req.body;
 
-            const event = CreateVideoDTO.create({ id: videoId, title, description, url, userId });
-            const result = await this.eventBus.publish(event);
+        const event = CreateVideoDTO.create({ id: videoId, title, description, url, userId });
+        const result = await this.eventBus.publish(event);
 
-            if (result instanceof VideoAlreadyExistsError) {
-                return HttpResponse.domainError(res, result, 400);
-            }
-
-            return res.status(201).send({ videoId });
-        } catch (error) {
-            return HttpResponse.internalServerError(res);
+        if (result instanceof VideoAlreadyExistsError) {
+            return HttpResponse.domainError(res, result, 400);
         }
+
+        return res.status(201).send({ videoId });
     }
 }

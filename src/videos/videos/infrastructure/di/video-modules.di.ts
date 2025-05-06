@@ -10,11 +10,11 @@ import { InMemoryEventCommentAddedSubscriber } from '@videos/videos/infrastructu
 import { InMemoryEventVideoCreatedSubscriber } from '@videos/videos/infrastructure/broker/subscriber/in-memory-event-video-created.subscriber';
 import { CreateVideoController } from '@videos/videos/infrastructure/controllers/create-video/create-video.controller';
 import { GetVideosController } from '@videos/videos/infrastructure/controllers/get-videos/get-videos.controller';
-import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/tokens-video';
+import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
+import { CreateVideoCommandHandler } from '@videos/videos/infrastructure/handlers/command/create-video.command-handler';
 import { CreateVideoReadHandler } from '@videos/videos/infrastructure/handlers/domain/create-video-read.handler';
-import { CreateVideoHandler } from '@videos/videos/infrastructure/handlers/domain/create-video.handler';
-import { IncreaseAmountOfCommentsHandler } from '@videos/videos/infrastructure/handlers/increase-amount-of-comments.handler';
-import { GetVideosQueryHandler } from '@videos/videos/infrastructure/handlers/query/get-videos.handler';
+import { IncreaseAmountOfCommentsHandler } from '@videos/videos/infrastructure/handlers/domain/increase-amount-of-comments.handler';
+import { GetVideosQueryHandler } from '@videos/videos/infrastructure/handlers/query/get-videos.query-handler';
 import { PostgresVideosDB } from '@videos/videos/infrastructure/persistence/sequelize-videos.db';
 import { SequelizeGetVideosRepository } from '@videos/videos/infrastructure/repositories/get-videos/sequelize-get-videos.repository';
 import { RedisVideoRepository } from '@videos/videos/infrastructure/repositories/redis-video.repository';
@@ -36,12 +36,15 @@ export class DIVideos {
     }
 
     public initSingletons() {
+        // Publishers and subscribers
         container.resolve(VIDEO_TOKEN.IN_MEMORY_EVENT_PUBLISHER);
         container.resolve(VIDEO_TOKEN.SNS_EVENT_PRODUCER);
-        container.resolve(VIDEO_TOKEN.CREATE_VIDEO_HANDLER);
         container.resolve(VIDEO_TOKEN.IN_MEMORY_EVENT_VIDEO_CREATED_SUBSCRIBER);
         container.resolve(VIDEO_TOKEN.IN_MEMORY_EVENT_COMMENT_ADDED_SUBSCRIBER);
-        container.resolve(VIDEO_TOKEN.GET_VIDEOS_HANDLER);
+
+        // CQRS Handlers
+        container.resolve(VIDEO_TOKEN.GET_VIDEOS_QUERY_HANDLER);
+        container.resolve(VIDEO_TOKEN.CREATE_VIDEO_COMMAND_HANDLER);
     }
 
     private initDBDependencies() {
@@ -115,11 +118,11 @@ export class DIVideos {
     }
 
     private initHandlersDependencies() {
-        container.register(VIDEO_TOKEN.GET_VIDEOS_HANDLER, {
+        container.register(VIDEO_TOKEN.GET_VIDEOS_QUERY_HANDLER, {
             useClass: GetVideosQueryHandler,
         });
-        container.register(VIDEO_TOKEN.CREATE_VIDEO_HANDLER, {
-            useClass: CreateVideoHandler,
+        container.register(VIDEO_TOKEN.CREATE_VIDEO_COMMAND_HANDLER, {
+            useClass: CreateVideoCommandHandler,
         });
         container.register(VIDEO_TOKEN.CREATE_VIDEO_READ_HANDLER, {
             useClass: CreateVideoReadHandler,
