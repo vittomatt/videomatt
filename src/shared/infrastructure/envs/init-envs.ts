@@ -4,56 +4,58 @@ import dotenv from 'dotenv';
 import { config as dotenvSafeConfig } from 'dotenv-safe';
 import { z } from 'zod';
 
-const envSchema = z.object({
+const nonEmptyStr = (name: string) => z.string().min(1, `${name} is required`);
+
+export const envSchema = z.object({
     NODE_ENV: z.enum(['docker', 'dev', 'prod']).default('dev'),
 
-    USERS_DB_POSTGRES_HOST: z.string(),
-    USERS_DB_POSTGRES_USER: z.string(),
-    USERS_DB_POSTGRES_PASSWORD: z.string(),
-    USERS_DB_POSTGRES_NAME: z.string(),
-    USERS_DB_POSTGRES_PORT: z.coerce.number(),
+    USERS_DB_POSTGRES_HOST: nonEmptyStr('USERS_DB_POSTGRES_HOST'),
+    USERS_DB_POSTGRES_USER: nonEmptyStr('USERS_DB_POSTGRES_USER'),
+    USERS_DB_POSTGRES_PASSWORD: nonEmptyStr('USERS_DB_POSTGRES_PASSWORD'),
+    USERS_DB_POSTGRES_NAME: nonEmptyStr('USERS_DB_POSTGRES_NAME'),
+    USERS_DB_POSTGRES_PORT: z.coerce.number().min(1),
 
-    USERS_DB_REPLICA_POSTGRES_HOST: z.string(),
-    USERS_DB_REPLICA_POSTGRES_USER: z.string(),
-    USERS_DB_REPLICA_POSTGRES_PASSWORD: z.string(),
-    USERS_DB_REPLICA_POSTGRES_NAME: z.string(),
-    USERS_DB_REPLICA_POSTGRES_PORT: z.coerce.number(),
+    USERS_DB_REPLICA_POSTGRES_HOST: nonEmptyStr('USERS_DB_REPLICA_POSTGRES_HOST'),
+    USERS_DB_REPLICA_POSTGRES_USER: nonEmptyStr('USERS_DB_REPLICA_POSTGRES_USER'),
+    USERS_DB_REPLICA_POSTGRES_PASSWORD: nonEmptyStr('USERS_DB_REPLICA_POSTGRES_PASSWORD'),
+    USERS_DB_REPLICA_POSTGRES_NAME: nonEmptyStr('USERS_DB_REPLICA_POSTGRES_NAME'),
+    USERS_DB_REPLICA_POSTGRES_PORT: z.coerce.number().min(1),
 
-    VIDEOS_DB_POSTGRES_HOST: z.string(),
-    VIDEOS_DB_POSTGRES_USER: z.string(),
-    VIDEOS_DB_POSTGRES_PASSWORD: z.string(),
-    VIDEOS_DB_POSTGRES_NAME: z.string(),
-    VIDEOS_DB_POSTGRES_PORT: z.coerce.number(),
+    VIDEOS_DB_POSTGRES_HOST: nonEmptyStr('VIDEOS_DB_POSTGRES_HOST'),
+    VIDEOS_DB_POSTGRES_USER: nonEmptyStr('VIDEOS_DB_POSTGRES_USER'),
+    VIDEOS_DB_POSTGRES_PASSWORD: nonEmptyStr('VIDEOS_DB_POSTGRES_PASSWORD'),
+    VIDEOS_DB_POSTGRES_NAME: nonEmptyStr('VIDEOS_DB_POSTGRES_NAME'),
+    VIDEOS_DB_POSTGRES_PORT: z.coerce.number().min(1),
 
-    VIDEOS_DB_REPLICA_POSTGRES_HOST: z.string(),
-    VIDEOS_DB_REPLICA_POSTGRES_USER: z.string(),
-    VIDEOS_DB_REPLICA_POSTGRES_PASSWORD: z.string(),
-    VIDEOS_DB_REPLICA_POSTGRES_NAME: z.string(),
-    VIDEOS_DB_REPLICA_POSTGRES_PORT: z.coerce.number(),
+    VIDEOS_DB_REPLICA_POSTGRES_HOST: nonEmptyStr('VIDEOS_DB_REPLICA_POSTGRES_HOST'),
+    VIDEOS_DB_REPLICA_POSTGRES_USER: nonEmptyStr('VIDEOS_DB_REPLICA_POSTGRES_USER'),
+    VIDEOS_DB_REPLICA_POSTGRES_PASSWORD: nonEmptyStr('VIDEOS_DB_REPLICA_POSTGRES_PASSWORD'),
+    VIDEOS_DB_REPLICA_POSTGRES_NAME: nonEmptyStr('VIDEOS_DB_REPLICA_POSTGRES_NAME'),
+    VIDEOS_DB_REPLICA_POSTGRES_PORT: z.coerce.number().min(1),
 
-    VIDEOS_COMMENT_DB_MONGO_HOST: z.string(),
-    VIDEOS_COMMENT_DB_MONGO_USER: z.string(),
-    VIDEOS_COMMENT_DB_MONGO_PASSWORD: z.string(),
-    VIDEOS_COMMENT_DB_MONGO_PORT: z.coerce.number(),
-    VIDEOS_COMMENT_DB_MONGO_NAME: z.string(),
+    VIDEOS_COMMENT_DB_MONGO_HOST: nonEmptyStr('VIDEOS_COMMENT_DB_MONGO_HOST'),
+    VIDEOS_COMMENT_DB_MONGO_USER: nonEmptyStr('VIDEOS_COMMENT_DB_MONGO_USER'),
+    VIDEOS_COMMENT_DB_MONGO_PASSWORD: nonEmptyStr('VIDEOS_COMMENT_DB_MONGO_PASSWORD'),
+    VIDEOS_COMMENT_DB_MONGO_PORT: z.coerce.number().min(1),
+    VIDEOS_COMMENT_DB_MONGO_NAME: nonEmptyStr('VIDEOS_COMMENT_DB_MONGO_NAME'),
 
-    REDIS_HOST: z.string(),
-    REDIS_PORT: z.coerce.number(),
+    REDIS_HOST: nonEmptyStr('REDIS_HOST'),
+    REDIS_PORT: z.coerce.number().min(1),
 
-    SNS_VIDEO_TOPIC_ARN: z.string(),
-    EVENT_BRIDGE_USER_TOPIC_ARN: z.string(),
+    SNS_VIDEO_TOPIC_ARN: nonEmptyStr('SNS_VIDEO_TOPIC_ARN'),
+    EVENT_BRIDGE_USER_TOPIC_ARN: nonEmptyStr('EVENT_BRIDGE_USER_TOPIC_ARN'),
 
-    SQS_USER_CREATED_QUEUE_URL: z.string(),
-    SQS_VIDEO_CREATED_QUEUE_URL: z.string(),
+    SQS_USER_CREATED_QUEUE_URL: nonEmptyStr('SQS_USER_CREATED_QUEUE_URL').url(),
+    SQS_VIDEO_CREATED_QUEUE_URL: nonEmptyStr('SQS_VIDEO_CREATED_QUEUE_URL').url(),
 
-    AWS_REGION: z.string(),
-    AWS_PROFILE: z.string(),
-    AWS_SNS_ENDPOINT: z.string(),
-    AWS_SQS_ENDPOINT: z.string(),
-    AWS_EVENT_BRIDGE_ENDPOINT: z.string(),
+    AWS_REGION: nonEmptyStr('AWS_REGION'),
+    AWS_PROFILE: nonEmptyStr('AWS_PROFILE'),
+    AWS_SNS_ENDPOINT: nonEmptyStr('AWS_SNS_ENDPOINT').url(),
+    AWS_SQS_ENDPOINT: nonEmptyStr('AWS_SQS_ENDPOINT').url(),
+    AWS_EVENT_BRIDGE_ENDPOINT: nonEmptyStr('AWS_EVENT_BRIDGE_ENDPOINT').url(),
 
-    USERS_PORT: z.coerce.number().default(3000),
-    VIDEOS_PORT: z.coerce.number().default(3001),
+    USERS_PORT: z.coerce.number().min(1).default(3000),
+    VIDEOS_PORT: z.coerce.number().min(1).default(3001),
 });
 
 export type EnvVars = z.infer<typeof envSchema>;
