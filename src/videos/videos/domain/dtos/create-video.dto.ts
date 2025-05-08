@@ -3,7 +3,7 @@ import { DTO } from '@shared/domain/dtos/dto';
 export class CreateVideoDTO extends DTO {
     static readonly type = 'CreateVideoDTO';
 
-    constructor(
+    private constructor(
         public readonly id: string,
         public readonly title: string,
         public readonly description: string,

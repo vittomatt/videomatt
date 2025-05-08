@@ -34,7 +34,7 @@ export class GetUsersController {
     constructor(@inject(TOKEN.QUERY_EVENT_BUS) private readonly eventBus: InMemoryQueryEventBus) {}
 
     async execute(req: Request, res: Response) {
-        const event = new GetUsersDTO();
+        const event = GetUsersDTO.create();
         const result = await this.eventBus.publish(event);
         return res.status(200).json(result);
     }

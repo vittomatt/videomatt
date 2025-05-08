@@ -42,7 +42,7 @@ export class GetVideosController {
 
     async execute(req: Request, res: Response) {
         const userId = req.params.userId;
-        const event = new GetVideosDTO(userId);
+        const event = GetVideosDTO.create({ userId });
 
         const result = await this.eventBus.publish(event);
         return res.status(200).json(result);

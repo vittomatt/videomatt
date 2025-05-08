@@ -19,11 +19,11 @@ export class SequelizeGetVideosRepository implements GetVideosRepository<VideoRe
 
     query = `SELECT * FROM videos_reads WHERE "userId" = :userId`;
 
-    async raw(id: string): Promise<Result<VideoRead[], UnexpectedError>> {
+    async raw(userId: string): Promise<Result<VideoRead[], UnexpectedError>> {
         try {
             const results = await this.db.getDB().query<VideoDBModelRead>(this.query, {
                 type: QueryTypes.SELECT,
-                replacements: { userId: id },
+                replacements: { userId: userId },
             });
             const videos = results.map(
                 (result) =>
