@@ -9,6 +9,7 @@ import { inject, injectable } from 'tsyringe';
 export class GetUsersUseCase {
     constructor(@inject(USER_TOKEN.REPOSITORY) private readonly repository: UserRepository<User>) {}
 
+    // FITU return DTO or read model
     async execute(): Promise<User[]> {
         const criteria = Criteria.create();
         const users = await this.repository.search(criteria);

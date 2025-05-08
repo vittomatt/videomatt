@@ -24,7 +24,7 @@ export class GetVideosQueryHandler implements QueryHandler<VideoRead[]> {
         const videoEvent = dto as GetVideosDTO;
         const userId = videoEvent.userId;
 
-        const result = await this.useCase.execute(userId);
+        const result = await this.useCase.execute({ userId });
 
         return result;
     }

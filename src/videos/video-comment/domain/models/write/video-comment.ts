@@ -4,6 +4,13 @@ import { VideoCommentText } from './video-comment-text';
 import { UserId } from '@shared/domain/models/write/user-id';
 import { VideoId } from '@videos/videos/domain/models/write/video-id';
 
+export type VideoCommentPrimitives = {
+    id: string;
+    text: string;
+    userId: string;
+    videoId: string;
+};
+
 export class VideoComment {
     constructor(
         public readonly id: VideoCommentId,
@@ -23,15 +30,6 @@ export class VideoComment {
         return comment;
     }
 
-    toPrimitives(): VideoCommentPrimitives {
-        return {
-            id: this.id.value,
-            text: this.text.value,
-            userId: this.userId.value,
-            videoId: this.videoId.value,
-        };
-    }
-
     static fromPrimitives({ id, text, userId, videoId }: VideoCommentPrimitives) {
         return new VideoComment(
             new VideoCommentId(id),
@@ -40,11 +38,13 @@ export class VideoComment {
             new VideoId(videoId)
         );
     }
-}
 
-export type VideoCommentPrimitives = {
-    id: string;
-    text: string;
-    userId: string;
-    videoId: string;
-};
+    toPrimitives(): VideoCommentPrimitives {
+        return {
+            id: this.id.value,
+            text: this.text.value,
+            userId: this.userId.value,
+            videoId: this.videoId.value,
+        };
+    }
+}

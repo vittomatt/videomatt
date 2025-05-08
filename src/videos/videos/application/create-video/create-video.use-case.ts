@@ -7,6 +7,14 @@ import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 
 import { inject, injectable } from 'tsyringe';
 
+type CreateVideoUseCaseInput = {
+    id: string;
+    title: string;
+    description: string;
+    url: string;
+    userId: string;
+};
+
 @injectable()
 export class CreateVideoUseCase {
     constructor(
@@ -14,21 +22,9 @@ export class CreateVideoUseCase {
         @inject(TOKEN.DOMAIN_EVENT_BUS) private readonly eventBus: DomainEventBus
     ) {}
 
-    async execute({
-        id,
-        title,
-        description,
-        url,
-        userId,
-    }: {
-        id: string;
-        title: string;
-        description: string;
-        url: string;
-        userId: string;
-    }): Promise<VideoAlreadyExistsError | void> {
+    async execute({ id, title, description, url, userId }: CreateVideoUseCaseInput): Promise<void> {
         const videoExists = await this.repository.searchById(id);
-        if (videoExists.isOk()) {
+        if (videoExists.isOk() && videoExists.value) {
             throw new VideoAlreadyExistsError();
         }
 

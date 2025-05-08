@@ -7,6 +7,7 @@ export interface Repository<T> {
     add(item: T): Promise<Result<void, UnexpectedError>>;
     remove(item: T): Promise<Result<void, UnexpectedError>>;
     update(item: T): Promise<Result<void, UnexpectedError>>;
+    // FITU return DTO or read model
     search(criteria: Criteria): Promise<Result<T[], UnexpectedError>>;
     searchById(id: string): Promise<Result<T | null, UnexpectedError>>;
 }

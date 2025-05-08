@@ -17,6 +17,6 @@ export class IncreaseAmountOfVideosHandler implements DomainHandler<void> {
         const videoEvent = event as VideoCreatedEvent;
         const userId = videoEvent.userId;
         const videoId = videoEvent.videoId;
-        await this.useCase.execute(userId, videoId);
+        await this.useCase.execute({ userId, videoId });
     }
 }

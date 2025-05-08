@@ -6,25 +6,21 @@ import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 
 import { inject, injectable } from 'tsyringe';
 
+type CreateVideoReadUseCaseInput = {
+    id: string;
+    title: string;
+    description: string;
+    url: string;
+    userId: string;
+};
+
 @injectable()
 export class CreateVideoReadUseCase {
     constructor(
         @inject(VIDEO_TOKEN.VIDEO_READ_REPOSITORY) private readonly repository: VideoReadRepository<VideoRead>
     ) {}
 
-    async execute({
-        id,
-        title,
-        description,
-        url,
-        userId,
-    }: {
-        id: string;
-        title: string;
-        description: string;
-        url: string;
-        userId: string;
-    }) {
+    async execute({ id, title, description, url, userId }: CreateVideoReadUseCaseInput): Promise<void> {
         const criteria = Criteria.create().addFilter(Filters.create('id', FilterOperator.EQUALS, id));
         const videoReadExists = await this.repository.search(criteria);
         if (videoReadExists.isOk() && videoReadExists.value.length > 0) {

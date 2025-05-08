@@ -9,6 +9,13 @@ import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 
 import { inject, injectable } from 'tsyringe';
 
+type AddCommentToVideoUseCaseInput = {
+    id: string;
+    text: string;
+    videoId: string;
+    userId: string;
+};
+
 @injectable()
 export class AddCommentToVideoUseCase {
     constructor(
@@ -18,17 +25,7 @@ export class AddCommentToVideoUseCase {
         @inject(TOKEN.DEFERRED_DOMAIN_EVENT_BUS) private readonly eventBus: DomainEventBus
     ) {}
 
-    async execute({
-        id,
-        text,
-        videoId,
-        userId,
-    }: {
-        id: string;
-        text: string;
-        videoId: string;
-        userId: string;
-    }): Promise<VideoNotFoundError | void> {
+    async execute({ id, text, videoId, userId }: AddCommentToVideoUseCaseInput): Promise<void> {
         const commentExists = await this.videoCommentRepository.searchById(id);
         if (commentExists.isOk() && commentExists.value) {
             return;
@@ -36,7 +33,7 @@ export class AddCommentToVideoUseCase {
 
         const video = await this.repository.searchById(videoId);
         if (video.isErr() || !video.value) {
-            return new VideoNotFoundError();
+            throw new VideoNotFoundError();
         }
 
         const newComment = VideoComment.create({ id, text, userId, videoId });

@@ -7,6 +7,12 @@ import { USER_TOKEN } from '@users/infrastructure/di/user.tokens';
 
 import { inject, injectable } from 'tsyringe';
 
+type CreateUserUseCaseInput = {
+    id: string;
+    firstName: string;
+    lastName: string;
+};
+
 @injectable()
 export class CreateUserUseCase {
     constructor(
@@ -14,22 +20,18 @@ export class CreateUserUseCase {
         @inject(TOKEN.DOMAIN_EVENT_BUS) private readonly eventBus: DomainEventBus
     ) {}
 
-    async execute({
-        id,
-        firstName,
-        lastName,
-    }: {
-        id: string;
-        firstName: string;
-        lastName: string;
-    }): Promise<UserAlreadyExistsError | void> {
+    async execute({ id, firstName, lastName }: CreateUserUseCaseInput): Promise<void> {
         const user = await this.repository.searchById(id);
         if (user.isOk() && user.value) {
-            return new UserAlreadyExistsError();
+            throw new UserAlreadyExistsError();
         }
 
         const newUser = User.create({ id, firstName, lastName });
-        await this.repository.add(newUser);
+        const result = await this.repository.add(newUser);
+        if (result.isErr()) {
+            throw result.error;
+        }
+
         await this.eventBus.publish(newUser.pullDomainEvents());
     }
 }

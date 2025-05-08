@@ -5,6 +5,10 @@ import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 
 import { inject, injectable } from 'tsyringe';
 
+type GetVideosUseCaseInput = {
+    userId: string;
+};
+
 @injectable()
 export class GetVideosUseCase {
     constructor(
@@ -12,7 +16,8 @@ export class GetVideosUseCase {
         private readonly repository: GetVideosRepository<VideoRead[]>
     ) {}
 
-    async execute(userId: string): Promise<VideoRead[]> {
+    // FITU return DTO or read model
+    async execute({ userId }: GetVideosUseCaseInput): Promise<VideoRead[]> {
         const videos = await this.repository.raw(userId);
         if (videos.isErr()) {
             throw videos.error;

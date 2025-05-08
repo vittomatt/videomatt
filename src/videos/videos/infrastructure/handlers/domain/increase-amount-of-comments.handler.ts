@@ -16,6 +16,6 @@ export class IncreaseAmountOfCommentsHandler implements DomainHandler<void> {
     async handle(event: DomainEvent) {
         const videoEvent = event as VideoCommentAddedEvent;
         const commentId = videoEvent.commentId;
-        await this.useCase.execute(videoEvent.videoId, commentId);
+        await this.useCase.execute({ videoId: videoEvent.videoId, commentId });
     }
 }

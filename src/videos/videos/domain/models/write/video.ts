@@ -9,6 +9,15 @@ import { UserId } from '@shared/domain/models/write/user-id';
 import { VideoCommentAddedEvent } from '@videos/video-comment/domain/events/video-comment-added.event';
 import { VideoComment, VideoCommentPrimitives } from '@videos/video-comment/domain/models/write/video-comment';
 
+export type VideoPrimitives = {
+    id: string;
+    title: string;
+    description: string;
+    url: string;
+    userId: string;
+    comments: VideoCommentPrimitives[];
+};
+
 export class Video extends AggregateRoot {
     constructor(
         public readonly id: VideoId,
@@ -89,12 +98,3 @@ export class Video extends AggregateRoot {
         );
     }
 }
-
-export type VideoPrimitives = {
-    id: string;
-    title: string;
-    description: string;
-    url: string;
-    userId: string;
-    comments: VideoCommentPrimitives[];
-};

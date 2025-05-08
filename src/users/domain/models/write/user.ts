@@ -6,6 +6,13 @@ import { AggregateRoot } from '@shared/domain/aggregate-root';
 import { UserId } from '@shared/domain/models/write/user-id';
 import { UserCreatedEvent } from '@users/domain/events/user-created.event';
 
+export type UserPrimitives = {
+    id: string;
+    firstName: string;
+    lastName: string;
+    amountOfVideos: number;
+};
+
 export class User extends AggregateRoot {
     constructor(
         public readonly id: UserId,
@@ -63,10 +70,3 @@ export class User extends AggregateRoot {
         this.amountOfVideos = new UserAmountOfVideo(newAmountOfVideos);
     }
 }
-
-export type UserPrimitives = {
-    id: string;
-    firstName: string;
-    lastName: string;
-    amountOfVideos: number;
-};

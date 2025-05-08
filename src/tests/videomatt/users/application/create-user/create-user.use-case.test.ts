@@ -44,10 +44,13 @@ describe('CreateUserUseCase', () => {
         repository.searchById.resolves(ok(existingUser));
 
         // When
-        const result = await useCase.execute(existingUser.toPrimitives());
+        try {
+            await useCase.execute(existingUser.toPrimitives());
+        } catch (error) {
+            expect(error).to.be.instanceOf(UserAlreadyExistsError);
+        }
 
         // Then
-        expect(result).to.be.instanceOf(UserAlreadyExistsError);
         expect(repository.searchById).to.have.been.calledOnceWithExactly(userId);
         expect(eventBus.publish).to.not.have.been.called;
     });
@@ -58,6 +61,7 @@ describe('CreateUserUseCase', () => {
         const newUser = UserMother.create({ id: userId });
 
         repository.searchById.resolves(ok(null));
+        repository.add.resolves(ok());
 
         // When
         await useCase.execute(newUser.toPrimitives());

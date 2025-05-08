@@ -5,11 +5,16 @@ import { USER_TOKEN } from '@users/infrastructure/di/user.tokens';
 
 import { inject, injectable } from 'tsyringe';
 
+type IncreaseAmountOfVideosUseCaseInput = {
+    userId: string;
+    videoId: string;
+};
+
 @injectable()
 export class IncreaseAmountOfVideosUseCase {
     constructor(@inject(USER_TOKEN.REPOSITORY) private readonly userRepository: UserRepository<User>) {}
 
-    async execute(userId: string, videoId: string) {
+    async execute({ userId, videoId }: IncreaseAmountOfVideosUseCaseInput): Promise<void> {
         const user = await this.userRepository.searchById(userId);
         if (user.isErr() || !user.value) {
             throw new UserNotFoundError();

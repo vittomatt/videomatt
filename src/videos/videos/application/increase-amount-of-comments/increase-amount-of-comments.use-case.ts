@@ -5,13 +5,18 @@ import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 
 import { inject, injectable } from 'tsyringe';
 
+type IncreaseAmountOfCommentsUseCaseInput = {
+    videoId: string;
+    commentId: string;
+};
+
 @injectable()
 export class IncreaseAmountOfCommentsUseCase {
     constructor(
         @inject(VIDEO_TOKEN.VIDEO_READ_REPOSITORY) private readonly repository: VideoReadRepository<VideoRead>
     ) {}
 
-    async execute(videoId: string, commentId: string) {
+    async execute({ videoId, commentId }: IncreaseAmountOfCommentsUseCaseInput): Promise<void> {
         const commentExists = await this.repository.searchById(commentId);
         if (commentExists.isOk() && commentExists.value) {
             return;

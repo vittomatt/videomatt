@@ -1,3 +1,4 @@
+// FITU Is this a DTO or a domain
 export class VideoRead {
     constructor(
         public readonly id: string,
@@ -44,6 +45,7 @@ export class VideoRead {
         return new VideoRead(id, title, description, url, amountOfComments, userId);
     }
 
+    // FITU does this goes here?
     increaseAmountOfComments() {
         const newAmountOfComments = this.amountOfComments + 1;
         this.amountOfComments = newAmountOfComments;
