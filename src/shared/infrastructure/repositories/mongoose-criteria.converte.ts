@@ -3,7 +3,10 @@ import { Criteria } from '@shared/domain/repositories/criteria';
 import { FilterOperator, Filters } from '@shared/domain/repositories/filters';
 import { Order, OrderType } from '@shared/domain/repositories/order';
 
-type MongoFilter = Record<string, any>;
+type MongoFilter = Record<
+    string,
+    string | number | boolean | RegExp | Record<string, string | number | boolean | RegExp>
+>;
 
 const operatorMap: Record<FilterOperator, string> = {
     [FilterOperator.EQUALS]: '$eq',

@@ -30,7 +30,7 @@ export class AddCommentToVideoUseCase {
         userId: string;
     }): Promise<VideoNotFoundError | void> {
         const commentExists = await this.videoCommentRepository.searchById(id);
-        if (commentExists) {
+        if (commentExists.isOk() && commentExists.value) {
             return;
         }
 

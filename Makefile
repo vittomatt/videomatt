@@ -7,7 +7,13 @@ run:
 	$(MAKE) down
 	$(MAKE) localstack
 	$(MAKE) terraform
-	docker-compose up --build --no-recreate
+	$(MAKE) load-all
+
+run-infra:
+	$(MAKE) down
+	$(MAKE) localstack
+	$(MAKE) terraform
+	$(MAKE) load-infra
 
 down:
 	docker-compose down -v --remove-orphans
@@ -18,3 +24,9 @@ localstack:
 terraform:
 	terraform -chdir=terraform init -backend=false
 	env -u AWS_PROFILE AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test terraform -chdir=terraform apply -var-file=local.tfvars -auto-approve
+
+load-all:
+	docker-compose up --build --no-recreate
+
+load-infra:
+	docker-compose up redis localstack db-users db-videos db-video-comments db-users-replica db-videos-replica
