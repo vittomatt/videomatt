@@ -35,14 +35,18 @@ export class AddCommentToVideoUseCase {
         }
 
         const video = await this.repository.searchById(videoId);
-        if (!video) {
+        if (video.isErr() || !video.value) {
             return new VideoNotFoundError();
         }
 
         const newComment = VideoComment.create({ id, text, userId, videoId });
-        await this.videoCommentRepository.add(newComment);
-        video.addComment(newComment);
+        const addCommentResult = await this.videoCommentRepository.add(newComment);
+        if (addCommentResult.isErr()) {
+            throw addCommentResult.error;
+        }
 
-        await this.eventBus.publish(video.pullDomainEvents());
+        video.value.addComment(newComment);
+
+        await this.eventBus.publish(video.value.pullDomainEvents());
     }
 }

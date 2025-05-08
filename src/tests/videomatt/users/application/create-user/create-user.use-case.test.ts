@@ -10,6 +10,7 @@ import { User } from '@users/domain/models/write/user';
 import { UserRepository } from '@users/domain/repositories/user.repository';
 
 import { expect } from 'chai';
+import { ok } from 'neverthrow';
 import sinon from 'sinon';
 
 describe('CreateUserUseCase', () => {
@@ -40,7 +41,7 @@ describe('CreateUserUseCase', () => {
         const userId = faker.string.uuid();
         const existingUser = UserMother.create({ id: userId });
 
-        repository.searchById.resolves(existingUser);
+        repository.searchById.resolves(ok(existingUser));
 
         // When
         const result = await useCase.execute(existingUser.toPrimitives());
@@ -56,7 +57,7 @@ describe('CreateUserUseCase', () => {
         const userId = faker.string.uuid();
         const newUser = UserMother.create({ id: userId });
 
-        repository.searchById.resolves(null);
+        repository.searchById.resolves(ok(null));
 
         // When
         await useCase.execute(newUser.toPrimitives());

@@ -27,8 +27,8 @@ export class CreateVideoUseCase {
         url: string;
         userId: string;
     }): Promise<VideoAlreadyExistsError | void> {
-        const video = await this.repository.searchById(id);
-        if (video) {
+        const videoExists = await this.repository.searchById(id);
+        if (videoExists.isOk()) {
             throw new VideoAlreadyExistsError();
         }
 
@@ -39,7 +39,11 @@ export class CreateVideoUseCase {
             url,
             userId,
         });
-        await this.repository.add(newVideo);
+        const addVideoResult = await this.repository.add(newVideo);
+        if (addVideoResult.isErr()) {
+            throw addVideoResult.error;
+        }
+
         await this.eventBus.publish(newVideo.pullDomainEvents());
     }
 }

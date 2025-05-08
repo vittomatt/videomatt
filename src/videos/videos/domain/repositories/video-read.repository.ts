@@ -1,8 +1,3 @@
-import { Criteria } from '@shared/domain/repositories/criteria';
+import { Repository } from '@shared/infrastructure/repositories/repository';
 
-export type VideoReadRepository<T> = {
-    search(criteria: Criteria): Promise<T[]>;
-    searchById(id: string): Promise<T | null>;
-    add(item: T): Promise<void>;
-    update(item: T): Promise<void>;
-};
+export type VideoReadRepository<T> = Repository<T>;

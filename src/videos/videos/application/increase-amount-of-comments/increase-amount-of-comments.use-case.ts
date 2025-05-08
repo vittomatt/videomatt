@@ -13,16 +13,16 @@ export class IncreaseAmountOfCommentsUseCase {
 
     async execute(videoId: string, commentId: string) {
         const commentExists = await this.repository.searchById(commentId);
-        if (commentExists) {
+        if (commentExists.isOk()) {
             return;
         }
 
         const video = await this.repository.searchById(videoId);
-        if (!video) {
+        if (video.isErr() || !video.value) {
             throw new VideoNotFoundError();
         }
 
-        video.increaseAmountOfComments();
-        await this.repository.update(video);
+        video.value.increaseAmountOfComments();
+        await this.repository.update(video.value);
     }
 }

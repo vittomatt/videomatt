@@ -1,5 +1,3 @@
-import { UserDTO } from '../../dtos/user.dto';
-
 import { DTO } from '@shared/domain/dtos/dto';
 import { QueryHandler } from '@shared/domain/event-bus/query.handler';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
@@ -7,6 +5,7 @@ import { InMemoryQueryEventBus } from '@shared/infrastructure/event-bus/in-memor
 import { GetUsersUseCase } from '@users/application/get-users/get-users.use-case';
 import { GetUsersDTO } from '@users/domain/dtos/get-users.dto';
 import { USER_TOKEN } from '@users/infrastructure/di/user.tokens';
+import { UserDTO } from '@users/infrastructure/dtos/user.dto';
 
 import { inject, injectable } from 'tsyringe';
 

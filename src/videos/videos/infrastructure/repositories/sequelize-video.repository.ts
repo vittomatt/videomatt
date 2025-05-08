@@ -1,3 +1,4 @@
+import { UnexpectedError } from '@shared/domain/errors/unexpected.error';
 import { Logger } from '@shared/domain/logger/logger';
 import { Criteria } from '@shared/domain/repositories/criteria';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
@@ -8,6 +9,7 @@ import { VideoRepository } from '@videos/videos/domain/repositories/video.reposi
 import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 import { VideoDBModel } from '@videos/videos/infrastructure/models/video.db-model';
 
+import { Result, errAsync, okAsync } from 'neverthrow';
 import { inject, injectable } from 'tsyringe';
 
 @injectable()
@@ -18,49 +20,57 @@ export class SequelizeVideoRepository implements VideoRepository<Video> {
         @inject(TOKEN.REDIS) private readonly redis: RedisDB
     ) {}
 
-    async add(video: Video) {
+    async add(video: Video): Promise<Result<void, UnexpectedError>> {
         try {
             const videoPrimitives = video.toPrimitives();
             await this.dbVideo.create(videoPrimitives);
+            return okAsync(undefined);
         } catch (error) {
             this.logger.error(`Error adding video: ${error}`);
+            return errAsync(new UnexpectedError('Error adding video'));
         }
     }
 
-    async remove(video: Video) {
+    async remove(video: Video): Promise<Result<void, UnexpectedError>> {
         const id = video.id.value;
 
         try {
             await this.dbVideo.destroy({ where: { id } });
+            return okAsync(undefined);
         } catch (error) {
             this.logger.error(`Error removing video: ${error}`);
+            return errAsync(new UnexpectedError('Error removing video'));
         }
     }
 
-    async update(video: Video) {
+    async update(video: Video): Promise<Result<void, UnexpectedError>> {
         const videoPrimitives = video.toPrimitives();
 
         try {
             await this.dbVideo.update(videoPrimitives, { where: { id: videoPrimitives.id } });
+            return okAsync(undefined);
         } catch (error) {
             this.logger.error(`Error updating video: ${error}`);
+            return errAsync(new UnexpectedError('Error updating video'));
         }
     }
 
-    async search(criteria: Criteria): Promise<Video[]> {
+    async search(criteria: Criteria): Promise<Result<Video[], UnexpectedError>> {
         try {
             const videos = await this.convert(criteria);
-            return videos;
+            return okAsync(videos);
         } catch (error) {
             this.logger.error(`Error searching videos: ${error}`);
-            return [];
+            return errAsync(new UnexpectedError('Error searching videos'));
         }
     }
 
-    async searchById(id: string): Promise<Video | null> {
+    async searchById(id: string): Promise<Result<Video | null, UnexpectedError>> {
         const videoModel = await this.dbVideo.findByPk(id);
-        const video = videoModel ? Video.fromPrimitives(videoModel.toPrimitives()) : null;
-        return video;
+        if (!videoModel) {
+            return errAsync(new UnexpectedError('Video not found'));
+        }
+        return okAsync(Video.fromPrimitives(videoModel.toPrimitives()));
     }
 
     private async convert(criteria: Criteria): Promise<Video[]> {

@@ -12,6 +12,10 @@ export class GetUsersUseCase {
     async execute(): Promise<User[]> {
         const criteria = Criteria.create();
         const users = await this.repository.search(criteria);
-        return users;
+        if (users.isErr()) {
+            throw users.error;
+        }
+
+        return users.value;
     }
 }

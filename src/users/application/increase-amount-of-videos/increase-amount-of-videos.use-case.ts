@@ -11,11 +11,14 @@ export class IncreaseAmountOfVideosUseCase {
 
     async execute(userId: string, videoId: string) {
         const user = await this.userRepository.searchById(userId);
-        if (!user) {
+        if (user.isErr() || !user.value) {
             throw new UserNotFoundError();
         }
 
-        user.increaseAmountOfVideos();
-        await this.userRepository.update(user);
+        user.value.increaseAmountOfVideos();
+        const updateUserResult = await this.userRepository.update(user.value);
+        if (updateUserResult.isErr()) {
+            throw updateUserResult.error;
+        }
     }
 }

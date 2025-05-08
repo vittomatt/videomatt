@@ -1,3 +1,4 @@
+import { UnexpectedError } from '@shared/domain/errors/unexpected.error';
 import { Logger } from '@shared/domain/logger/logger';
 import { Criteria } from '@shared/domain/repositories/criteria';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
@@ -7,6 +8,7 @@ import { VideoReadRepository } from '@videos/videos/domain/repositories/video-re
 import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 import { VideoDBModelRead } from '@videos/videos/infrastructure/models/video.db-read-model';
 
+import { Result, errAsync, okAsync } from 'neverthrow';
 import { Sequelize } from 'sequelize';
 import { inject, injectable } from 'tsyringe';
 
@@ -17,7 +19,7 @@ export class SequelizeVideoReadRepository implements VideoReadRepository<VideoRe
         @inject(TOKEN.LOGGER) private readonly logger: Logger
     ) {}
 
-    async add(video: VideoRead) {
+    async add(video: VideoRead): Promise<Result<void, UnexpectedError>> {
         try {
             const videoPrimitives = {
                 id: video.id,
@@ -28,35 +30,52 @@ export class SequelizeVideoReadRepository implements VideoReadRepository<VideoRe
                 amountOfComments: video.amountOfComments,
             };
             await this.dbVideoRead.create(videoPrimitives);
+            return okAsync(undefined);
         } catch (error) {
             this.logger.error(`Error adding video read: ${error}`);
+            return errAsync(new UnexpectedError('Error adding video read'));
         }
     }
 
-    async update(video: VideoRead) {
+    async remove(video: VideoRead): Promise<Result<void, UnexpectedError>> {
+        try {
+            await this.dbVideoRead.destroy({ where: { id: video.id } });
+            return okAsync(undefined);
+        } catch (error) {
+            this.logger.error(`Error removing video read: ${error}`);
+            return errAsync(new UnexpectedError('Error removing video read'));
+        }
+    }
+
+    async update(video: VideoRead): Promise<Result<void, UnexpectedError>> {
         try {
             await this.dbVideoRead.update(
                 { amountOfComments: Sequelize.literal('"amountOfComments" + 1') },
                 { where: { id: video.id } }
             );
+            return okAsync(undefined);
         } catch (error) {
             this.logger.error(`Error updating video: ${error}`);
+            return errAsync(new UnexpectedError('Error updating video'));
         }
     }
 
-    async search(criteria: Criteria): Promise<VideoRead[]> {
+    async search(criteria: Criteria): Promise<Result<VideoRead[], UnexpectedError>> {
         try {
             const videos = await this.convert(criteria);
-            return videos;
+            return okAsync(videos);
         } catch (error) {
             this.logger.error(`Error searching videos: ${error}`);
-            return [];
+            return errAsync(new UnexpectedError('Error searching videos'));
         }
     }
 
-    async searchById(id: string): Promise<VideoRead | null> {
+    async searchById(id: string): Promise<Result<VideoRead | null, UnexpectedError>> {
         const video = await this.dbVideoRead.findByPk(id);
-        return video ? VideoRead.fromPrimitives(video) : null;
+        if (!video) {
+            return errAsync(new UnexpectedError('Video not found'));
+        }
+        return okAsync(VideoRead.fromPrimitives(video));
     }
 
     private async convert(criteria: Criteria): Promise<VideoRead[]> {

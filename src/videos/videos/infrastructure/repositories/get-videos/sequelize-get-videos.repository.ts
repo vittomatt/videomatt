@@ -1,3 +1,4 @@
+import { UnexpectedError } from '@shared/domain/errors/unexpected.error';
 import { Logger } from '@shared/domain/logger/logger';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { VideoRead } from '@videos/videos/domain/models/read/video.read';
@@ -5,6 +6,7 @@ import { GetVideosRepository } from '@videos/videos/domain/repositories/get-vide
 import { VideoDBModelRead } from '@videos/videos/infrastructure/models/video.db-read-model';
 import { PostgresVideosDB } from '@videos/videos/infrastructure/persistence/sequelize-videos.db';
 
+import { Result, errAsync, okAsync } from 'neverthrow';
 import { QueryTypes } from 'sequelize';
 import { inject, injectable } from 'tsyringe';
 
@@ -17,7 +19,7 @@ export class SequelizeGetVideosRepository implements GetVideosRepository<VideoRe
 
     query = `SELECT * FROM videos_reads WHERE "userId" = :userId`;
 
-    async raw(id: string): Promise<VideoRead[]> {
+    async raw(id: string): Promise<Result<VideoRead[], UnexpectedError>> {
         try {
             const results = await this.db.getDB().query<VideoDBModelRead>(this.query, {
                 type: QueryTypes.SELECT,
@@ -34,10 +36,10 @@ export class SequelizeGetVideosRepository implements GetVideosRepository<VideoRe
                         result.userId
                     )
             );
-            return videos;
+            return okAsync(videos);
         } catch (error) {
             this.logger.error(`Error searching for videos: ${error}`);
-            return [];
+            return errAsync(new UnexpectedError('Error searching for videos'));
         }
     }
 }

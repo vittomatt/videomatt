@@ -26,12 +26,15 @@ export class CreateVideoReadUseCase {
         userId: string;
     }) {
         const criteria = Criteria.create().addFilter(Filters.create('id', FilterOperator.EQUALS, id));
-        const videoReads = await this.repository.search(criteria);
-        if (videoReads.length > 0) {
+        const videoReadExists = await this.repository.search(criteria);
+        if (videoReadExists.isOk() && videoReadExists.value.length > 0) {
             return;
         }
 
         const newVideoRead = VideoRead.create({ id, title, description, url, userId });
-        await this.repository.add(newVideoRead);
+        const addVideoReadResult = await this.repository.add(newVideoRead);
+        if (addVideoReadResult.isErr()) {
+            throw addVideoReadResult.error;
+        }
     }
 }

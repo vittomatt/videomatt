@@ -24,8 +24,7 @@ export class CreateUserUseCase {
         lastName: string;
     }): Promise<UserAlreadyExistsError | void> {
         const user = await this.repository.searchById(id);
-
-        if (user) {
+        if (user.isOk() && user.value) {
             return new UserAlreadyExistsError();
         }
 
