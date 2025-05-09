@@ -15,7 +15,9 @@ services:
             - /app/dist
             - ${HOME}/.aws:/root/.aws:ro
         depends_on:
-            db-users:
+            db-users-shard-1:
+                condition: service_healthy
+            db-users-shard-2:
                 condition: service_healthy
             localstack:
                 condition: service_healthy
@@ -41,28 +43,49 @@ services:
                 condition: service_healthy
         networks:
             - videonet
-    db-users:
+    db-users-shard-1:
         image: postgres:15-alpine
-        container_name: postgres-users
+        container_name: postgres-users-shard-1
         restart: unless-stopped
         environment:
-            - POSTGRES_USER=${USERS_DB_POSTGRES_USER}
-            - POSTGRES_PASSWORD=${USERS_DB_POSTGRES_PASSWORD}
-            - POSTGRES_DB=${USERS_DB_POSTGRES_NAME}
-            - DB_REPLICA_USER=${USERS_DB_REPLICA_POSTGRES_USER}
-            - DB_REPLICA_PASSWORD=${USERS_DB_REPLICA_POSTGRES_PASSWORD}
+            - POSTGRES_USER=${USERS_POSTGRES_DB_SHARD_1_USER}
+            - POSTGRES_PASSWORD=${USERS_POSTGRES_DB_SHARD_1_PASSWORD}
+            - POSTGRES_DB=${USERS_POSTGRES_DB_SHARD_1_NAME}
         ports:
             - '5432:5432'
         volumes:
-            - db_data_users:/var/lib/postgresql/data
-            - ./docker/replica-init.sh:/docker-entrypoint-initdb.d/replica-init.sh:ro
+            - db_data_users_shard_1:/var/lib/postgresql/data
         networks:
             - videonet
         healthcheck:
             test:
                 [
                     'CMD-SHELL',
-                    'pg_isready -U ${USERS_DB_POSTGRES_USER} -d ${USERS_DB_POSTGRES_NAME} -h localhost || exit 1',
+                    'pg_isready -U ${USERS_POSTGRES_DB_SHARD_1_USER} -d ${USERS_POSTGRES_DB_SHARD_1_NAME} -h localhost || exit 1',
+                ]
+            interval: 5s
+            timeout: 3s
+            retries: 3
+            start_period: 5s
+    db-users-shard-2:
+        image: postgres:15-alpine
+        container_name: postgres-users-shard-2
+        restart: unless-stopped
+        environment:
+            - POSTGRES_USER=${USERS_POSTGRES_DB_SHARD_2_USER}
+            - POSTGRES_PASSWORD=${USERS_POSTGRES_DB_SHARD_2_PASSWORD}
+            - POSTGRES_DB=${USERS_POSTGRES_DB_SHARD_2_NAME}
+        ports:
+            - '5433:5432'
+        volumes:
+            - db_data_users_shard_2:/var/lib/postgresql/data
+        networks:
+            - videonet
+        healthcheck:
+            test:
+                [
+                    'CMD-SHELL',
+                    'pg_isready -U ${USERS_POSTGRES_DB_SHARD_2_USER} -d ${USERS_POSTGRES_DB_SHARD_2_NAME} -h localhost || exit 1',
                 ]
             interval: 5s
             timeout: 3s
@@ -73,11 +96,11 @@ services:
         container_name: postgres-videos
         restart: unless-stopped
         environment:
-            - POSTGRES_USER=${VIDEOS_DB_POSTGRES_USER}
-            - POSTGRES_PASSWORD=${VIDEOS_DB_POSTGRES_PASSWORD}
-            - POSTGRES_DB=${VIDEOS_DB_POSTGRES_NAME}
-            - DB_REPLICA_USER=${VIDEOS_DB_REPLICA_POSTGRES_USER}
-            - DB_REPLICA_PASSWORD=${VIDEOS_DB_REPLICA_POSTGRES_PASSWORD}
+            - POSTGRES_USER=${VIDEOS_POSTGRES_DB_USER}
+            - POSTGRES_PASSWORD=${VIDEOS_POSTGRES_DB_PASSWORD}
+            - POSTGRES_DB=${VIDEOS_POSTGRES_DB_NAME}
+            - DB_REPLICA_USER=${VIDEOS_POSTGRES_DB_REPLICA_USER}
+            - DB_REPLICA_PASSWORD=${VIDEOS_POSTGRES_DB_REPLICA_PASSWORD}
         ports:
             - '5434:5432'
         volumes:
@@ -89,39 +112,7 @@ services:
             test:
                 [
                     'CMD-SHELL',
-                    'pg_isready -U ${VIDEOS_DB_POSTGRES_USER} -d ${VIDEOS_DB_POSTGRES_NAME} -h localhost || exit 1',
-                ]
-            interval: 5s
-            timeout: 3s
-            retries: 3
-            start_period: 5s
-    db-users-replica:
-        image: postgres:15-alpine
-        container_name: postgres-users-replica
-        restart: unless-stopped
-        environment:
-            - POSTGRES_USER=${USERS_DB_REPLICA_POSTGRES_USER}
-            - POSTGRES_PASSWORD=${USERS_DB_REPLICA_POSTGRES_PASSWORD}
-            - POSTGRES_DB=${USERS_DB_REPLICA_POSTGRES_NAME}
-            - DB_HOST=db-users
-            - DB_REPLICA_USER=${USERS_DB_REPLICA_POSTGRES_USER}
-            - DB_REPLICA_PASSWORD=${USERS_DB_REPLICA_POSTGRES_PASSWORD}
-            - PGDATA=/var/lib/postgresql/data/pgdata
-        ports:
-            - '5433:5432'
-        volumes:
-            - db_data_users_replica:/var/lib/postgresql/data/pgdata
-            - ./docker/replica-setup.sh:/docker-entrypoint-initdb.d/replica-setup.sh:ro
-        depends_on:
-            db-users:
-                condition: service_healthy
-        networks:
-            - videonet
-        healthcheck:
-            test:
-                [
-                    'CMD-SHELL',
-                    'pg_isready -U ${USERS_DB_REPLICA_POSTGRES_USER} -d ${USERS_DB_REPLICA_POSTGRES_NAME} -h localhost || exit 1',
+                    'pg_isready -U ${VIDEOS_POSTGRES_DB_USER} -d ${VIDEOS_POSTGRES_DB_NAME} -h localhost || exit 1',
                 ]
             interval: 5s
             timeout: 3s
@@ -132,12 +123,12 @@ services:
         container_name: postgres-videos-replica
         restart: unless-stopped
         environment:
-            - POSTGRES_USER=${VIDEOS_DB_REPLICA_POSTGRES_USER}
-            - POSTGRES_PASSWORD=${VIDEOS_DB_REPLICA_POSTGRES_PASSWORD}
-            - POSTGRES_DB=${VIDEOS_DB_REPLICA_POSTGRES_NAME}
+            - POSTGRES_USER=${VIDEOS_POSTGRES_DB_REPLICA_USER}
+            - POSTGRES_PASSWORD=${VIDEOS_POSTGRES_DB_REPLICA_PASSWORD}
+            - POSTGRES_DB=${VIDEOS_POSTGRES_DB_REPLICA_NAME}
             - DB_HOST=db-videos
-            - DB_REPLICA_USER=${VIDEOS_DB_REPLICA_POSTGRES_USER}
-            - DB_REPLICA_PASSWORD=${VIDEOS_DB_REPLICA_POSTGRES_PASSWORD}
+            - DB_REPLICA_USER=${VIDEOS_POSTGRES_DB_REPLICA_USER}
+            - DB_REPLICA_PASSWORD=${VIDEOS_POSTGRES_DB_REPLICA_PASSWORD}
             - PGDATA=/var/lib/postgresql/data/pgdata
         ports:
             - '5435:5432'
@@ -153,7 +144,7 @@ services:
             test:
                 [
                     'CMD-SHELL',
-                    'pg_isready -U ${VIDEOS_DB_REPLICA_POSTGRES_USER} -d ${VIDEOS_DB_REPLICA_POSTGRES_NAME} -h localhost || exit 1',
+                    'pg_isready -U ${VIDEOS_POSTGRES_DB_REPLICA_USER} -d ${VIDEOS_POSTGRES_DB_REPLICA_NAME} -h localhost || exit 1',
                 ]
             interval: 5s
             timeout: 3s
@@ -164,9 +155,9 @@ services:
         container_name: mongo-video-comments
         restart: unless-stopped
         environment:
-            - MONGO_INITDB_ROOT_USERNAME=${VIDEOS_COMMENT_DB_MONGO_USER}
-            - MONGO_INITDB_ROOT_PASSWORD=${VIDEOS_COMMENT_DB_MONGO_PASSWORD}
-            - MONGO_INITDB_DATABASE=${VIDEOS_COMMENT_DB_MONGO_NAME}
+            - MONGO_INITDB_ROOT_USERNAME=${VIDEOS_COMMENT_MONGO_DB_USER}
+            - MONGO_INITDB_ROOT_PASSWORD=${VIDEOS_COMMENT_MONGO_DB_PASSWORD}
+            - MONGO_INITDB_DATABASE=${VIDEOS_COMMENT_MONGO_DB_NAME}
         ports:
             - '27017:27017'
         volumes:
@@ -175,8 +166,8 @@ services:
             - videonet
         healthcheck:
             test: >
-                mongosh --username ${VIDEOS_COMMENT_DB_MONGO_USER} \
-                        --password ${VIDEOS_COMMENT_DB_MONGO_PASSWORD} \
+                mongosh --username ${VIDEOS_COMMENT_MONGO_DB_USER} \
+                        --password ${VIDEOS_COMMENT_MONGO_DB_PASSWORD} \
                         --authenticationDatabase admin \
                         --eval "db.adminCommand('ping')" || exit 1
             interval: 5s
@@ -214,8 +205,8 @@ networks:
         driver: bridge
 
 volumes:
-    db_data_users:
-    db_data_users_replica:
+    db_data_users_shard_1:
+    db_data_users_shard_2:
     db_data_videos:
     db_data_videos_replica:
     db_data_video_comments:

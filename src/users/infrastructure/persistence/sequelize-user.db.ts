@@ -14,42 +14,16 @@ export class PostgresUserDB {
         dbPassword,
         dbName,
         dbPort,
-        dbReplicaHost,
-        dbReplicaUser,
-        dbReplicaPassword,
-        dbReplicaName,
-        dbReplicaPort,
     }: {
         dbHost: string;
         dbUser: string;
         dbPassword: string;
         dbName: string;
         dbPort: number;
-        dbReplicaHost: string;
-        dbReplicaUser: string;
-        dbReplicaPassword: string;
-        dbReplicaName: string;
-        dbReplicaPort: number;
     }) {
         this.instance = new Sequelize(dbName, dbUser, dbPassword, {
-            replication: {
-                write: {
-                    host: dbHost,
-                    port: dbPort,
-                    database: dbName,
-                    username: dbUser,
-                    password: dbPassword,
-                },
-                read: [
-                    {
-                        host: dbReplicaHost,
-                        port: dbReplicaPort,
-                        database: dbReplicaName,
-                        username: dbReplicaUser,
-                        password: dbReplicaPassword,
-                    },
-                ],
-            },
+            host: dbHost,
+            port: dbPort,
             dialect: 'postgres',
             logging: true,
             dialectOptions: {

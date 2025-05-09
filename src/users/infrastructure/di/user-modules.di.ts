@@ -12,16 +12,12 @@ import { CreateUserCommandHandler } from '@users/infrastructure/handlers/command
 import { IncreaseAmountOfVideosHandler } from '@users/infrastructure/handlers/domain/increase-amount-of-videos.handler';
 import { UserCreatedHandler } from '@users/infrastructure/handlers/domain/user-created.handler';
 import { GetUsersQueryHandler } from '@users/infrastructure/handlers/query/get-users.query-handler';
-import { PostgresUserDB } from '@users/infrastructure/persistence/sequelize-user.db';
 import { SequelizeUserRepository } from '@users/infrastructure/repositories/sequelize-user.repository';
 
 import { container } from 'tsyringe';
 
 export class DIUsers {
-    constructor(private readonly db: PostgresUserDB) {}
-
     public initDI() {
-        this.initDBDependencies();
         this.initControllersDependencies();
         this.initUseCasesDependencies();
         this.initRepositoriesDependencies();
@@ -38,12 +34,6 @@ export class DIUsers {
         // CQRS Handlers
         container.resolve(USER_TOKEN.CREATE_USER_COMMAND_HANDLER);
         container.resolve(USER_TOKEN.GET_USERS_QUERY_HANDLER);
-    }
-
-    private initDBDependencies() {
-        container.register(USER_TOKEN.DB_MODEL, {
-            useValue: this.db.getUserModel(),
-        });
     }
 
     private initControllersDependencies() {

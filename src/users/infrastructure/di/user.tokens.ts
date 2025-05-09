@@ -1,7 +1,4 @@
 export const USER_TOKEN = {
-    // Storage
-    DB_MODEL: Symbol('USER_DB_MODEL'),
-
     // Event Bridge
     EVENT_BRIDGE_USER_TOPIC_ARN: Symbol('EVENT_BRIDGE_USER_TOPIC_ARN'),
     EVENT_BRIDGE_EVENT_PRODUCER: Symbol('EVENT_BRIDGE_USER_EVENT_PRODUCER'),

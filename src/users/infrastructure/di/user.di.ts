@@ -12,14 +12,17 @@ import { DomainEventFailover } from '@shared/infrastructure/events/failover-doma
 import { PinoLogger } from '@shared/infrastructure/logger/pino';
 import { RedisDB } from '@shared/infrastructure/persistence/redis-db';
 import { DIUsers } from '@users/infrastructure/di/user-modules.di';
-import { PostgresUserDB } from '@users/infrastructure/persistence/sequelize-user.db';
+import {
+    ShardingSequelizeUserDB,
+    USER_DB_SHARD_NAMES,
+} from '@users/infrastructure/persistence/sharding-sequelize-user.db';
 import { SQSWorker } from '@users/users.worker';
 
 import { container } from 'tsyringe';
 
 export class DI {
     constructor(
-        private readonly db: PostgresUserDB,
+        private readonly ShardingSequelizeUserDB: ShardingSequelizeUserDB,
         private readonly redis: RedisDB
     ) {}
 
@@ -35,10 +38,11 @@ export class DI {
 
     private initDBDependencies() {
         container.register(TOKEN.DB, {
-            useValue: this.db,
+            useValue: this.ShardingSequelizeUserDB,
         });
         container.register(TOKEN.DB_INSTANCE, {
-            useValue: this.db.getDB(),
+            // FITU HERE
+            useValue: this.ShardingSequelizeUserDB.getShard(USER_DB_SHARD_NAMES[0]).getDB(),
         });
         container.register(TOKEN.REDIS, {
             useValue: this.redis,
@@ -93,10 +97,10 @@ export class DI {
     }
 
     private initModules() {
-        new DIUsers(this.db).initDI();
+        new DIUsers().initDI();
     }
 
     public initSingletons() {
-        new DIUsers(this.db).initSingletons();
+        new DIUsers().initSingletons();
     }
 }
