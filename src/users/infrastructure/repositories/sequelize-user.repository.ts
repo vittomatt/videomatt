@@ -55,8 +55,8 @@ export class SequelizeUserRepository implements UserRepository<User> {
 
     async search(criteria: Criteria): Promise<Result<UserPrimitives[], UnexpectedError>> {
         try {
-            const users = await this.convert(criteria);
-            return okAsync(users);
+            const userPrimitives = await this.findWithCriteria(criteria);
+            return okAsync(userPrimitives);
         } catch (error) {
             this.logger.error(`Error searching users: ${error}`);
             return errAsync(new UnexpectedError('Error searching users'));
@@ -68,17 +68,17 @@ export class SequelizeUserRepository implements UserRepository<User> {
         return user ? okAsync(user.toPrimitives()) : errAsync(new UnexpectedError('User not found'));
     }
 
-    private async convert(criteria: Criteria): Promise<UserPrimitives[]> {
+    private async findWithCriteria(criteria: Criteria): Promise<UserPrimitives[]> {
         const converter = new SequelizeCriteriaConverter(criteria);
         const { where, order, offset, limit } = converter.build();
 
-        const dbUsers = await this.dbUser.findAll({
+        const userDBModels = await this.dbUser.findAll({
             where,
             order,
             offset,
             limit,
         });
 
-        return dbUsers.map((user) => user.toPrimitives());
+        return userDBModels.map((user) => user.toPrimitives());
     }
 }

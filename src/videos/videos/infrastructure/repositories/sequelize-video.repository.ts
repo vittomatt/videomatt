@@ -57,8 +57,8 @@ export class SequelizeVideoRepository implements VideoRepository<Video> {
 
     async search(criteria: Criteria): Promise<Result<VideoPrimitives[], UnexpectedError>> {
         try {
-            const videos = await this.convert(criteria);
-            return okAsync(videos);
+            const videoPrimitives = await this.findWithCriteria(criteria);
+            return okAsync(videoPrimitives);
         } catch (error) {
             this.logger.error(`Error searching videos: ${error}`);
             return errAsync(new UnexpectedError('Error searching videos'));
@@ -66,24 +66,24 @@ export class SequelizeVideoRepository implements VideoRepository<Video> {
     }
 
     async searchById(id: string): Promise<Result<VideoPrimitives | null, UnexpectedError>> {
-        const videoModel = await this.dbVideo.findByPk(id);
-        if (!videoModel) {
+        const videoDBModel = await this.dbVideo.findByPk(id);
+        if (!videoDBModel) {
             return errAsync(new UnexpectedError('Video not found'));
         }
-        return okAsync(videoModel.toPrimitives());
+        return okAsync(videoDBModel.toPrimitives());
     }
 
-    private async convert(criteria: Criteria): Promise<VideoPrimitives[]> {
+    private async findWithCriteria(criteria: Criteria): Promise<VideoPrimitives[]> {
         const converter = new SequelizeCriteriaConverter(criteria);
         const { where, order, offset, limit } = converter.build();
 
-        const dbVideos = await this.dbVideo.findAll({
+        const videoDBModels = await this.dbVideo.findAll({
             where,
             order,
             offset,
             limit,
         });
 
-        return dbVideos.map((video) => video.toPrimitives());
+        return videoDBModels.map((video) => video.toPrimitives());
     }
 }

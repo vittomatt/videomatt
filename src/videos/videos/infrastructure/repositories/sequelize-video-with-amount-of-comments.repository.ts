@@ -27,14 +27,7 @@ export class SequelizeVideoWithAmountOfCommentsRepository
 
     async add(video: VideoWithAmountOfComments): Promise<Result<void, UnexpectedError>> {
         try {
-            const videoPrimitives = {
-                id: video.id,
-                title: video.title,
-                description: video.description,
-                url: video.url,
-                userId: video.userId,
-                amountOfComments: video.amountOfComments,
-            };
+            const videoPrimitives = video.toPrimitives();
             await this.dbVideoWithAmountOfComments.create(videoPrimitives);
             return okAsync(undefined);
         } catch (error) {
@@ -44,8 +37,9 @@ export class SequelizeVideoWithAmountOfCommentsRepository
     }
 
     async remove(video: VideoWithAmountOfComments): Promise<Result<void, UnexpectedError>> {
+        const videoId = video.id.value;
         try {
-            await this.dbVideoWithAmountOfComments.destroy({ where: { id: video.id } });
+            await this.dbVideoWithAmountOfComments.destroy({ where: { id: videoId } });
             return okAsync(undefined);
         } catch (error) {
             this.logger.error(`Error removing video with amount of comments: ${error}`);
@@ -54,10 +48,11 @@ export class SequelizeVideoWithAmountOfCommentsRepository
     }
 
     async update(video: VideoWithAmountOfComments): Promise<Result<void, UnexpectedError>> {
+        const videoId = video.id.value;
         try {
             await this.dbVideoWithAmountOfComments.update(
                 { amountOfComments: Sequelize.literal('"amountOfComments" + 1') },
-                { where: { id: video.id } }
+                { where: { id: videoId } }
             );
             return okAsync(undefined);
         } catch (error) {
@@ -68,8 +63,8 @@ export class SequelizeVideoWithAmountOfCommentsRepository
 
     async search(criteria: Criteria): Promise<Result<VideoWithAmountOfCommentsPrimitives[], UnexpectedError>> {
         try {
-            const videos = await this.convert(criteria);
-            return okAsync(videos);
+            const videoWithAmountOfCommentsPrimitives = await this.findWithCriteria(criteria);
+            return okAsync(videoWithAmountOfCommentsPrimitives);
         } catch (error) {
             this.logger.error(`Error searching videos: ${error}`);
             return errAsync(new UnexpectedError('Error searching videos'));
@@ -77,25 +72,27 @@ export class SequelizeVideoWithAmountOfCommentsRepository
     }
 
     async searchById(id: string): Promise<Result<VideoWithAmountOfCommentsPrimitives | null, UnexpectedError>> {
-        const video = await this.dbVideoWithAmountOfComments.findByPk(id);
-        if (!video) {
+        const videoWithAmountOfCommentsDBModel = await this.dbVideoWithAmountOfComments.findByPk(id);
+        if (!videoWithAmountOfCommentsDBModel) {
             return errAsync(new UnexpectedError('Video not found'));
         }
-        return okAsync(video.toPrimitives());
+        return okAsync(videoWithAmountOfCommentsDBModel.toPrimitives());
     }
 
-    private async convert(criteria: Criteria): Promise<VideoWithAmountOfCommentsPrimitives[]> {
+    private async findWithCriteria(criteria: Criteria): Promise<VideoWithAmountOfCommentsPrimitives[]> {
         const converter = new SequelizeCriteriaConverter(criteria);
         const { where, order, offset, limit } = converter.build();
 
-        const dbVideos = await this.dbVideoWithAmountOfComments.findAll({
+        const videoWithAmountOfCommentsDBModels = await this.dbVideoWithAmountOfComments.findAll({
             where,
             order,
             offset,
             limit,
         });
 
-        const videos = dbVideos.map((video) => video.toPrimitives());
-        return videos;
+        const videoWithAmountOfCommentsPrimitives = videoWithAmountOfCommentsDBModels.map((video) =>
+            video.toPrimitives()
+        );
+        return videoWithAmountOfCommentsPrimitives;
     }
 }

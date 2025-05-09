@@ -8,7 +8,7 @@ export class VideoAmountOfComments extends BaseValueObject {
     }
 
     private ensureGreaterThanZero(value: number) {
-        if (value <= 0) {
+        if (value < 0) {
             throw new InvalidNumberError('VideoAmountOfComments');
         }
     }

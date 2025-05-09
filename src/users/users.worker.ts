@@ -8,7 +8,6 @@ import { inject, singleton } from 'tsyringe';
 @singleton()
 export class SQSWorker extends Worker {
     private readonly consumers: RemoteEventConsumer[] = [];
-    private isRunning = false;
 
     constructor(
         @inject(TOKEN.LOGGER)
@@ -26,12 +25,11 @@ export class SQSWorker extends Worker {
             return;
         }
 
-        this.isRunning = true;
-        while (this.isRunning) {
+        while (true) {
             try {
                 await Promise.allSettled(this.consumers.map((consumer) => consumer.consume()));
             } catch (error) {
-                this.logger.error(`Error en consume(): ${error}`);
+                this.logger.error(`Error with consume(): ${error}`);
                 await this.sleep(2000);
             }
         }

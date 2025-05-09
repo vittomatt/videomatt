@@ -24,21 +24,26 @@ export class SequelizeGetVideosRepository implements GetVideosRepository<VideoWi
 
     async raw(userId: string): Promise<Result<VideoWithAmountOfCommentsPrimitives[], UnexpectedError>> {
         try {
-            const results = await this.db.getDB().query<VideoWithAmountOfCommentsDBModel>(this.query, {
-                type: QueryTypes.SELECT,
-                replacements: { userId: userId },
-            });
-            const videos = results.map((result) =>
-                VideoWithAmountOfComments.create({
-                    id: result.id,
-                    title: result.title,
-                    description: result.description,
-                    url: result.url,
-                    amountOfComments: result.amountOfComments,
-                    userId: result.userId,
-                })
+            const videoWithAmountOfCommentsDBModels = await this.db
+                .getDB()
+                .query<VideoWithAmountOfCommentsDBModel>(this.query, {
+                    type: QueryTypes.SELECT,
+                    replacements: { userId: userId },
+                });
+            const videoWithAmountOfComments = videoWithAmountOfCommentsDBModels.map(
+                (videoWithAmountOfCommentsDBModel) =>
+                    VideoWithAmountOfComments.create({
+                        id: videoWithAmountOfCommentsDBModel.id,
+                        title: videoWithAmountOfCommentsDBModel.title,
+                        description: videoWithAmountOfCommentsDBModel.description,
+                        url: videoWithAmountOfCommentsDBModel.url,
+                        amountOfComments: videoWithAmountOfCommentsDBModel.amountOfComments,
+                        userId: videoWithAmountOfCommentsDBModel.userId,
+                    })
             );
-            return okAsync(videos.map((video) => video.toPrimitives()));
+            return okAsync(
+                videoWithAmountOfComments.map((videoWithAmountOfComments) => videoWithAmountOfComments.toPrimitives())
+            );
         } catch (error) {
             this.logger.error(`Error searching for videos: ${error}`);
             return errAsync(new UnexpectedError('Error searching for videos'));
