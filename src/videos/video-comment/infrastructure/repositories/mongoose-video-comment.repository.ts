@@ -2,7 +2,7 @@ import { UnexpectedError } from '@shared/domain/errors/unexpected.error';
 import { Logger } from '@shared/domain/logger/logger';
 import { Criteria } from '@shared/domain/repositories/criteria';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
-import { MongooseCriteriaConverter } from '@shared/infrastructure/repositories/mongoose-criteria.converte';
+import { MongooseCriteriaConverter } from '@shared/infrastructure/repositories/mongoose-criteria.converter';
 import { VideoComment, VideoCommentPrimitives } from '@videos/video-comment/domain/models/video-comment';
 import { VIDEO_COMMENT_TOKENS } from '@videos/video-comment/infrastructure/di/video-comment.tokens';
 import { VideoCommentModel } from '@videos/video-comment/infrastructure/models/video-comment.db-model';

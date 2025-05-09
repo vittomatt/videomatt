@@ -1,7 +1,7 @@
 import { ExtractPrimitives } from '@shared/domain/models/extract-primitives';
 import { VideoNotFoundError } from '@videos/videos/domain/errors/video-not-found.error';
-import { VideoWithAmountOfComments } from '@videos/videos/domain/models/video-with-amount-of-comments';
-import { VideoWithAmountOfCommentsRepository } from '@videos/videos/domain/repositories/video-with-amount-of-comments.repository';
+import { VideoProjection } from '@videos/videos/domain/models/video-projection';
+import { VideoProjectionRepository } from '@videos/videos/domain/repositories/video-projection.repository';
 import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 
 import { inject, injectable } from 'tsyringe';
@@ -14,8 +14,8 @@ type IncreaseAmountOfCommentsUseCaseInput = {
 @injectable()
 export class IncreaseAmountOfCommentsUseCase {
     constructor(
-        @inject(VIDEO_TOKEN.VIDEO_WITH_AMOUNT_OF_COMMENTS_REPOSITORY)
-        private readonly repository: VideoWithAmountOfCommentsRepository<VideoWithAmountOfComments>
+        @inject(VIDEO_TOKEN.VIDEO_PROJECTION_REPOSITORY)
+        private readonly repository: VideoProjectionRepository<VideoProjection>
     ) {}
 
     async execute({ videoId, commentId }: IncreaseAmountOfCommentsUseCaseInput): Promise<void> {
@@ -24,17 +24,17 @@ export class IncreaseAmountOfCommentsUseCase {
             return;
         }
 
-        const videoWithAmountOfCommentsRead = await this.repository.searchById(videoId);
-        if (videoWithAmountOfCommentsRead.isErr() || !videoWithAmountOfCommentsRead.value) {
+        const VideoProjectionRead = await this.repository.searchById(videoId);
+        if (VideoProjectionRead.isErr() || !VideoProjectionRead.value) {
             throw new VideoNotFoundError();
         }
 
-        const videoWithAmountOfComments = VideoWithAmountOfComments.fromPrimitives(
-            videoWithAmountOfCommentsRead.value as ExtractPrimitives<VideoWithAmountOfComments>
+        const videoProjection = VideoProjection.fromPrimitives(
+            VideoProjectionRead.value as ExtractPrimitives<VideoProjection>
         );
 
-        videoWithAmountOfComments.increaseAmountOfComments();
-        const result = await this.repository.update(videoWithAmountOfComments);
+        videoProjection.increaseAmountOfComments();
+        const result = await this.repository.update(videoProjection);
         if (result.isErr()) {
             throw result.error;
         }

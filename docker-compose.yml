@@ -5,6 +5,7 @@ services:
         build:
             context: .
             dockerfile: docker/users-dockerfile
+        container_name: users
         ports:
             - '3000:3000'
         env_file:
@@ -27,6 +28,7 @@ services:
         build:
             context: .
             dockerfile: docker/videos-dockerfile
+        container_name: videos
         ports:
             - '3001:3001'
         env_file:
@@ -66,7 +68,7 @@ services:
             interval: 5s
             timeout: 3s
             retries: 3
-            start_period: 5s
+            start_period: 30s
     db-users-shard-2:
         image: postgres:15-alpine
         container_name: postgres-users-shard-2
@@ -90,7 +92,7 @@ services:
             interval: 5s
             timeout: 3s
             retries: 3
-            start_period: 5s
+            start_period: 30s
     db-videos:
         image: postgres:15-alpine
         container_name: postgres-videos
@@ -117,7 +119,7 @@ services:
             interval: 5s
             timeout: 3s
             retries: 3
-            start_period: 5s
+            start_period: 30s
     db-videos-replica:
         image: postgres:15-alpine
         container_name: postgres-videos-replica
@@ -144,12 +146,12 @@ services:
             test:
                 [
                     'CMD-SHELL',
-                    'pg_isready -U ${VIDEOS_POSTGRES_DB_REPLICA_USER} -d ${VIDEOS_POSTGRES_DB_REPLICA_NAME} -h localhost || exit 1',
+                    'pg_isready -U ${VIDEOS_POSTGRES_DB_REPLICA_USER} -h localhost && psql -U ${VIDEOS_POSTGRES_DB_REPLICA_USER} -c "SELECT pg_is_in_recovery()" | grep -q true || exit 1',
                 ]
             interval: 5s
             timeout: 3s
             retries: 3
-            start_period: 5s
+            start_period: 30s
     db-video-comments:
         image: mongo:7.0
         container_name: mongo-video-comments
@@ -173,7 +175,7 @@ services:
             interval: 5s
             timeout: 3s
             retries: 3
-            start_period: 5s
+            start_period: 30s
     redis:
         image: redis:alpine
         container_name: redis

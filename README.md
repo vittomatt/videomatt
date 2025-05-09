@@ -5,7 +5,7 @@
 # To run the project with docker
 
 - Copy `.env.docker.example` as `.env.docker`
-- Run: `make run`
+- Run: `make run-all`
 
 # To run the project locally
 

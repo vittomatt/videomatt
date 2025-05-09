@@ -1,11 +1,11 @@
-import { VideoWithAmountOfCommentsPrimitives } from '@videos/videos/domain/models/video-with-amount-of-comments';
+import { VideoProjectionPrimitives } from '@videos/videos/domain/models/video-projection';
 import { PostgresVideosDB } from '@videos/videos/infrastructure/persistence/sequelize-videos.db';
 
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
-export const VIDEO_TABLE_NAME = 'video_with_amount_of_comments';
+export const VIDEO_TABLE_NAME = 'video_projection';
 
-export class VideoWithAmountOfCommentsDBModel extends Model {
+export class VideoProjectionDBModel extends Model {
     public id!: string;
     public title!: string;
     public description!: string;
@@ -13,8 +13,8 @@ export class VideoWithAmountOfCommentsDBModel extends Model {
     public userId!: string;
     public amountOfComments!: number;
 
-    public static initModel(sequelize: Sequelize): typeof VideoWithAmountOfCommentsDBModel {
-        return VideoWithAmountOfCommentsDBModel.init(
+    public static initModel(sequelize: Sequelize): typeof VideoProjectionDBModel {
+        return VideoProjectionDBModel.init(
             {
                 id: {
                     type: DataTypes.UUID,
@@ -58,7 +58,7 @@ export class VideoWithAmountOfCommentsDBModel extends Model {
 
     public static associate(models: PostgresVideosDB) {}
 
-    toPrimitives(): VideoWithAmountOfCommentsPrimitives {
+    toPrimitives(): VideoProjectionPrimitives {
         return {
             id: this.id,
             title: this.title,

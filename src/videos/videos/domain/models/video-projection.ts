@@ -7,9 +7,9 @@ import { VideoURL } from './video-url';
 import { ExtractOptionalPrimitives, ExtractPrimitives } from '@shared/domain/models/extract-primitives';
 import { UserId } from '@shared/domain/models/user-id';
 
-export type VideoWithAmountOfCommentsPrimitives = ExtractOptionalPrimitives<VideoWithAmountOfComments>;
+export type VideoProjectionPrimitives = ExtractOptionalPrimitives<VideoProjection>;
 
-export class VideoWithAmountOfComments {
+export class VideoProjection {
     constructor(
         public readonly id: VideoId,
         public readonly title: VideoTitle,
@@ -33,8 +33,8 @@ export class VideoWithAmountOfComments {
         url: string;
         userId: string;
         amountOfComments?: number;
-    }): VideoWithAmountOfComments {
-        const videoWithAmountOfComments = new VideoWithAmountOfComments(
+    }): VideoProjection {
+        const videoProjection = new VideoProjection(
             new VideoId(id),
             new VideoTitle(title),
             new VideoDescription(description),
@@ -43,7 +43,7 @@ export class VideoWithAmountOfComments {
             new VideoAmountOfComments(amountOfComments)
         );
 
-        return videoWithAmountOfComments;
+        return videoProjection;
     }
 
     static fromPrimitives({
@@ -53,8 +53,8 @@ export class VideoWithAmountOfComments {
         url,
         userId,
         amountOfComments,
-    }: ExtractPrimitives<VideoWithAmountOfComments>): VideoWithAmountOfComments {
-        return new VideoWithAmountOfComments(
+    }: ExtractPrimitives<VideoProjection>): VideoProjection {
+        return new VideoProjection(
             new VideoId(id),
             new VideoTitle(title),
             new VideoDescription(description),
@@ -64,7 +64,7 @@ export class VideoWithAmountOfComments {
         );
     }
 
-    toPrimitives(): ExtractPrimitives<VideoWithAmountOfComments> {
+    toPrimitives(): ExtractPrimitives<VideoProjection> {
         return {
             id: this.id.value,
             title: this.title.value,

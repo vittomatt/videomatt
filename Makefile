@@ -3,16 +3,21 @@ SHELL := /bin/zsh
 
 .PHONY: run down localstack terraform
 
-run:
+run-all:
 	$(MAKE) down
 	$(MAKE) localstack
 	$(MAKE) terraform
 	$(MAKE) load-all
 
-run-infra:
+run-no-apps:
 	$(MAKE) down
 	$(MAKE) localstack
 	$(MAKE) terraform
+	$(MAKE) load-infra
+
+run-no-terraform:
+	$(MAKE) down
+	$(MAKE) localstack
 	$(MAKE) load-infra
 
 down:
