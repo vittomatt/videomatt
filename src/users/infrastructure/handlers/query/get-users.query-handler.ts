@@ -22,7 +22,7 @@ export class GetUsersQueryHandler implements QueryHandler<UserDTO[]> {
 
     async handle(dto: DTO): Promise<UserDTO[]> {
         const users = await this.useCase.execute();
-        const userDTOs = users.map((user) => UserDTO.create({ ...user.toPrimitives() }));
+        const userDTOs = users.map((user) => UserDTO.create(user));
         return userDTOs;
     }
 }

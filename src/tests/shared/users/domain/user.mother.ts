@@ -4,7 +4,7 @@ import { UserIdMother } from './user-id.mother';
 import { UserLastNameMother } from './user-last-name.mother';
 
 import { ExtractPrimitives } from '@shared/domain/models/extract-primitives';
-import { User, UserPrimitives } from '@users/domain/models/write/user';
+import { User, UserPrimitives } from '@users/domain/models/user';
 
 export class UserMother {
     static create(params?: Partial<UserPrimitives>): User {

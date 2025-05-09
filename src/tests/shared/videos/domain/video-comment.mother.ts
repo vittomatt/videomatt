@@ -4,7 +4,7 @@ import { VideoIdMother } from './video-id.mother';
 
 import { ExtractPrimitives } from '@shared/domain/models/extract-primitives';
 import { UserIdMother } from '@tests/shared/users/domain/user-id.mother';
-import { VideoComment, VideoCommentPrimitives } from '@videos/video-comment/domain/models/write/video-comment';
+import { VideoComment, VideoCommentPrimitives } from '@videos/video-comment/domain/models/video-comment';
 
 export class VideoCommentMother {
     static create(params?: Partial<VideoCommentPrimitives>): VideoComment {

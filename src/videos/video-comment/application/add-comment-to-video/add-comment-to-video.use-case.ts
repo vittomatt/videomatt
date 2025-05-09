@@ -1,9 +1,10 @@
 import { DomainEventBus } from '@shared/domain/event-bus/domain-event-bus';
+import { ExtractPrimitives } from '@shared/domain/models/extract-primitives';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
-import { VideoComment } from '@videos/video-comment/domain/models/write/video-comment';
+import { VideoComment } from '@videos/video-comment/domain/models/video-comment';
 import { VideoCommentRepository } from '@videos/video-comment/infrastructure/repositories/video-comment.repository';
 import { VideoNotFoundError } from '@videos/videos/domain/errors/video-not-found.error';
-import { Video } from '@videos/videos/domain/models/write/video';
+import { Video } from '@videos/videos/domain/models/video';
 import { VideoRepository } from '@videos/videos/domain/repositories/video.repository';
 import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 
@@ -31,19 +32,20 @@ export class AddCommentToVideoUseCase {
             return;
         }
 
-        const video = await this.repository.searchById(videoId);
-        if (video.isErr() || !video.value) {
+        const videoRead = await this.repository.searchById(videoId);
+        if (videoRead.isErr() || !videoRead.value) {
             throw new VideoNotFoundError();
         }
 
         const newComment = VideoComment.create({ id, text, userId, videoId });
-        const addCommentResult = await this.videoCommentRepository.add(newComment);
-        if (addCommentResult.isErr()) {
-            throw addCommentResult.error;
+        const newCommentRead = await this.videoCommentRepository.add(newComment);
+        if (newCommentRead.isErr()) {
+            throw newCommentRead.error;
         }
 
-        video.value.addComment(newComment);
+        const video = Video.fromPrimitives(videoRead.value as ExtractPrimitives<Video>);
+        video.addComment(newComment);
 
-        await this.eventBus.publish(video.value.pullDomainEvents());
+        await this.eventBus.publish(video.pullDomainEvents());
     }
 }

@@ -3,7 +3,7 @@ import { Logger } from '@shared/domain/logger/logger';
 import { Criteria } from '@shared/domain/repositories/criteria';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { MongooseCriteriaConverter } from '@shared/infrastructure/repositories/mongoose-criteria.converte';
-import { VideoComment } from '@videos/video-comment/domain/models/write/video-comment';
+import { VideoComment, VideoCommentPrimitives } from '@videos/video-comment/domain/models/video-comment';
 import { VIDEO_COMMENT_TOKENS } from '@videos/video-comment/infrastructure/di/video-comment.tokens';
 import { VideoCommentModel } from '@videos/video-comment/infrastructure/models/video-comment.db-model';
 import { VideoCommentRepository } from '@videos/video-comment/infrastructure/repositories/video-comment.repository';
@@ -53,7 +53,7 @@ export class MongoDBVideoCommentRepository implements VideoCommentRepository<Vid
         }
     }
 
-    async search(criteria: Criteria): Promise<Result<VideoComment[], UnexpectedError>> {
+    async search(criteria: Criteria): Promise<Result<VideoCommentPrimitives[], UnexpectedError>> {
         try {
             const comments = await this.convert(criteria);
             return ok(comments);
@@ -63,10 +63,10 @@ export class MongoDBVideoCommentRepository implements VideoCommentRepository<Vid
         }
     }
 
-    async searchById(id: string): Promise<Result<VideoComment | null, UnexpectedError>> {
+    async searchById(id: string): Promise<Result<VideoCommentPrimitives | null, UnexpectedError>> {
         try {
             const commentModel = await this.dbVideoComment.findById<VideoComment>(id);
-            const comment = commentModel ? VideoComment.fromPrimitives(commentModel.toPrimitives()) : null;
+            const comment = commentModel ? commentModel.toPrimitives() : null;
             return ok(comment);
         } catch (error) {
             this.logger.error(`Error searching video comment by id: ${error}`);
@@ -74,7 +74,7 @@ export class MongoDBVideoCommentRepository implements VideoCommentRepository<Vid
         }
     }
 
-    private async convert(criteria: Criteria): Promise<VideoComment[]> {
+    private async convert(criteria: Criteria): Promise<VideoCommentPrimitives[]> {
         const converter = new MongooseCriteriaConverter(criteria);
         const { query, sort, skip, limit } = converter.build();
 
@@ -84,9 +84,6 @@ export class MongoDBVideoCommentRepository implements VideoCommentRepository<Vid
             limit,
         });
 
-        const comments = dbComments
-            .map((comment) => comment.toPrimitives())
-            .map((commentPrimitives) => VideoComment.fromPrimitives(commentPrimitives));
-        return comments;
+        return dbComments.map((comment) => comment.toPrimitives());
     }
 }

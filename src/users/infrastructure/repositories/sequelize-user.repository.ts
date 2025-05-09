@@ -3,7 +3,7 @@ import { Logger } from '@shared/domain/logger/logger';
 import { Criteria } from '@shared/domain/repositories/criteria';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { SequelizeCriteriaConverter } from '@shared/infrastructure/repositories/sequelize-criteria.converter';
-import { User } from '@users/domain/models/write/user';
+import { User, UserPrimitives } from '@users/domain/models/user';
 import { UserRepository } from '@users/domain/repositories/user.repository';
 import { USER_TOKEN } from '@users/infrastructure/di/user.tokens';
 import { UserDBModel } from '@users/infrastructure/models/user.db-model';
@@ -53,7 +53,7 @@ export class SequelizeUserRepository implements UserRepository<User> {
         }
     }
 
-    async search(criteria: Criteria): Promise<Result<User[], UnexpectedError>> {
+    async search(criteria: Criteria): Promise<Result<UserPrimitives[], UnexpectedError>> {
         try {
             const users = await this.convert(criteria);
             return okAsync(users);
@@ -63,12 +63,12 @@ export class SequelizeUserRepository implements UserRepository<User> {
         }
     }
 
-    async searchById(id: string): Promise<Result<User | null, UnexpectedError>> {
+    async searchById(id: string): Promise<Result<UserPrimitives | null, UnexpectedError>> {
         const user = await this.dbUser.findByPk(id);
-        return user ? okAsync(User.fromPrimitives(user)) : errAsync(new UnexpectedError('User not found'));
+        return user ? okAsync(user.toPrimitives()) : errAsync(new UnexpectedError('User not found'));
     }
 
-    private async convert(criteria: Criteria): Promise<User[]> {
+    private async convert(criteria: Criteria): Promise<UserPrimitives[]> {
         const converter = new SequelizeCriteriaConverter(criteria);
         const { where, order, offset, limit } = converter.build();
 
@@ -79,7 +79,6 @@ export class SequelizeUserRepository implements UserRepository<User> {
             limit,
         });
 
-        const users = dbUsers.map((user) => user.toPrimitives()).map((user) => User.fromPrimitives(user));
-        return users;
+        return dbUsers.map((user) => user.toPrimitives());
     }
 }

@@ -1,3 +1,5 @@
+import { VideoPrimitives } from '@videos/videos/domain/models/video';
+
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export const VIDEO_TABLE_NAME = 'videos';
@@ -47,7 +49,7 @@ export class VideoDBModel extends Model {
         );
     }
 
-    toPrimitives() {
+    toPrimitives(): VideoPrimitives {
         return {
             id: this.id,
             title: this.title,

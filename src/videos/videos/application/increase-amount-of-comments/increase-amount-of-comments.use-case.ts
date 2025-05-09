@@ -1,6 +1,7 @@
+import { ExtractPrimitives } from '@shared/domain/models/extract-primitives';
 import { VideoNotFoundError } from '@videos/videos/domain/errors/video-not-found.error';
-import { VideoRead } from '@videos/videos/domain/models/read/video.read';
-import { VideoReadRepository } from '@videos/videos/domain/repositories/video-read.repository';
+import { VideoWithAmountOfComments } from '@videos/videos/domain/models/video-with-amount-of-comments';
+import { VideoWithAmountOfCommentsRepository } from '@videos/videos/domain/repositories/video-with-amount-of-comments.repository';
 import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 
 import { inject, injectable } from 'tsyringe';
@@ -13,7 +14,8 @@ type IncreaseAmountOfCommentsUseCaseInput = {
 @injectable()
 export class IncreaseAmountOfCommentsUseCase {
     constructor(
-        @inject(VIDEO_TOKEN.VIDEO_READ_REPOSITORY) private readonly repository: VideoReadRepository<VideoRead>
+        @inject(VIDEO_TOKEN.VIDEO_WITH_AMOUNT_OF_COMMENTS_REPOSITORY)
+        private readonly repository: VideoWithAmountOfCommentsRepository<VideoWithAmountOfComments>
     ) {}
 
     async execute({ videoId, commentId }: IncreaseAmountOfCommentsUseCaseInput): Promise<void> {
@@ -22,13 +24,17 @@ export class IncreaseAmountOfCommentsUseCase {
             return;
         }
 
-        const video = await this.repository.searchById(videoId);
-        if (video.isErr() || !video.value) {
+        const videoWithAmountOfCommentsRead = await this.repository.searchById(videoId);
+        if (videoWithAmountOfCommentsRead.isErr() || !videoWithAmountOfCommentsRead.value) {
             throw new VideoNotFoundError();
         }
 
-        video.value.increaseAmountOfComments();
-        const result = await this.repository.update(video.value);
+        const videoWithAmountOfComments = VideoWithAmountOfComments.fromPrimitives(
+            videoWithAmountOfCommentsRead.value as ExtractPrimitives<VideoWithAmountOfComments>
+        );
+
+        videoWithAmountOfComments.increaseAmountOfComments();
+        const result = await this.repository.update(videoWithAmountOfComments);
         if (result.isErr()) {
             throw result.error;
         }

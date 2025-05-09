@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { VideoTitle } from '@videos/videos/domain/models/write/video-title';
+import { VideoTitle } from '@videos/videos/domain/models/video-title';
 
 export class VideoTitleMother {
     static create(value?: string): VideoTitle {

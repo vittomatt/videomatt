@@ -1,16 +1,16 @@
 import { DomainHandler } from '@shared/domain/broker/domain-handler';
 import { DomainEvent } from '@shared/domain/event-bus/domain.event';
 import { VideoCreatedEvent } from '@shared/domain/events/video-created.event';
-import { CreateVideoReadUseCase } from '@videos/videos/application/create-video/create-video-read.use-case';
+import { CreateVideoWithAmountOfCommentsUseCase } from '@videos/videos/application/create-video/create-video-with-amount-of-comments.use-case';
 import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 
 import { inject, injectable } from 'tsyringe';
 
 @injectable()
-export class CreateVideoReadHandler implements DomainHandler<void> {
+export class CreateVideoWithAmountOfCommentsHandler implements DomainHandler<void> {
     constructor(
-        @inject(VIDEO_TOKEN.CREATE_VIDEO_READ_USE_CASE)
-        private readonly useCase: CreateVideoReadUseCase
+        @inject(VIDEO_TOKEN.CREATE_VIDEO_WITH_AMOUNT_OF_COMMENTS_USE_CASE)
+        private readonly useCase: CreateVideoWithAmountOfCommentsUseCase
     ) {}
 
     async handle(event: DomainEvent) {

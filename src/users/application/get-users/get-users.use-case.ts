@@ -1,5 +1,6 @@
+import { ExtractPrimitives } from '@shared/domain/models/extract-primitives';
 import { Criteria } from '@shared/domain/repositories/criteria';
-import { User } from '@users/domain/models/write/user';
+import { User } from '@users/domain/models/user';
 import { UserRepository } from '@users/domain/repositories/user.repository';
 import { USER_TOKEN } from '@users/infrastructure/di/user.tokens';
 
@@ -9,14 +10,14 @@ import { inject, injectable } from 'tsyringe';
 export class GetUsersUseCase {
     constructor(@inject(USER_TOKEN.REPOSITORY) private readonly repository: UserRepository<User>) {}
 
-    // FITU return DTO or read model
-    async execute(): Promise<User[]> {
+    async execute(): Promise<ExtractPrimitives<User>[]> {
         const criteria = Criteria.create();
-        const users = await this.repository.search(criteria);
-        if (users.isErr()) {
-            throw users.error;
+        const userReads = await this.repository.search(criteria);
+        if (userReads.isErr()) {
+            throw userReads.error;
         }
 
-        return users.value;
+        const users = userReads.value as ExtractPrimitives<User>[];
+        return users;
     }
 }

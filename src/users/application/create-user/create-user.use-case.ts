@@ -1,7 +1,7 @@
 import { DomainEventBus } from '@shared/domain/event-bus/domain-event-bus';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { UserAlreadyExistsError } from '@users/domain/errors/user-already-exists.error';
-import { User } from '@users/domain/models/write/user';
+import { User } from '@users/domain/models/user';
 import { UserRepository } from '@users/domain/repositories/user.repository';
 import { USER_TOKEN } from '@users/infrastructure/di/user.tokens';
 
@@ -21,8 +21,8 @@ export class CreateUserUseCase {
     ) {}
 
     async execute({ id, firstName, lastName }: CreateUserUseCaseInput): Promise<void> {
-        const user = await this.repository.searchById(id);
-        if (user.isOk() && user.value) {
+        const userRead = await this.repository.searchById(id);
+        if (userRead.isOk() && userRead.value) {
             throw new UserAlreadyExistsError();
         }
 

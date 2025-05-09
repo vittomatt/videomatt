@@ -4,7 +4,7 @@ import { Criteria } from '@shared/domain/repositories/criteria';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { RedisDB } from '@shared/infrastructure/persistence/redis-db';
 import { VideoAlreadyExistsError } from '@videos/videos/domain/errors/video-already-exists.error';
-import { Video } from '@videos/videos/domain/models/write/video';
+import { Video, VideoPrimitives } from '@videos/videos/domain/models/video';
 import { VideoRepository } from '@videos/videos/domain/repositories/video.repository';
 import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 import { SequelizeVideoRepository } from '@videos/videos/infrastructure/repositories/sequelize-video.repository';
@@ -66,15 +66,15 @@ export class RedisVideoRepository implements VideoRepository<Video> {
         }
     }
 
-    async search(criteria: Criteria): Promise<Result<Video[], UnexpectedError>> {
+    async search(criteria: Criteria): Promise<Result<VideoPrimitives[], UnexpectedError>> {
         return this.videoRepository.search(criteria);
     }
 
-    async searchById(id: string): Promise<Result<Video | null, UnexpectedError>> {
+    async searchById(id: string): Promise<Result<VideoPrimitives | null, UnexpectedError>> {
         const videoSerialized = await this.redis.getValue(id);
         const video = videoSerialized ? Video.fromPrimitives(JSON.parse(videoSerialized)) : null;
         if (video) {
-            return ok(video);
+            return ok(video.toPrimitives());
         }
 
         return this.videoRepository.searchById(id);

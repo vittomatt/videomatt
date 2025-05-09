@@ -6,7 +6,7 @@ import { UserMother } from '@tests/shared/users/domain/user.mother';
 import { CreateUserUseCase } from '@users/application/create-user/create-user.use-case';
 import { UserAlreadyExistsError } from '@users/domain/errors/user-already-exists.error';
 import { UserCreatedEvent } from '@users/domain/events/user-created.event';
-import { User } from '@users/domain/models/write/user';
+import { User } from '@users/domain/models/user';
 import { UserRepository } from '@users/domain/repositories/user.repository';
 
 import { expect } from 'chai';
@@ -41,7 +41,7 @@ describe('CreateUserUseCase', () => {
         const userId = faker.string.uuid();
         const existingUser = UserMother.create({ id: userId });
 
-        repository.searchById.resolves(ok(existingUser));
+        repository.searchById.resolves(ok(existingUser.toPrimitives()));
 
         // When
         try {

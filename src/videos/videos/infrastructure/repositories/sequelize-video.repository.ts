@@ -4,7 +4,7 @@ import { Criteria } from '@shared/domain/repositories/criteria';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { RedisDB } from '@shared/infrastructure/persistence/redis-db';
 import { SequelizeCriteriaConverter } from '@shared/infrastructure/repositories/sequelize-criteria.converter';
-import { Video } from '@videos/videos/domain/models/write/video';
+import { Video, VideoPrimitives } from '@videos/videos/domain/models/video';
 import { VideoRepository } from '@videos/videos/domain/repositories/video.repository';
 import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 import { VideoDBModel } from '@videos/videos/infrastructure/models/video.db-model';
@@ -55,7 +55,7 @@ export class SequelizeVideoRepository implements VideoRepository<Video> {
         }
     }
 
-    async search(criteria: Criteria): Promise<Result<Video[], UnexpectedError>> {
+    async search(criteria: Criteria): Promise<Result<VideoPrimitives[], UnexpectedError>> {
         try {
             const videos = await this.convert(criteria);
             return okAsync(videos);
@@ -65,15 +65,15 @@ export class SequelizeVideoRepository implements VideoRepository<Video> {
         }
     }
 
-    async searchById(id: string): Promise<Result<Video | null, UnexpectedError>> {
+    async searchById(id: string): Promise<Result<VideoPrimitives | null, UnexpectedError>> {
         const videoModel = await this.dbVideo.findByPk(id);
         if (!videoModel) {
             return errAsync(new UnexpectedError('Video not found'));
         }
-        return okAsync(Video.fromPrimitives(videoModel.toPrimitives()));
+        return okAsync(videoModel.toPrimitives());
     }
 
-    private async convert(criteria: Criteria): Promise<Video[]> {
+    private async convert(criteria: Criteria): Promise<VideoPrimitives[]> {
         const converter = new SequelizeCriteriaConverter(criteria);
         const { where, order, offset, limit } = converter.build();
 
@@ -84,7 +84,6 @@ export class SequelizeVideoRepository implements VideoRepository<Video> {
             limit,
         });
 
-        const videos = dbVideos.map((video) => video.toPrimitives()).map((video) => Video.fromPrimitives(video));
-        return videos;
+        return dbVideos.map((video) => video.toPrimitives());
     }
 }

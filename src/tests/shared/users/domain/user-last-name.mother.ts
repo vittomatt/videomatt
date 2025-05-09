@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { UserLastName } from '@users/domain/models/write/user-last-name';
+import { UserLastName } from '@users/domain/models/user-last-name';
 
 export class UserLastNameMother {
     static create(value?: string): UserLastName {

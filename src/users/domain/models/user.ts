@@ -4,7 +4,7 @@ import { UserLastName } from './user-last-name';
 
 import { AggregateRoot } from '@shared/domain/aggregate-root';
 import { ExtractOptionalPrimitives, ExtractPrimitives } from '@shared/domain/models/extract-primitives';
-import { UserId } from '@shared/domain/models/write/user-id';
+import { UserId } from '@shared/domain/models/user-id';
 import { UserCreatedEvent } from '@users/domain/events/user-created.event';
 
 export type UserPrimitives = ExtractOptionalPrimitives<User>;

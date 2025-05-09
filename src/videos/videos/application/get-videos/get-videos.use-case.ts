@@ -1,5 +1,6 @@
+import { ExtractPrimitives } from '@shared/domain/models/extract-primitives';
 import { VideoNotFoundError } from '@videos/videos/domain/errors/video-not-found.error';
-import { VideoRead } from '@videos/videos/domain/models/read/video.read';
+import { VideoWithAmountOfComments } from '@videos/videos/domain/models/video-with-amount-of-comments';
 import { GetVideosRepository } from '@videos/videos/domain/repositories/get-videos.repository';
 import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 
@@ -13,20 +14,21 @@ type GetVideosUseCaseInput = {
 export class GetVideosUseCase {
     constructor(
         @inject(VIDEO_TOKEN.GET_VIDEOS_REPOSITORY)
-        private readonly repository: GetVideosRepository<VideoRead[]>
+        private readonly repository: GetVideosRepository<VideoWithAmountOfComments[]>
     ) {}
 
-    // FITU return DTO or read model
-    async execute({ userId }: GetVideosUseCaseInput): Promise<VideoRead[]> {
-        const videos = await this.repository.raw(userId);
-        if (videos.isErr()) {
-            throw videos.error;
+    async execute({ userId }: GetVideosUseCaseInput): Promise<ExtractPrimitives<VideoWithAmountOfComments>[]> {
+        const videosWithAmountOfCommentsRead = await this.repository.raw(userId);
+        if (videosWithAmountOfCommentsRead.isErr()) {
+            throw videosWithAmountOfCommentsRead.error;
         }
 
-        if (videos.value.length === 0) {
+        const videosWithAmountOfComments =
+            videosWithAmountOfCommentsRead.value as ExtractPrimitives<VideoWithAmountOfComments>[];
+        if (videosWithAmountOfComments.length === 0) {
             throw new VideoNotFoundError();
         }
 
-        return videos.value;
+        return videosWithAmountOfComments;
     }
 }

@@ -1,3 +1,5 @@
+import { VideoCommentPrimitives } from '@videos/video-comment/domain/models/video-comment';
+
 import { Document, Schema, model } from 'mongoose';
 
 export const VIDEO_COMMENT_COLLECTION_NAME = 'comments';
@@ -32,7 +34,7 @@ export class VideoComment {
         this.document = document;
     }
 
-    toPrimitives() {
+    toPrimitives(): VideoCommentPrimitives {
         return {
             id: this.document._id,
             text: this.document.text,

@@ -1,7 +1,7 @@
 import { DomainEventBus } from '@shared/domain/event-bus/domain-event-bus';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { VideoAlreadyExistsError } from '@videos/videos/domain/errors/video-already-exists.error';
-import { Video } from '@videos/videos/domain/models/write/video';
+import { Video } from '@videos/videos/domain/models/video';
 import { VideoRepository } from '@videos/videos/domain/repositories/video.repository';
 import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 
@@ -23,8 +23,8 @@ export class CreateVideoUseCase {
     ) {}
 
     async execute({ id, title, description, url, userId }: CreateVideoUseCaseInput): Promise<void> {
-        const videoExists = await this.repository.searchById(id);
-        if (videoExists.isOk() && videoExists.value) {
+        const videoRead = await this.repository.searchById(id);
+        if (videoRead.isOk() && videoRead.value) {
             throw new VideoAlreadyExistsError();
         }
 

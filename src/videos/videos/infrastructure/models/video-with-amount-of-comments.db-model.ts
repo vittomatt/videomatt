@@ -1,10 +1,11 @@
+import { VideoWithAmountOfCommentsPrimitives } from '@videos/videos/domain/models/video-with-amount-of-comments';
 import { PostgresVideosDB } from '@videos/videos/infrastructure/persistence/sequelize-videos.db';
 
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
-export const VIDEO_TABLE_NAME = 'videos_reads';
+export const VIDEO_TABLE_NAME = 'video_with_amount_of_comments';
 
-export class VideoDBModelRead extends Model {
+export class VideoWithAmountOfCommentsDBModel extends Model {
     public id!: string;
     public title!: string;
     public description!: string;
@@ -12,8 +13,8 @@ export class VideoDBModelRead extends Model {
     public userId!: string;
     public amountOfComments!: number;
 
-    public static initModel(sequelize: Sequelize): typeof VideoDBModelRead {
-        return VideoDBModelRead.init(
+    public static initModel(sequelize: Sequelize): typeof VideoWithAmountOfCommentsDBModel {
+        return VideoWithAmountOfCommentsDBModel.init(
             {
                 id: {
                     type: DataTypes.UUID,
@@ -57,7 +58,7 @@ export class VideoDBModelRead extends Model {
 
     public static associate(models: PostgresVideosDB) {}
 
-    toPrimitives() {
+    toPrimitives(): VideoWithAmountOfCommentsPrimitives {
         return {
             id: this.id,
             title: this.title,

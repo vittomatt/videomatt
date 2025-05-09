@@ -1,6 +1,6 @@
 import { getEnvs } from '@shared/infrastructure/envs/init-envs';
 import { MongoDBVideoCommentRepository } from '@videos/video-comment/infrastructure/repositories/mongoose-video-comment.repository';
-import { CreateVideoReadUseCase } from '@videos/videos/application/create-video/create-video-read.use-case';
+import { CreateVideoWithAmountOfCommentsUseCase } from '@videos/videos/application/create-video/create-video-with-amount-of-comments.use-case';
 import { CreateVideoUseCase } from '@videos/videos/application/create-video/create-video.use-case';
 import { GetVideosUseCase } from '@videos/videos/application/get-videos/get-videos.use-case';
 import { IncreaseAmountOfCommentsUseCase } from '@videos/videos/application/increase-amount-of-comments/increase-amount-of-comments.use-case';
@@ -12,13 +12,13 @@ import { CreateVideoController } from '@videos/videos/infrastructure/controllers
 import { GetVideosController } from '@videos/videos/infrastructure/controllers/get-videos/get-videos.controller';
 import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 import { CreateVideoCommandHandler } from '@videos/videos/infrastructure/handlers/command/create-video.command-handler';
-import { CreateVideoReadHandler } from '@videos/videos/infrastructure/handlers/domain/create-video-read.handler';
+import { CreateVideoWithAmountOfCommentsHandler } from '@videos/videos/infrastructure/handlers/domain/create-video-with-amount-of-comments.handler';
 import { IncreaseAmountOfCommentsHandler } from '@videos/videos/infrastructure/handlers/domain/increase-amount-of-comments.handler';
 import { GetVideosQueryHandler } from '@videos/videos/infrastructure/handlers/query/get-videos.query-handler';
 import { PostgresVideosDB } from '@videos/videos/infrastructure/persistence/sequelize-videos.db';
 import { SequelizeGetVideosRepository } from '@videos/videos/infrastructure/repositories/get-videos/sequelize-get-videos.repository';
 import { RedisVideoRepository } from '@videos/videos/infrastructure/repositories/redis-video.repository';
-import { SequelizeVideoReadRepository } from '@videos/videos/infrastructure/repositories/sequelize-video-read.repository';
+import { SequelizeVideoWithAmountOfCommentsRepository } from '@videos/videos/infrastructure/repositories/sequelize-video-with-amount-of-comments.repository';
 import { SequelizeVideoRepository } from '@videos/videos/infrastructure/repositories/sequelize-video.repository';
 
 import { container } from 'tsyringe';
@@ -51,8 +51,8 @@ export class DIVideos {
         container.register(VIDEO_TOKEN.DB_MODEL, {
             useValue: this.db.getVideoModel(),
         });
-        container.register(VIDEO_TOKEN.DB_MODEL_READ, {
-            useValue: this.db.getVideoModelRead(),
+        container.register(VIDEO_TOKEN.VIDEO_WITH_AMOUNT_OF_COMMENTS_DB_MODEL, {
+            useValue: this.db.getVideoWihtAmountOfCommentModel(),
         });
     }
 
@@ -72,8 +72,8 @@ export class DIVideos {
         container.register(VIDEO_TOKEN.GET_VIDEOS_USE_CASE, {
             useClass: GetVideosUseCase,
         });
-        container.register(VIDEO_TOKEN.CREATE_VIDEO_READ_USE_CASE, {
-            useClass: CreateVideoReadUseCase,
+        container.register(VIDEO_TOKEN.CREATE_VIDEO_WITH_AMOUNT_OF_COMMENTS_USE_CASE, {
+            useClass: CreateVideoWithAmountOfCommentsUseCase,
         });
         container.register(VIDEO_TOKEN.INCREASE_AMOUNT_OF_COMMENTS_USE_CASE, {
             useClass: IncreaseAmountOfCommentsUseCase,
@@ -109,8 +109,8 @@ export class DIVideos {
         container.register(VIDEO_TOKEN.GET_VIDEOS_REPOSITORY, {
             useClass: SequelizeGetVideosRepository,
         });
-        container.register(VIDEO_TOKEN.VIDEO_READ_REPOSITORY, {
-            useClass: SequelizeVideoReadRepository,
+        container.register(VIDEO_TOKEN.VIDEO_WITH_AMOUNT_OF_COMMENTS_REPOSITORY, {
+            useClass: SequelizeVideoWithAmountOfCommentsRepository,
         });
         container.register(VIDEO_TOKEN.VIDEO_COMMENT_REPOSITORY, {
             useClass: MongoDBVideoCommentRepository,
@@ -124,8 +124,8 @@ export class DIVideos {
         container.register(VIDEO_TOKEN.CREATE_VIDEO_COMMAND_HANDLER, {
             useClass: CreateVideoCommandHandler,
         });
-        container.register(VIDEO_TOKEN.CREATE_VIDEO_READ_HANDLER, {
-            useClass: CreateVideoReadHandler,
+        container.register(VIDEO_TOKEN.CREATE_VIDEO_WITH_AMOUNT_OF_COMMENTS_HANDLER, {
+            useClass: CreateVideoWithAmountOfCommentsHandler,
         });
         container.register(VIDEO_TOKEN.INCREASE_AMOUNT_OF_COMMENTS_HANDLER, {
             useClass: IncreaseAmountOfCommentsHandler,

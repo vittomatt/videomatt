@@ -1,3 +1,4 @@
+import { UserPrimitives } from '@users/domain/models/user';
 import { PostgresUserDB } from '@users/infrastructure/persistence/sequelize-user.db';
 
 import { DataTypes, Model, Sequelize } from 'sequelize';
@@ -47,7 +48,7 @@ export class UserDBModel extends Model {
 
     public static associate(models: PostgresUserDB) {}
 
-    toPrimitives() {
+    toPrimitives(): UserPrimitives {
         return {
             id: this.id,
             firstName: this.firstName,

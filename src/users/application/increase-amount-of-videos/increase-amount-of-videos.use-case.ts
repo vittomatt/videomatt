@@ -1,5 +1,6 @@
+import { ExtractPrimitives } from '@shared/domain/models/extract-primitives';
 import { UserNotFoundError } from '@users/domain/errors/user-not-found.error';
-import { User } from '@users/domain/models/write/user';
+import { User } from '@users/domain/models/user';
 import { UserRepository } from '@users/domain/repositories/user.repository';
 import { USER_TOKEN } from '@users/infrastructure/di/user.tokens';
 
@@ -15,13 +16,15 @@ export class IncreaseAmountOfVideosUseCase {
     constructor(@inject(USER_TOKEN.REPOSITORY) private readonly userRepository: UserRepository<User>) {}
 
     async execute({ userId, videoId }: IncreaseAmountOfVideosUseCaseInput): Promise<void> {
-        const user = await this.userRepository.searchById(userId);
-        if (user.isErr() || !user.value) {
+        const userRead = await this.userRepository.searchById(userId);
+        if (userRead.isErr() || !userRead.value) {
             throw new UserNotFoundError();
         }
 
-        user.value.increaseAmountOfVideos();
-        const updateUserResult = await this.userRepository.update(user.value);
+        const user = User.fromPrimitives(userRead.value as ExtractPrimitives<User>);
+
+        user.increaseAmountOfVideos();
+        const updateUserResult = await this.userRepository.update(user);
         if (updateUserResult.isErr()) {
             throw updateUserResult.error;
         }
