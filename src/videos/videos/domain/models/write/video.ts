@@ -5,16 +5,12 @@ import { VideoURL } from './video-url';
 
 import { AggregateRoot } from '@shared/domain/aggregate-root';
 import { VideoCreatedEvent } from '@shared/domain/events/video-created.event';
+import { ExtractOptionalPrimitives, ExtractPrimitives } from '@shared/domain/models/extract-primitives';
 import { UserId } from '@shared/domain/models/write/user-id';
 import { VideoCommentAddedEvent } from '@videos/video-comment/domain/events/video-comment-added.event';
 import { VideoComment, VideoCommentPrimitives } from '@videos/video-comment/domain/models/write/video-comment';
 
-export type VideoPrimitives = {
-    id: string;
-    title: string;
-    description: string;
-    url: string;
-    userId: string;
+export type VideoPrimitives = ExtractOptionalPrimitives<Video> & {
     comments: VideoCommentPrimitives[];
 };
 
@@ -25,7 +21,7 @@ export class Video extends AggregateRoot {
         public readonly description: VideoDescription,
         public readonly url: VideoURL,
         public readonly comments: VideoComment[],
-        private readonly userId: UserId
+        public readonly userId: UserId
     ) {
         super();
     }
@@ -44,7 +40,7 @@ export class Video extends AggregateRoot {
         url: string;
         userId: string;
         comments?: VideoComment[];
-    }) {
+    }): Video {
         const user = new UserId(userId);
         const videoComments = comments ?? [];
 
@@ -63,25 +59,36 @@ export class Video extends AggregateRoot {
         return video;
     }
 
-    static fromPrimitives({ id, title, description, url, userId, comments = [] }: VideoPrimitives) {
+    static fromPrimitives({
+        id,
+        title,
+        description,
+        url,
+        userId,
+        comments = [],
+    }: ExtractPrimitives<Video> & {
+        comments: VideoCommentPrimitives[];
+    }): Video {
         return new Video(
             new VideoId(id),
             new VideoTitle(title),
             new VideoDescription(description),
             new VideoURL(url),
-            comments.map((comment) => VideoComment.fromPrimitives(comment)),
+            comments.map((comment) => VideoComment.fromPrimitives(comment as ExtractPrimitives<VideoComment>)),
             new UserId(userId)
         );
     }
 
-    toPrimitives(): VideoPrimitives {
+    toPrimitives(): ExtractPrimitives<Video> & {
+        comments: VideoCommentPrimitives[];
+    } {
         return {
             id: this.id.value,
             title: this.title.value,
             description: this.description.value,
             url: this.url.value,
             userId: this.userId.value,
-            comments: this.comments.map((comment) => comment.toPrimitives()),
+            comments: this.comments.map((comment: VideoComment) => comment.toPrimitives()),
         };
     }
 

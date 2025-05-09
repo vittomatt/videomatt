@@ -3,15 +3,11 @@ import { UserFirstName } from './user-first-name';
 import { UserLastName } from './user-last-name';
 
 import { AggregateRoot } from '@shared/domain/aggregate-root';
+import { ExtractOptionalPrimitives, ExtractPrimitives } from '@shared/domain/models/extract-primitives';
 import { UserId } from '@shared/domain/models/write/user-id';
 import { UserCreatedEvent } from '@users/domain/events/user-created.event';
 
-export type UserPrimitives = {
-    id: string;
-    firstName: string;
-    lastName: string;
-    amountOfVideos: number;
-};
+export type UserPrimitives = ExtractOptionalPrimitives<User>;
 
 export class User extends AggregateRoot {
     constructor(
@@ -33,7 +29,7 @@ export class User extends AggregateRoot {
         firstName: string;
         lastName: string;
         amountOfVideos?: number;
-    }) {
+    }): User {
         const user = new User(
             new UserId(id),
             new UserFirstName(firstName),
@@ -47,7 +43,7 @@ export class User extends AggregateRoot {
         return user;
     }
 
-    static fromPrimitives({ id, firstName, lastName, amountOfVideos }: UserPrimitives) {
+    static fromPrimitives({ id, firstName, lastName, amountOfVideos }: ExtractPrimitives<User>): User {
         return new User(
             new UserId(id),
             new UserFirstName(firstName),
@@ -56,7 +52,7 @@ export class User extends AggregateRoot {
         );
     }
 
-    toPrimitives(): UserPrimitives {
+    toPrimitives(): ExtractPrimitives<User> {
         return {
             id: this.id.value,
             firstName: this.firstName.value,

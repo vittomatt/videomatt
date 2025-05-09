@@ -3,6 +3,7 @@ import { UserFirstNameMother } from './user-first-name.mother';
 import { UserIdMother } from './user-id.mother';
 import { UserLastNameMother } from './user-last-name.mother';
 
+import { ExtractPrimitives } from '@shared/domain/models/extract-primitives';
 import { User, UserPrimitives } from '@users/domain/models/write/user';
 
 export class UserMother {
@@ -15,6 +16,6 @@ export class UserMother {
             ...params,
         };
 
-        return User.fromPrimitives(primitives);
+        return User.fromPrimitives(primitives as ExtractPrimitives<User>);
     }
 }

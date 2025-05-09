@@ -2,6 +2,7 @@ import { VideoCommentIdMother } from './video-comment-id.mother';
 import { VideoCommentTextMother } from './video-comment-text.mother';
 import { VideoIdMother } from './video-id.mother';
 
+import { ExtractPrimitives } from '@shared/domain/models/extract-primitives';
 import { UserIdMother } from '@tests/shared/users/domain/user-id.mother';
 import { VideoComment, VideoCommentPrimitives } from '@videos/video-comment/domain/models/write/video-comment';
 
@@ -15,6 +16,6 @@ export class VideoCommentMother {
             ...params,
         };
 
-        return VideoComment.fromPrimitives(primitives);
+        return VideoComment.fromPrimitives(primitives as ExtractPrimitives<VideoComment>);
     }
 }

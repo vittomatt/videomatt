@@ -4,7 +4,9 @@ import { VideoIdMother } from './video-id.mother';
 import { VideoTitleMother } from './video-title.mother';
 import { VideoUrlMother } from './video-url.mother';
 
+import { ExtractPrimitives } from '@shared/domain/models/extract-primitives';
 import { UserIdMother } from '@tests/shared/users/domain/user-id.mother';
+import { VideoCommentPrimitives } from '@videos/video-comment/domain/models/write/video-comment';
 import { Video, VideoPrimitives } from '@videos/videos/domain/models/write/video';
 
 export class VideoMother {
@@ -19,6 +21,6 @@ export class VideoMother {
             ...params,
         };
 
-        return Video.fromPrimitives(primitives);
+        return Video.fromPrimitives(primitives as ExtractPrimitives<Video> & { comments: VideoCommentPrimitives[] });
     }
 }

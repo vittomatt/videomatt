@@ -1,15 +1,11 @@
 import { VideoCommentId } from './video-comment-id';
 import { VideoCommentText } from './video-comment-text';
 
+import { ExtractOptionalPrimitives, ExtractPrimitives } from '@shared/domain/models/extract-primitives';
 import { UserId } from '@shared/domain/models/write/user-id';
 import { VideoId } from '@videos/videos/domain/models/write/video-id';
 
-export type VideoCommentPrimitives = {
-    id: string;
-    text: string;
-    userId: string;
-    videoId: string;
-};
+export type VideoCommentPrimitives = ExtractOptionalPrimitives<VideoComment>;
 
 export class VideoComment {
     constructor(
@@ -19,7 +15,17 @@ export class VideoComment {
         public readonly videoId: VideoId
     ) {}
 
-    static create({ id, text, userId, videoId }: { id: string; text: string; userId: string; videoId: string }) {
+    static create({
+        id,
+        text,
+        userId,
+        videoId,
+    }: {
+        id: string;
+        text: string;
+        userId: string;
+        videoId: string;
+    }): VideoComment {
         const comment = new VideoComment(
             new VideoCommentId(id),
             new VideoCommentText(text),
@@ -30,7 +36,7 @@ export class VideoComment {
         return comment;
     }
 
-    static fromPrimitives({ id, text, userId, videoId }: VideoCommentPrimitives) {
+    static fromPrimitives({ id, text, userId, videoId }: ExtractPrimitives<VideoComment>): VideoComment {
         return new VideoComment(
             new VideoCommentId(id),
             new VideoCommentText(text),
@@ -39,7 +45,7 @@ export class VideoComment {
         );
     }
 
-    toPrimitives(): VideoCommentPrimitives {
+    toPrimitives(): ExtractPrimitives<VideoComment> {
         return {
             id: this.id.value,
             text: this.text.value,
