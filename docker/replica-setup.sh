@@ -2,17 +2,23 @@
 set -e
 
 # Delete old data
+echo "Cleaning old PGDATA..."
 rm -rf "$PGDATA"/*
 
-# Make base backup
-PGPASSWORD="${DB_REPLICA_PASSWORD}" \
-pg_basebackup \
-  -h ${DB_HOST} \
-  -U ${DB_REPLICA_USER} \
+echo "Waiting for primary DB ($DB_HOST) to become available..."
+until pg_isready -h "$DB_HOST" -U "$DB_REPLICA_USER"; do
+  echo "Primary not ready, waiting..."
+  sleep 2
+done
+
+echo "Starting base backup from primary..."
+PGPASSWORD="$DB_REPLICA_PASSWORD" pg_basebackup \
+  -h "$DB_HOST" \
+  -U "$DB_REPLICA_USER" \
   -D "$PGDATA" \
   -Fp -Xs -P -R
 
-# The flag -R already creates a modern recovery.conf with:
-# primary_conninfo = 'host=db-users port=5432 user=replica_user password=…'
-# and activates hot_standby automatically
+echo "Setting correct permissions..."
 chown -R postgres:postgres "$PGDATA"
+
+echo "Replica setup complete."

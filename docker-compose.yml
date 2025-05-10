@@ -127,7 +127,6 @@ services:
         environment:
             - POSTGRES_USER=${VIDEOS_POSTGRES_DB_REPLICA_USER}
             - POSTGRES_PASSWORD=${VIDEOS_POSTGRES_DB_REPLICA_PASSWORD}
-            - POSTGRES_DB=${VIDEOS_POSTGRES_DB_REPLICA_NAME}
             - DB_HOST=db-videos
             - DB_REPLICA_USER=${VIDEOS_POSTGRES_DB_REPLICA_USER}
             - DB_REPLICA_PASSWORD=${VIDEOS_POSTGRES_DB_REPLICA_PASSWORD}
@@ -136,18 +135,19 @@ services:
             - '5435:5432'
         volumes:
             - db_data_videos_replica:/var/lib/postgresql/data/pgdata
-            - ./docker/replica-setup.sh:/docker-entrypoint-initdb.d/replica-setup.sh:ro
+            - ./docker/replica-setup.sh:/docker/replica-setup.sh:ro
         depends_on:
             db-videos:
                 condition: service_healthy
         networks:
             - videonet
+        command: ['/bin/sh', '-c', './docker/replica-setup.sh && docker-entrypoint.sh postgres']
         healthcheck:
-            test:
-                [
-                    'CMD-SHELL',
-                    'pg_isready -U ${VIDEOS_POSTGRES_DB_REPLICA_USER} -h localhost && psql -U ${VIDEOS_POSTGRES_DB_REPLICA_USER} -c "SELECT pg_is_in_recovery()" | grep -q true || exit 1',
-                ]
+            test: >
+                CMD-SHELL
+                pg_isready -U ${VIDEOS_POSTGRES_DB_REPLICA_USER} -d ${VIDEOS_POSTGRES_DB_NAME:-postgres} -h localhost &&
+                psql -U ${VIDEOS_POSTGRES_DB_REPLICA_USER} -d ${VIDEOS_POSTGRES_DB_NAME:-postgres} \
+                    -c 'SELECT pg_is_in_recovery()' | grep -q t
             interval: 5s
             timeout: 3s
             retries: 3
