@@ -20,10 +20,11 @@ export class MongoVideosCommentDB {
         dbName: string;
         dbPort: number;
     }) {
-        this.uri = `mongodb://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${dbName}?authSource=admin`;
+        // this.uri = `mongodb://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${dbName}?authSource=${dbName}`;
+        this.uri = `mongodb://${dbHost}:${dbPort}/${dbName}`;
     }
 
-    public async connectDB() {
+    public async initDB() {
         try {
             const mongooseInstance = await mongoose.connect(this.uri);
             this.connection = mongooseInstance.connection;

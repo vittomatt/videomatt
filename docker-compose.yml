@@ -7,7 +7,7 @@ services:
             dockerfile: docker/users-dockerfile
         container_name: users
         ports:
-            - '3000:3000'
+            - '${USERS_PORT}:${USERS_PORT}'
         env_file:
             - .env.docker
         volumes:
@@ -30,7 +30,7 @@ services:
             dockerfile: docker/videos-dockerfile
         container_name: videos
         ports:
-            - '3001:3001'
+            - '${VIDEOS_PORT}:${VIDEOS_PORT}'
         env_file:
             - .env.docker
         volumes:
@@ -54,7 +54,7 @@ services:
             - POSTGRES_PASSWORD=${USERS_POSTGRES_DB_SHARD_1_PASSWORD}
             - POSTGRES_DB=${USERS_POSTGRES_DB_SHARD_1_NAME}
         ports:
-            - '5432:5432'
+            - '${USERS_POSTGRES_DB_SHARD_1_PORT}:5432'
         volumes:
             - db_data_users_shard_1:/var/lib/postgresql/data
         networks:
@@ -78,7 +78,7 @@ services:
             - POSTGRES_PASSWORD=${USERS_POSTGRES_DB_SHARD_2_PASSWORD}
             - POSTGRES_DB=${USERS_POSTGRES_DB_SHARD_2_NAME}
         ports:
-            - '5433:5432'
+            - '${USERS_POSTGRES_DB_SHARD_2_PORT}:5432'
         volumes:
             - db_data_users_shard_2:/var/lib/postgresql/data
         networks:
@@ -104,10 +104,10 @@ services:
             - DB_REPLICA_USER=${VIDEOS_POSTGRES_DB_REPLICA_USER}
             - DB_REPLICA_PASSWORD=${VIDEOS_POSTGRES_DB_REPLICA_PASSWORD}
         ports:
-            - '5434:5432'
+            - '${VIDEOS_POSTGRES_DB_PORT}:5432'
         volumes:
             - db_data_videos:/var/lib/postgresql/data
-            - ./docker/replica-init.sh:/docker-entrypoint-initdb.d/replica-init.sh:ro
+            - ./docker/postgres/replica-init.sh:/docker-entrypoint-initdb.d/replica-init.sh:ro
         networks:
             - videonet
         healthcheck:
@@ -132,10 +132,10 @@ services:
             - DB_REPLICA_PASSWORD=${VIDEOS_POSTGRES_DB_REPLICA_PASSWORD}
             - PGDATA=/var/lib/postgresql/data/pgdata
         ports:
-            - '5435:5432'
+            - '${VIDEOS_POSTGRES_DB_REPLICA_PORT}:5432'
         volumes:
             - db_data_videos_replica:/var/lib/postgresql/data/pgdata
-            - ./docker/replica-setup.sh:/docker/replica-setup.sh:ro
+            - ./docker/postgres/replica-setup.sh:/docker/replica-setup.sh:ro
         depends_on:
             db-videos:
                 condition: service_healthy
@@ -152,30 +152,76 @@ services:
             timeout: 3s
             retries: 3
             start_period: 30s
+    db-mongo-config-server:
+        image: mongo:7.0
+        container_name: db-mongo-config-server
+        command: --configsvr --replSet configReplSet --port 27019 --bind_ip_all
+        volumes:
+            - db_mongo_config_server:/data/db
+        networks:
+            - videonet
+        healthcheck:
+            test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
+            interval: 5s
+            timeout: 3s
+            retries: 10
+    db-mongo-shard-1:
+        image: mongo:7.0
+        container_name: db-mongo-shard-1
+        command: --shardsvr --replSet shard1ReplSet --port 27018 --bind_ip_all
+        depends_on:
+            - db-mongo-config-server
+        volumes:
+            - db_mongo_shard_1:/data/db
+        networks:
+            - videonet
+        healthcheck:
+            test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
+            interval: 5s
+            timeout: 3s
+            retries: 10
+    db-mongo-shard-2:
+        image: mongo:7.0
+        container_name: db-mongo-shard-2
+        command: --shardsvr --replSet shard2ReplSet --port 27020 --bind_ip_all
+        depends_on:
+            - db-mongo-config-server
+        volumes:
+            - db_mongo_shard_2:/data/db
+        networks:
+            - videonet
+        healthcheck:
+            test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
+            interval: 5s
+            timeout: 3s
+            retries: 10
     db-video-comments:
         image: mongo:7.0
         container_name: mongo-video-comments
         restart: unless-stopped
-        environment:
-            - MONGO_INITDB_ROOT_USERNAME=${VIDEOS_COMMENT_MONGO_DB_USER}
-            - MONGO_INITDB_ROOT_PASSWORD=${VIDEOS_COMMENT_MONGO_DB_PASSWORD}
-            - MONGO_INITDB_DATABASE=${VIDEOS_COMMENT_MONGO_DB_NAME}
+        depends_on:
+            - db-mongo-config-server
+            - db-mongo-shard-1
+            - db-mongo-shard-2
+        #environment:
+        #    - MONGO_ROOT_PWD=${VIDEOS_COMMENT_MONGO_DB_PASSWORD}
+        #    - VIDEOS_COMMENT_MONGO_DB_USER=${VIDEOS_COMMENT_MONGO_DB_USER}
+        #    - VIDEOS_COMMENT_MONGO_DB_PASSWORD=${VIDEOS_COMMENT_MONGO_DB_PASSWORD}
         ports:
-            - '27017:27017'
+            - '${VIDEOS_COMMENT_MONGO_DB_PORT}:27017'
         volumes:
-            - db_data_video_comments:/data/db
+            - ./docker/mongo/mongo-init-rs.js:/mongo-init-rs.js:ro
+            - ./docker/mongo/mongo-init-sharding.js:/mongo-init-sharding.js:ro
+            - ./docker/mongo/mongo-wait-and-run.sh:/mongo-wait-and-run.sh:ro
+            # - ./docker/mongo/mongo-create-app-user.js:/mongo-create-app-user.js:ro
+        entrypoint: ['/bin/bash', '/mongo-wait-and-run.sh']
         networks:
             - videonet
         healthcheck:
-            test: >
-                mongosh --username ${VIDEOS_COMMENT_MONGO_DB_USER} \
-                        --password ${VIDEOS_COMMENT_MONGO_DB_PASSWORD} \
-                        --authenticationDatabase admin \
-                        --eval "db.adminCommand('ping')" || exit 1
-            interval: 30s
+            test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
+            interval: 5s
             timeout: 3s
-            retries: 3
-            start_period: 30s
+            retries: 10
     redis:
         image: redis:alpine
         container_name: redis
@@ -211,6 +257,9 @@ volumes:
     db_data_users_shard_2:
     db_data_videos:
     db_data_videos_replica:
-    db_data_video_comments:
+    db_mongo_config_server:
+    db_mongo_shard_1:
+    db_mongo_shard_2:
+    db_mongo_video_comments:
     redis_data:
     localstack_data:

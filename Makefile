@@ -34,4 +34,4 @@ load-all:
 	docker-compose up --build --no-recreate
 
 load-infra:
-	docker-compose up redis localstack db-users-shard-1 db-users-shard-2 db-videos db-video-comments db-videos-replica
+	docker-compose up redis localstack db-users-shard-1 db-users-shard-2 db-videos db-videos-replica db-mongo-config-server db-mongo-shard-1 db-mongo-shard-2 db-video-comments
