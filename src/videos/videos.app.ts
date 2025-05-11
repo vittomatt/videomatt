@@ -16,80 +16,92 @@ import swaggerUi from 'swagger-ui-express';
 import { container } from 'tsyringe';
 
 export class App {
-    constructor(private readonly expressApp: Express) {}
+    private readonly expressApp: Express;
 
-    init(): { logger: Logger; db: PostgresVideosDB; mongoDB: MongoVideosCommentDB; redis: RedisDB } {
-        initEnvs();
-
-        // Init middlewares
-        this.expressApp.use(helmet());
-        this.expressApp.use(express.json());
-        this.expressApp.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-        // Init DB
-        const envs = getEnvs();
-        const {
-            VIDEOS_POSTGRES_DB_HOST,
-            VIDEOS_POSTGRES_DB_USER,
-            VIDEOS_POSTGRES_DB_PASSWORD,
-            VIDEOS_POSTGRES_DB_NAME,
-            VIDEOS_POSTGRES_DB_PORT,
-            VIDEOS_POSTGRES_DB_REPLICA_HOST,
-            VIDEOS_POSTGRES_DB_REPLICA_USER,
-            VIDEOS_POSTGRES_DB_REPLICA_PASSWORD,
-            VIDEOS_POSTGRES_DB_REPLICA_NAME,
-            VIDEOS_POSTGRES_DB_REPLICA_PORT,
-            VIDEOS_COMMENT_MONGO_DB_HOST,
-            VIDEOS_COMMENT_MONGO_DB_PORT,
-            VIDEOS_COMMENT_MONGO_DB_NAME,
-            VIDEOS_COMMENT_MONGO_DB_USER,
-            VIDEOS_COMMENT_MONGO_DB_PASSWORD,
-        } = envs;
-        const db = new PostgresVideosDB({
-            dbHost: VIDEOS_POSTGRES_DB_HOST,
-            dbUser: VIDEOS_POSTGRES_DB_USER,
-            dbPassword: VIDEOS_POSTGRES_DB_PASSWORD,
-            dbName: VIDEOS_POSTGRES_DB_NAME,
-            dbPort: VIDEOS_POSTGRES_DB_PORT,
-            dbReplicaHost: VIDEOS_POSTGRES_DB_REPLICA_HOST,
-            dbReplicaUser: VIDEOS_POSTGRES_DB_REPLICA_USER,
-            dbReplicaPassword: VIDEOS_POSTGRES_DB_REPLICA_PASSWORD,
-            dbReplicaName: VIDEOS_POSTGRES_DB_REPLICA_NAME,
-            dbReplicaPort: VIDEOS_POSTGRES_DB_REPLICA_PORT,
-        });
-        db.initDB();
-
-        const mongoDB = new MongoVideosCommentDB({
-            dbHost: VIDEOS_COMMENT_MONGO_DB_HOST,
-            dbUser: VIDEOS_COMMENT_MONGO_DB_USER,
-            dbPassword: VIDEOS_COMMENT_MONGO_DB_PASSWORD,
-            dbName: VIDEOS_COMMENT_MONGO_DB_NAME,
-            dbPort: VIDEOS_COMMENT_MONGO_DB_PORT,
-        });
-
-        const redis = new RedisDB();
-        redis.connect();
-
-        // Init DI
-        const di = new DI(db, mongoDB, redis);
-        di.initDI();
-
-        // Init routes
-        const logger = container.resolve<PinoLogger>(TOKEN.LOGGER);
-        this.expressApp.use(logger.getInstance());
-        initRoutes(this.expressApp);
-
-        // Init workers
-        const worker = container.resolve<Worker>(TOKEN.WORKER_VIDEO);
-        worker.start().catch((error) => {
-            logger.error(`Worker fatal error: ${error}`);
-            process.exit(1);
-        });
-
-        return { logger, db, mongoDB, redis };
+    constructor() {
+        this.expressApp = express();
     }
 
-    getInstance(): Express {
-        return this.expressApp;
+    async init(): Promise<{
+        logger: Logger;
+        db: PostgresVideosDB;
+        mongoDB: MongoVideosCommentDB;
+        redis: RedisDB;
+        worker: Worker;
+        app: Express;
+    }> {
+        try {
+            initEnvs();
+
+            // Init middlewares
+            this.expressApp.use(helmet());
+            this.expressApp.use(express.json());
+            this.expressApp.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+            // Init DB
+            const envs = getEnvs();
+            const {
+                VIDEOS_POSTGRES_DB_HOST,
+                VIDEOS_POSTGRES_DB_USER,
+                VIDEOS_POSTGRES_DB_PASSWORD,
+                VIDEOS_POSTGRES_DB_NAME,
+                VIDEOS_POSTGRES_DB_PORT,
+                VIDEOS_POSTGRES_DB_REPLICA_HOST,
+                VIDEOS_POSTGRES_DB_REPLICA_USER,
+                VIDEOS_POSTGRES_DB_REPLICA_PASSWORD,
+                VIDEOS_POSTGRES_DB_REPLICA_NAME,
+                VIDEOS_POSTGRES_DB_REPLICA_PORT,
+                VIDEOS_COMMENT_MONGO_DB_HOST,
+                VIDEOS_COMMENT_MONGO_DB_PORT,
+                VIDEOS_COMMENT_MONGO_DB_NAME,
+                VIDEOS_COMMENT_MONGO_DB_USER,
+                VIDEOS_COMMENT_MONGO_DB_PASSWORD,
+            } = envs;
+            const db = new PostgresVideosDB({
+                dbHost: VIDEOS_POSTGRES_DB_HOST,
+                dbUser: VIDEOS_POSTGRES_DB_USER,
+                dbPassword: VIDEOS_POSTGRES_DB_PASSWORD,
+                dbName: VIDEOS_POSTGRES_DB_NAME,
+                dbPort: VIDEOS_POSTGRES_DB_PORT,
+                dbReplicaHost: VIDEOS_POSTGRES_DB_REPLICA_HOST,
+                dbReplicaUser: VIDEOS_POSTGRES_DB_REPLICA_USER,
+                dbReplicaPassword: VIDEOS_POSTGRES_DB_REPLICA_PASSWORD,
+                dbReplicaName: VIDEOS_POSTGRES_DB_REPLICA_NAME,
+                dbReplicaPort: VIDEOS_POSTGRES_DB_REPLICA_PORT,
+            });
+            await db.initDB();
+
+            const mongoDB = new MongoVideosCommentDB({
+                dbHost: VIDEOS_COMMENT_MONGO_DB_HOST,
+                dbUser: VIDEOS_COMMENT_MONGO_DB_USER,
+                dbPassword: VIDEOS_COMMENT_MONGO_DB_PASSWORD,
+                dbName: VIDEOS_COMMENT_MONGO_DB_NAME,
+                dbPort: VIDEOS_COMMENT_MONGO_DB_PORT,
+            });
+
+            const redis = new RedisDB();
+            await redis.connect();
+
+            // Init DI
+            const di = new DI(db, mongoDB, redis);
+            di.initDI();
+
+            // Init routes
+            const logger = container.resolve<PinoLogger>(TOKEN.LOGGER);
+            this.expressApp.use(logger.getInstance());
+            initRoutes(this.expressApp);
+
+            // Init workers
+            const worker = container.resolve<Worker>(TOKEN.WORKER_VIDEO);
+            worker.start().catch((error) => {
+                logger.error(`Worker fatal error: ${error}`);
+                process.exit(1);
+            });
+
+            return { logger, db, mongoDB, redis, worker, app: this.expressApp };
+        } catch (error) {
+            console.error('❌ Error initializing application:', error);
+            process.exit(1);
+        }
     }
 }

@@ -25,7 +25,8 @@ export class SQSWorker extends Worker {
             return;
         }
 
-        while (true) {
+        this.isRunning = true;
+        while (this.isRunning) {
             try {
                 await Promise.allSettled(this.consumers.map((consumer) => consumer.consume()));
             } catch (error) {

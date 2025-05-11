@@ -1,40 +1,46 @@
 import 'reflect-metadata';
 
+import { Logger } from '@shared/domain/logger/logger';
 import { getEnvs } from '@shared/infrastructure/envs/init-envs';
+import { RedisDB } from '@shared/infrastructure/persistence/redis-db';
+import { Worker } from '@shared/worker';
 import { App } from '@videos/videos.app';
+import { PostgresVideosDB } from '@videos/videos/infrastructure/persistence/sequelize-videos.db';
 
-import express from 'express';
+async function bootstrap() {
+    const videomattVideosApp = new App();
+    const { logger, db, redis, worker, app } = await videomattVideosApp.init();
 
-const expressApp = express();
-const app = new App(expressApp);
+    const port = getEnvs().VIDEOS_PORT;
 
-const { logger, db, mongoDB, redis } = app.init();
-
-const port = getEnvs().VIDEOS_PORT;
-const appInstance = app.getInstance();
-
-appInstance.listen(port, async () => {
     await db.syncDB();
-    await mongoDB.connectDB();
-    logger.info(`Server running on http://localhost:${port}`);
-});
 
-process.on('SIGINT', async () => {
+    app.listen(port, () => {
+        logger.info(`🚀 Server running on http://localhost:${port}`);
+    });
+
+    process.on('SIGINT', async () => {
+        await closeInstances(db, redis, worker, logger);
+    });
+
+    process.on('SIGTERM', async () => {
+        await closeInstances(db, redis, worker, logger);
+    });
+}
+
+async function closeInstances(db: PostgresVideosDB, redis: RedisDB, worker: Worker, logger: Logger) {
     await db.closeDB();
-    logger.info('Database connection closed due to app termination');
+    logger.info(`🛑 Database connection closed`);
+
+    worker.stop();
 
     await redis.disconnect();
-    logger.info('Redis connection closed due to app termination');
+    logger.info('🛑 Redis connection closed');
 
     process.exit(0);
-});
+}
 
-process.on('SIGTERM', async () => {
-    await db.closeDB();
-    logger.info('Database connection closed due to app termination');
-
-    await redis.disconnect();
-    logger.info('Redis connection closed due to app termination');
-
-    process.exit(0);
+bootstrap().catch((err) => {
+    console.error('❌ Fatal bootstrap error:', err);
+    process.exit(1);
 });

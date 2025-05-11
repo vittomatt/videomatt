@@ -1,47 +1,51 @@
 import 'reflect-metadata';
 
+import { Logger } from '@shared/domain/logger/logger';
 import { getEnvs } from '@shared/infrastructure/envs/init-envs';
-import { USER_DB_SHARD_NAMES } from '@users/infrastructure/persistence/sharding-sequelize-user.db';
+import { RedisDB } from '@shared/infrastructure/persistence/redis-db';
+import { Worker } from '@shared/worker';
+import { ShardingSequelizeUserDB } from '@users/infrastructure/persistence/sharding-sequelize-user.db';
 import { App } from '@users/users.app';
 
-import express from 'express';
+async function bootstrap() {
+    const videomattUsersApp = new App();
+    const { logger, shardingSequelizeUserDB, redis, worker, app } = await videomattUsersApp.init();
 
-const expressApp = express();
-const app = new App(expressApp);
+    const port = getEnvs().USERS_PORT;
 
-const { logger, shardingSequelizeUserDB, redis } = app.init();
-
-const port = getEnvs().USERS_PORT;
-const appInstance = app.getInstance();
-
-appInstance.listen(port, async () => {
-    for (const shardName of USER_DB_SHARD_NAMES) {
-        await shardingSequelizeUserDB.getShard(shardName).syncDB();
+    const allShards = shardingSequelizeUserDB.getAllShards();
+    for (const shard of allShards) {
+        await shard.syncDB();
     }
 
-    logger.info(`Server running on http://localhost:${port}`);
-});
+    app.listen(port, () => {
+        logger.info(`🚀 Server running on http://localhost:${port}`);
+    });
 
-process.on('SIGINT', async () => {
-    for (const shardName of USER_DB_SHARD_NAMES) {
-        await shardingSequelizeUserDB.getShard(shardName).closeDB();
-        logger.info(`Database connection ${shardName} closed due to app termination`);
+    process.on('SIGINT', async () => {
+        await closeInstances(shardingSequelizeUserDB, redis, worker, logger);
+    });
+
+    process.on('SIGTERM', async () => {
+        await closeInstances(shardingSequelizeUserDB, redis, worker, logger);
+    });
+}
+
+async function closeInstances(shards: ShardingSequelizeUserDB, redis: RedisDB, worker: Worker, logger: Logger) {
+    for (const shard of shards.getAllShards()) {
+        await shard.closeDB();
+        logger.info(`🛑 Database connection closed`);
     }
+
+    worker.stop();
 
     await redis.disconnect();
-    logger.info('Redis connection closed due to app termination');
+    logger.info('🛑 Redis connection closed');
 
     process.exit(0);
-});
+}
 
-process.on('SIGTERM', async () => {
-    for (const shardName of USER_DB_SHARD_NAMES) {
-        await shardingSequelizeUserDB.getShard(shardName).closeDB();
-        logger.info(`Database connection ${shardName} closed due to app termination`);
-    }
-
-    await redis.disconnect();
-    logger.info('Redis connection closed due to app termination');
-
-    process.exit(0);
+bootstrap().catch((err) => {
+    console.error('❌ Fatal bootstrap error:', err);
+    process.exit(1);
 });

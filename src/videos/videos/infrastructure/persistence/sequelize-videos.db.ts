@@ -1,5 +1,5 @@
 import { UnexpectedError } from '@shared/domain/errors/unexpected.error';
-import { FailOverDomainEventsDBModel } from '@shared/infrastructure/models/failover-domain-events.db-model';
+import { defineModel as defineFailOverDomainEventsModel } from '@shared/infrastructure/models/failover-domain-events.db-model';
 import { VideoProjectionDBModel } from '@videos/videos/infrastructure/models/video-projection.db-model';
 import { VideoDBModel } from '@videos/videos/infrastructure/models/video.db-model';
 
@@ -53,7 +53,6 @@ export class PostgresVideosDB {
                 ],
             },
             dialect: 'postgres',
-            logging: true,
             dialectOptions: {
                 connectTimeout: 10000,
             },
@@ -66,15 +65,24 @@ export class PostgresVideosDB {
         });
     }
 
-    public initDB() {
+    public async initDB() {
+        console.log(
+            `🧱 initDB() for ${this.instance.config.database} at ${this.instance.config.host}:${this.instance.config.port}`
+        );
+
+        await this.instance.authenticate();
+
         this.initModels();
         this.initAssociations();
     }
 
     private initModels() {
+        console.log(
+            `🔄 syncDB() for ${this.instance.config.database} at ${this.instance.config.host}:${this.instance.config.port}`
+        );
         this.videoModel = VideoDBModel.initModel(this.instance);
         this.VideoProjectionModel = VideoProjectionDBModel.initModel(this.instance);
-        FailOverDomainEventsDBModel.initModel(this.instance);
+        defineFailOverDomainEventsModel(this.instance);
     }
 
     private initAssociations() {}

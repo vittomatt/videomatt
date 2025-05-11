@@ -5,7 +5,7 @@ import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { SequelizeCriteriaConverter } from '@shared/infrastructure/repositories/sequelize-criteria.converter';
 import { User, UserPrimitives } from '@users/domain/models/user';
 import { UserRepository } from '@users/domain/repositories/user.repository';
-import { UserDBModel } from '@users/infrastructure/models/user.db-model';
+import { defineModel } from '@users/infrastructure/models/user.db-model';
 import { ShardingSequelizeUserDB } from '@users/infrastructure/persistence/sharding-sequelize-user.db';
 
 import { Result, errAsync, okAsync } from 'neverthrow';
@@ -85,9 +85,9 @@ export class SequelizeUserRepository implements UserRepository<User> {
         return userDBModels.map((user) => user.toPrimitives());
     }
 
-    private getModel(userId: string): typeof UserDBModel {
+    private getModel(userId: string): ReturnType<typeof defineModel> {
         const shardName = this.db.getShardName(userId);
-        const shard = this.db.getShard(shardName);
+        const shard = this.db.getShardByName(shardName);
         return shard.getUserModel();
     }
 }

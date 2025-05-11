@@ -1,12 +1,13 @@
 import { UnexpectedError } from '@shared/domain/errors/unexpected.error';
-import { FailOverDomainEventsDBModel } from '@shared/infrastructure/models/failover-domain-events.db-model';
-import { UserDBModel } from '@users/infrastructure/models/user.db-model';
+import { defineModel as defineFailOverDomainEventsModel } from '@shared/infrastructure/models/failover-domain-events.db-model';
+import { defineModel as defineUserModel } from '@users/infrastructure/models/user.db-model';
 
 import { Sequelize } from 'sequelize';
 
 export class PostgresUserDB {
     private readonly instance: Sequelize;
-    private userModel!: typeof UserDBModel;
+    private userModel!: ReturnType<typeof defineUserModel>;
+    private failoverDomainEventsModel!: ReturnType<typeof defineFailOverDomainEventsModel>;
 
     constructor({
         dbHost,
@@ -25,7 +26,6 @@ export class PostgresUserDB {
             host: dbHost,
             port: dbPort,
             dialect: 'postgres',
-            logging: true,
             dialectOptions: {
                 connectTimeout: 10000,
             },
@@ -38,19 +38,28 @@ export class PostgresUserDB {
         });
     }
 
-    public initDB() {
+    public async initDB() {
+        console.log(
+            `🧱 initDB() for ${this.instance.config.database} at ${this.instance.config.host}:${this.instance.config.port}`
+        );
+
+        await this.instance.authenticate();
+
         this.initModels();
         this.initAssociations();
     }
 
     private initModels() {
-        this.userModel = UserDBModel.initModel(this.instance);
-        FailOverDomainEventsDBModel.initModel(this.instance);
+        this.userModel = defineUserModel(this.instance);
+        this.failoverDomainEventsModel = defineFailOverDomainEventsModel(this.instance);
     }
 
     private initAssociations() {}
 
     public async syncDB() {
+        console.log(
+            `🔄 syncDB() for ${this.instance.config.database} at ${this.instance.config.host}:${this.instance.config.port}`
+        );
         try {
             await this.instance.sync();
             console.log('✅ Database synchronized successfully');
@@ -73,10 +82,17 @@ export class PostgresUserDB {
         }
     }
 
-    public getUserModel(): typeof UserDBModel {
+    public getUserModel(): ReturnType<typeof defineUserModel> {
         if (!this.userModel) {
             throw new UnexpectedError('User model not initialized');
         }
         return this.userModel;
+    }
+
+    public getFailoverDomainEventsModel(): ReturnType<typeof defineFailOverDomainEventsModel> {
+        if (!this.failoverDomainEventsModel) {
+            throw new UnexpectedError('Failover domain events model not initialized');
+        }
+        return this.failoverDomainEventsModel;
     }
 }

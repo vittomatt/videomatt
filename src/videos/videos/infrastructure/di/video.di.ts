@@ -41,9 +41,6 @@ export class DI {
         container.register(TOKEN.DB, {
             useValue: this.db,
         });
-        container.register(TOKEN.DB_INSTANCE, {
-            useValue: this.db.getDB(),
-        });
         container.register(TOKEN.REDIS, {
             useValue: this.redis,
         });

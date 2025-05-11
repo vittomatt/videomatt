@@ -12,10 +12,7 @@ import { DomainEventFailover } from '@shared/infrastructure/events/failover-doma
 import { PinoLogger } from '@shared/infrastructure/logger/pino';
 import { RedisDB } from '@shared/infrastructure/persistence/redis-db';
 import { DIUsers } from '@users/infrastructure/di/user-modules.di';
-import {
-    ShardingSequelizeUserDB,
-    USER_DB_SHARD_NAMES,
-} from '@users/infrastructure/persistence/sharding-sequelize-user.db';
+import { ShardingSequelizeUserDB } from '@users/infrastructure/persistence/sharding-sequelize-user.db';
 import { SQSWorker } from '@users/users.worker';
 
 import { container } from 'tsyringe';
@@ -39,10 +36,6 @@ export class DI {
     private initDBDependencies() {
         container.register(TOKEN.DB, {
             useValue: this.ShardingSequelizeUserDB,
-        });
-        container.register(TOKEN.DB_INSTANCE, {
-            // FITU HERE
-            useValue: this.ShardingSequelizeUserDB.getShard(USER_DB_SHARD_NAMES[0]).getDB(),
         });
         container.register(TOKEN.REDIS, {
             useValue: this.redis,

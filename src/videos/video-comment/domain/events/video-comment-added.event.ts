@@ -5,13 +5,13 @@ export class VideoCommentAddedEvent extends DomainEvent {
     public readonly eventName = VideoCommentAddedEvent.eventName;
 
     private constructor(
-        public id: string,
-        public readonly text: string,
+        public readonly id: string,
         public readonly userId: string,
+        public readonly text: string,
         public readonly videoId: string,
         public readonly commentId: string
     ) {
-        super(id);
+        super(id, userId);
     }
 
     static create({
@@ -27,7 +27,7 @@ export class VideoCommentAddedEvent extends DomainEvent {
         videoId: string;
         commentId: string;
     }): VideoCommentAddedEvent {
-        return new VideoCommentAddedEvent(id, text, userId, videoId, commentId);
+        return new VideoCommentAddedEvent(id, userId, text, videoId, commentId);
     }
 
     isLocal(): boolean {

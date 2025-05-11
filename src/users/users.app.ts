@@ -16,79 +16,90 @@ import swaggerUi from 'swagger-ui-express';
 import { container } from 'tsyringe';
 
 export class App {
-    constructor(private readonly expressApp: Express) {}
+    private readonly expressApp: Express;
 
-    init(): {
+    constructor() {
+        this.expressApp = express();
+    }
+
+    async init(): Promise<{
         logger: Logger;
         shardingSequelizeUserDB: ShardingSequelizeUserDB;
         redis: RedisDB;
-    } {
-        initEnvs();
+        worker: Worker;
+        app: Express;
+    }> {
+        try {
+            initEnvs();
 
-        // Init middlewares
-        this.expressApp.use(helmet());
-        this.expressApp.use(express.json());
-        this.expressApp.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+            // Init middlewares
+            this.expressApp.use(helmet());
+            this.expressApp.use(express.json());
+            this.expressApp.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-        // Init DBs
-        const envs = getEnvs();
-        const {
-            USERS_POSTGRES_DB_SHARD_1_HOST,
-            USERS_POSTGRES_DB_SHARD_1_USER,
-            USERS_POSTGRES_DB_SHARD_1_PASSWORD,
-            USERS_POSTGRES_DB_SHARD_1_NAME,
-            USERS_POSTGRES_DB_SHARD_1_PORT,
-        } = envs;
-        const dbShard1 = new PostgresUserDB({
-            dbHost: USERS_POSTGRES_DB_SHARD_1_HOST,
-            dbUser: USERS_POSTGRES_DB_SHARD_1_USER,
-            dbPassword: USERS_POSTGRES_DB_SHARD_1_PASSWORD,
-            dbName: USERS_POSTGRES_DB_SHARD_1_NAME,
-            dbPort: USERS_POSTGRES_DB_SHARD_1_PORT,
-        });
-        dbShard1.initDB();
+            const envs = getEnvs();
+            const {
+                USERS_POSTGRES_DB_SHARD_1_HOST,
+                USERS_POSTGRES_DB_SHARD_1_USER,
+                USERS_POSTGRES_DB_SHARD_1_PASSWORD,
+                USERS_POSTGRES_DB_SHARD_1_NAME,
+                USERS_POSTGRES_DB_SHARD_1_PORT,
+                USERS_POSTGRES_DB_SHARD_1_SHARD_NAME,
+                USERS_POSTGRES_DB_SHARD_2_HOST,
+                USERS_POSTGRES_DB_SHARD_2_USER,
+                USERS_POSTGRES_DB_SHARD_2_PASSWORD,
+                USERS_POSTGRES_DB_SHARD_2_NAME,
+                USERS_POSTGRES_DB_SHARD_2_PORT,
+                USERS_POSTGRES_DB_SHARD_2_SHARD_NAME,
+            } = envs;
 
-        const {
-            USERS_POSTGRES_DB_SHARD_2_HOST,
-            USERS_POSTGRES_DB_SHARD_2_USER,
-            USERS_POSTGRES_DB_SHARD_2_PASSWORD,
-            USERS_POSTGRES_DB_SHARD_2_NAME,
-            USERS_POSTGRES_DB_SHARD_2_PORT,
-        } = envs;
-        const dbShard2 = new PostgresUserDB({
-            dbHost: USERS_POSTGRES_DB_SHARD_2_HOST,
-            dbUser: USERS_POSTGRES_DB_SHARD_2_USER,
-            dbPassword: USERS_POSTGRES_DB_SHARD_2_PASSWORD,
-            dbName: USERS_POSTGRES_DB_SHARD_2_NAME,
-            dbPort: USERS_POSTGRES_DB_SHARD_2_PORT,
-        });
-        dbShard2.initDB();
+            // Init DBs
+            const shardingSequelizeUserDB = new ShardingSequelizeUserDB();
 
-        const shardingSequelizeUserDB = new ShardingSequelizeUserDB(dbShard1, dbShard2);
+            const dbShard1 = new PostgresUserDB({
+                dbHost: USERS_POSTGRES_DB_SHARD_1_HOST,
+                dbUser: USERS_POSTGRES_DB_SHARD_1_USER,
+                dbPassword: USERS_POSTGRES_DB_SHARD_1_PASSWORD,
+                dbName: USERS_POSTGRES_DB_SHARD_1_NAME,
+                dbPort: USERS_POSTGRES_DB_SHARD_1_PORT,
+            });
 
-        const redis = new RedisDB();
-        redis.connect();
+            const dbShard2 = new PostgresUserDB({
+                dbHost: USERS_POSTGRES_DB_SHARD_2_HOST,
+                dbUser: USERS_POSTGRES_DB_SHARD_2_USER,
+                dbPassword: USERS_POSTGRES_DB_SHARD_2_PASSWORD,
+                dbName: USERS_POSTGRES_DB_SHARD_2_NAME,
+                dbPort: USERS_POSTGRES_DB_SHARD_2_PORT,
+            });
 
-        // Init DI
-        const di = new DI(shardingSequelizeUserDB, redis);
-        di.initDI();
+            shardingSequelizeUserDB.addShard(USERS_POSTGRES_DB_SHARD_1_SHARD_NAME, dbShard1);
+            shardingSequelizeUserDB.addShard(USERS_POSTGRES_DB_SHARD_2_SHARD_NAME, dbShard2);
 
-        // Init routes
-        const logger = container.resolve<PinoLogger>(TOKEN.LOGGER);
-        this.expressApp.use(logger.getInstance());
-        initRoutes(this.expressApp);
+            await shardingSequelizeUserDB.initShards();
 
-        // Init workers
-        const worker = container.resolve<Worker>(TOKEN.WORKER_USER);
-        worker.start().catch((error) => {
-            logger.error(`Worker fatal error: ${error}`);
+            const redis = new RedisDB();
+            await redis.connect();
+
+            // Init DI
+            const di = new DI(shardingSequelizeUserDB, redis);
+            di.initDI();
+
+            // Init routes
+            const logger = container.resolve<PinoLogger>(TOKEN.LOGGER);
+            this.expressApp.use(logger.getInstance());
+            initRoutes(this.expressApp);
+
+            // Init workers
+            const worker = container.resolve<Worker>(TOKEN.WORKER_USER);
+            worker.start().catch((error) => {
+                logger.error(`Worker fatal error: ${error}`);
+                process.exit(1);
+            });
+
+            return { logger, shardingSequelizeUserDB, redis, worker, app: this.expressApp };
+        } catch (error) {
+            console.error('❌ Error initializing application:', error);
             process.exit(1);
-        });
-
-        return { logger, shardingSequelizeUserDB, redis };
-    }
-
-    getInstance(): Express {
-        return this.expressApp;
+        }
     }
 }
