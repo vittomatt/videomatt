@@ -54,8 +54,6 @@ export class App {
                 VIDEOS_COMMENT_MONGO_DB_HOST,
                 VIDEOS_COMMENT_MONGO_DB_PORT,
                 VIDEOS_COMMENT_MONGO_DB_NAME,
-                //VIDEOS_COMMENT_MONGO_DB_USER,
-                //VIDEOS_COMMENT_MONGO_DB_PASSWORD,
             } = envs;
             const db = new PostgresVideosDB({
                 dbHost: VIDEOS_POSTGRES_DB_HOST,
@@ -73,8 +71,6 @@ export class App {
 
             const mongoDB = new MongoVideosCommentDB({
                 dbHost: VIDEOS_COMMENT_MONGO_DB_HOST,
-                dbUser: '',
-                dbPassword: '',
                 dbName: VIDEOS_COMMENT_MONGO_DB_NAME,
                 dbPort: VIDEOS_COMMENT_MONGO_DB_PORT,
             });

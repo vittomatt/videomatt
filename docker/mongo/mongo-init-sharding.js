@@ -9,20 +9,33 @@ function safeAddShard(shard) {
     }
 }
 
+function getEnvVar(name) {
+    const value = process.env[name];
+    if (!value) {
+        throw new Error(`Missing env var: ${name}`);
+    }
+    return value;
+}
+
 function tojson(doc) {
     return JSON.stringify(doc, null, 2);
 }
 
 (function () {
-    safeAddShard('shard1ReplSet/db-mongo-shard-1:27018');
-    safeAddShard('shard2ReplSet/db-mongo-shard-2:27020');
+    const shard1Host = getEnvVar('SHARD_1_HOST') + ':' + getEnvVar('SHARD_1_PORT');
+    const shard2Host = getEnvVar('SHARD_2_HOST') + ':' + getEnvVar('SHARD_2_PORT');
+    const dbName = getEnvVar('MONGO_DB_NAME');
+    const collectionName = getEnvVar('MONGO_COLLECTION_NAME');
 
-    print("📦 Enabling sharding for DB 'video_comments' …");
-    sh.enableSharding('video_comments');
+    safeAddShard(`shard1ReplSet/${shard1Host}`);
+    safeAddShard(`shard2ReplSet/${shard2Host}`);
 
-    print("📌 Sharding collection 'video_comments.comments' by hashed 'videoId' …");
+    print(`📦 Enabling sharding for DB '${dbName}' …`);
+    sh.enableSharding(dbName);
+
+    print(`📌 Sharding collection '${dbName}.${collectionName}' by hashed 'videoId' …`);
     try {
-        sh.shardCollection('video_comments.comments', { videoId: 'hashed' });
+        sh.shardCollection(`${dbName}.${collectionName}`, { videoId: 'hashed' });
     } catch (e) {
         print(`ℹ️  Collection already sharded or error: ${e.message}`);
     }

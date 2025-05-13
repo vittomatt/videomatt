@@ -30,7 +30,7 @@ export class VideoCreatedEvent extends DomainEvent {
         userId: string;
         videoId: string;
     }): VideoCreatedEvent {
-        return new VideoCreatedEvent(id, title, description, url, userId, videoId);
+        return new VideoCreatedEvent(id, userId, title, description, url, videoId);
     }
 
     isLocal(): boolean {

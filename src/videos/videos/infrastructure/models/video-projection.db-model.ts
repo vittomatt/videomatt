@@ -3,7 +3,7 @@ import { PostgresVideosDB } from '@videos/videos/infrastructure/persistence/sequ
 
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
-export const VIDEO_TABLE_NAME = 'video_projection';
+export const VIDEO_TABLE_NAME = 'video_projections';
 
 export class VideoProjectionDBModel extends Model {
     public id!: string;

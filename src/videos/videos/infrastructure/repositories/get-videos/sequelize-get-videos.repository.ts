@@ -17,7 +17,7 @@ export class SequelizeGetVideosRepository implements GetVideosRepository<VideoPr
         @inject(TOKEN.LOGGER) private readonly logger: Logger
     ) {}
 
-    query = `SELECT * FROM video_projection WHERE "userId" = :userId`;
+    query = `SELECT * FROM video_projections WHERE "userId" = :userId`;
 
     async raw(userId: string): Promise<Result<VideoProjectionPrimitives[], UnexpectedError>> {
         try {

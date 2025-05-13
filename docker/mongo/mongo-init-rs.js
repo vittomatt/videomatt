@@ -23,14 +23,26 @@ function initiateReplicaSet({ name, host, replSetId, isConfig = false }) {
     print(`${name} initiate result:`, tojson(res));
 }
 
+function getEnvVar(name) {
+    const value = process.env[name];
+    if (!value) {
+        throw new Error(`Missing env var: ${name}`);
+    }
+    return value;
+}
+
 function tojson(doc) {
     return JSON.stringify(doc, null, 2);
 }
 
 (function () {
+    const configHost = getEnvVar('CONFIG_SERVER_HOST') + ':' + getEnvVar('CONFIG_SERVER_PORT');
+    const shard1Host = getEnvVar('SHARD_1_HOST') + ':' + getEnvVar('SHARD_1_PORT');
+    const shard2Host = getEnvVar('SHARD_2_HOST') + ':' + getEnvVar('SHARD_2_PORT');
+
     initiateReplicaSet({
         name: 'Config Server',
-        host: 'db-mongo-config-server:27019',
+        host: configHost,
         replSetId: 'configReplSet',
         isConfig: true,
     });
@@ -39,13 +51,13 @@ function tojson(doc) {
 
     initiateReplicaSet({
         name: 'Shard 1',
-        host: 'db-mongo-shard-1:27018',
+        host: shard1Host,
         replSetId: 'shard1ReplSet',
     });
 
     initiateReplicaSet({
         name: 'Shard 2',
-        host: 'db-mongo-shard-2:27020',
+        host: shard2Host,
         replSetId: 'shard2ReplSet',
     });
 

@@ -7,20 +7,7 @@ export class MongoVideosCommentDB {
     private connection!: Connection;
     private readonly uri: string;
 
-    constructor({
-        dbHost,
-        dbUser,
-        dbPassword,
-        dbName,
-        dbPort,
-    }: {
-        dbHost: string;
-        dbUser: string;
-        dbPassword: string;
-        dbName: string;
-        dbPort: number;
-    }) {
-        // this.uri = `mongodb://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${dbName}?authSource=${dbName}`;
+    constructor({ dbHost, dbName, dbPort }: { dbHost: string; dbName: string; dbPort: number }) {
         this.uri = `mongodb://${dbHost}:${dbPort}/${dbName}`;
     }
 
