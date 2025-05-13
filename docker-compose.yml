@@ -43,7 +43,7 @@ services:
             - VIDEOS_POSTGRES_DB_PORT=5432
             - VIDEOS_POSTGRES_DB_REPLICA_HOST=db-videos-replica
             - VIDEOS_POSTGRES_DB_REPLICA_PORT=5432
-            - VIDEOS_COMMENT_MONGO_DB_HOST=db-video-comments
+            - VIDEOS_COMMENT_MONGO_DB_HOST=db-video-comments-router
             - REDIS_HOST=redis
             - AWS_SNS_ENDPOINT=http://localstack:4566
             - AWS_SQS_ENDPOINT=http://localstack:4566
@@ -171,81 +171,6 @@ services:
             timeout: 3s
             retries: 3
             start_period: 30s
-    db-mongo-config-server:
-        image: mongo:7.0
-        container_name: db-mongo-config-server
-        command: --configsvr --replSet configReplSet --port ${VIDEOS_COMMENT_MONGO_DB_CONFIG_SERVER_PORT} --bind_ip_all
-        volumes:
-            - db_mongo_config_server:/data/db
-        networks:
-            - videonet
-        healthcheck:
-            test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
-            interval: 5s
-            timeout: 3s
-            retries: 10
-    db-mongo-shard-1:
-        image: mongo:7.0
-        container_name: db-mongo-shard-1
-        command: --shardsvr --replSet shard1ReplSet --port ${VIDEOS_COMMENT_MONGO_DB_SHARD_1_PORT} --bind_ip_all
-        depends_on:
-            - db-mongo-config-server
-        volumes:
-            - db_mongo_shard_1:/data/db
-        networks:
-            - videonet
-        healthcheck:
-            test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
-            interval: 5s
-            timeout: 3s
-            retries: 10
-    db-mongo-shard-2:
-        image: mongo:7.0
-        container_name: db-mongo-shard-2
-        command: --shardsvr --replSet shard2ReplSet --port ${VIDEOS_COMMENT_MONGO_DB_SHARD_2_PORT} --bind_ip_all
-        depends_on:
-            - db-mongo-config-server
-        volumes:
-            - db_mongo_shard_2:/data/db
-        networks:
-            - videonet
-        healthcheck:
-            test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
-            interval: 5s
-            timeout: 3s
-            retries: 10
-    db-video-comments:
-        image: mongo:7.0
-        container_name: mongo-video-comments
-        restart: unless-stopped
-        depends_on:
-            - db-mongo-config-server
-            - db-mongo-shard-1
-            - db-mongo-shard-2
-        environment:
-            - CONFIG_SERVER_HOST=${VIDEOS_COMMENT_CONFIG_SERVER_HOST}
-            - CONFIG_SERVER_PORT=${VIDEOS_COMMENT_MONGO_DB_CONFIG_SERVER_PORT}
-            - SHARD_1_HOST=${VIDEOS_COMMENT_MONGO_DB_SHARD_1_HOST}
-            - SHARD_1_PORT=${VIDEOS_COMMENT_MONGO_DB_SHARD_1_PORT}
-            - SHARD_2_HOST=${VIDEOS_COMMENT_MONGO_DB_SHARD_2_HOST}
-            - SHARD_2_PORT=${VIDEOS_COMMENT_MONGO_DB_SHARD_2_PORT}
-            - MONGOS_PORT=${VIDEOS_COMMENT_MONGO_DB_PORT}
-            - MONGO_DB_NAME=${VIDEOS_COMMENT_MONGO_DB_NAME}
-            - MONGO_COLLECTION_NAME=${VIDEOS_COMMENT_MONGO_DB_COLLECTION_NAME}
-        ports:
-            - '${VIDEOS_COMMENT_MONGO_DB_PORT}:27017'
-        volumes:
-            - ./docker/mongo/mongo-init-rs.js:/mongo-init-rs.js:ro
-            - ./docker/mongo/mongo-init-sharding.js:/mongo-init-sharding.js:ro
-            - ./docker/mongo/mongo-wait-and-run.sh:/mongo-wait-and-run.sh:ro
-        entrypoint: ['/bin/bash', '/mongo-wait-and-run.sh']
-        networks:
-            - videonet
-        healthcheck:
-            test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
-            interval: 5s
-            timeout: 3s
-            retries: 10
     redis:
         image: redis:alpine
         container_name: redis
@@ -271,6 +196,101 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock
         networks:
             - videonet
+    db-mongo-config-server:
+        image: mongo:7.0
+        container_name: db-mongo-config-server
+        hostname: db-mongo-config-server
+        entrypoint: ['bash', '/docker/mongo/entrypoint.sh']
+        volumes:
+            - db_mongo_config_server:/data/configdb
+            - ./docker/mongo/mongo-keyfile:/etc/mongo-keyfile:ro
+            - ./docker/mongo/entrypoint.sh:/docker/mongo/entrypoint.sh:ro
+        ports:
+            - '27018:27018'
+        networks:
+            - videonet
+        healthcheck:
+            test:
+                [
+                    'CMD-SHELL',
+                    "mongosh --host localhost --port 27018 -u root -p password --authenticationDatabase admin --eval 'rs.status().myState' --quiet | grep 1",
+                ]
+            interval: 5s
+            timeout: 5s
+            retries: 10
+    db-mongo-shard-1:
+        image: mongo:7.0
+        container_name: db-mongo-shard-1
+        hostname: db-mongo-shard-1
+        entrypoint: ['bash', '/docker/mongo/entrypoint-shard.sh']
+        environment:
+            - RS_NAME=shard1ReplSet
+            - PORT=27019
+        volumes:
+            - db_mongo_shard_1:/data/db
+            - ./docker/mongo/mongo-keyfile:/etc/mongo-keyfile:ro
+            - ./docker/mongo/entrypoint-shard.sh:/docker/mongo/entrypoint-shard.sh:ro
+        ports:
+            - '27019:27019'
+        networks:
+            - videonet
+    db-mongo-shard-2:
+        image: mongo:7.0
+        container_name: db-mongo-shard-2
+        hostname: db-mongo-shard-2
+        environment:
+            - RS_NAME=shard2ReplSet
+            - PORT=27020
+        entrypoint: ['bash', '/docker/mongo/entrypoint-shard.sh']
+        volumes:
+            - db_mongo_shard_2:/data/db
+            - ./docker/mongo/mongo-keyfile:/etc/mongo-keyfile:ro
+            - ./docker/mongo/entrypoint-shard.sh:/docker/mongo/entrypoint-shard.sh:ro
+        ports:
+            - '27020:27020'
+        networks:
+            - videonet
+    db-video-comments-router:
+        image: mongo:7.0
+        container_name: db-video-comments-router
+        hostname: db-video-comments-router
+        entrypoint:
+            - bash
+            - -c
+            - |
+                until mongosh --host db-mongo-config-server --port 27018 -u root -p password --authenticationDatabase admin --eval 'db.adminCommand("ping")' --quiet;
+                do echo '⏳ Waiting for Config Server...'; sleep 2; done;
+                echo '✅ Config Server ready, starting mongos...';
+                exec mongos --port 27017 --bind_ip_all --keyFile /etc/mongo-keyfile --configdb configReplSet/db-mongo-config-server:27018
+        volumes:
+            - ./docker/mongo/mongo-keyfile:/etc/mongo-keyfile:ro
+        ports:
+            - '27017:27017'
+        networks:
+            - videonet
+        depends_on:
+            db-mongo-config-server:
+                condition: service_healthy
+        healthcheck:
+            test:
+                [
+                    'CMD-SHELL',
+                    'mongosh --host localhost --port 27017 --eval ''db.adminCommand("ping").ok'' --quiet | grep 1',
+                ]
+            interval: 5s
+            timeout: 5s
+            retries: 10
+    db-video-comments-router-init:
+        image: mongo:7.0
+        container_name: db-video-comments-router-init
+        entrypoint: ['bash', '/docker/mongo/init-router.sh']
+        volumes:
+            - ./docker/mongo/init-router.sh:/docker/mongo/init-router.sh:ro
+        networks:
+            - videonet
+        depends_on:
+            db-video-comments-router:
+                condition: service_healthy
 
 networks:
     videonet:

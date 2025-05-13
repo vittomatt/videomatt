@@ -7,8 +7,20 @@ export class MongoVideosCommentDB {
     private connection!: Connection;
     private readonly uri: string;
 
-    constructor({ dbHost, dbName, dbPort }: { dbHost: string; dbName: string; dbPort: number }) {
-        this.uri = `mongodb://${dbHost}:${dbPort}/${dbName}`;
+    constructor({
+        dbHost,
+        dbName,
+        dbPort,
+        dbUser,
+        dbPassword,
+    }: {
+        dbHost: string;
+        dbName: string;
+        dbPort: number;
+        dbUser: string;
+        dbPassword: string;
+    }) {
+        this.uri = `mongodb://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${dbName}?authSource=admin`;
     }
 
     public async initDB() {
