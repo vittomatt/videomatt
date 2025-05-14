@@ -6,10 +6,19 @@ services:
             context: .
             dockerfile: docker/users-dockerfile
         container_name: users
+        environment:
+            - USERS_POSTGRES_DB_SHARD_1_HOST=db-users-shard-1
+            - USERS_POSTGRES_DB_SHARD_1_PORT=5432
+            - USERS_POSTGRES_DB_SHARD_2_HOST=db-users-shard-2
+            - USERS_POSTGRES_DB_SHARD_2_PORT=5432
+            - REDIS_HOST=redis
+            - AWS_SNS_ENDPOINT=http://localstack:4566
+            - AWS_SQS_ENDPOINT=http://localstack:4566
+            - AWS_EVENT_BRIDGE_ENDPOINT=http://localstack:4566
+            - SQS_USER_CREATED_QUEUE_URL=http://localstack:4566/000000000000/videomatt_users_1_event_user_created
+            - SQS_VIDEO_CREATED_QUEUE_URL=http://localstack:4566/000000000000/videomatt_videos_1_event_video_created
         ports:
             - '${USERS_PORT}:${USERS_PORT}'
-        env_file:
-            - .env.docker
         volumes:
             - .:/app
             - /app/node_modules
@@ -29,10 +38,20 @@ services:
             context: .
             dockerfile: docker/videos-dockerfile
         container_name: videos
+        environment:
+            - VIDEOS_POSTGRES_DB_HOST=db-videos
+            - VIDEOS_POSTGRES_DB_PORT=5432
+            - VIDEOS_POSTGRES_DB_REPLICA_HOST=db-videos-replica
+            - VIDEOS_POSTGRES_DB_REPLICA_PORT=5432
+            - VIDEOS_COMMENT_MONGO_DB_HOST=db-video-comments
+            - REDIS_HOST=redis
+            - AWS_SNS_ENDPOINT=http://localstack:4566
+            - AWS_SQS_ENDPOINT=http://localstack:4566
+            - AWS_EVENT_BRIDGE_ENDPOINT=http://localstack:4566
+            - SQS_USER_CREATED_QUEUE_URL=http://localstack:4566/000000000000/videomatt_users_1_event_user_created
+            - SQS_VIDEO_CREATED_QUEUE_URL=http://localstack:4566/000000000000/videomatt_videos_1_event_video_created
         ports:
             - '${VIDEOS_PORT}:${VIDEOS_PORT}'
-        env_file:
-            - .env.docker
         volumes:
             - .:/app
             - /app/node_modules
@@ -54,7 +73,7 @@ services:
             - POSTGRES_PASSWORD=${USERS_POSTGRES_DB_SHARD_1_PASSWORD}
             - POSTGRES_DB=${USERS_POSTGRES_DB_SHARD_1_NAME}
         ports:
-            - '${USERS_POSTGRES_DB_SHARD_1_PORT}:${USERS_POSTGRES_DB_SHARD_1_PORT_INTERNAL}'
+            - '${USERS_POSTGRES_DB_SHARD_1_PORT}:5432'
         volumes:
             - db_data_users_shard_1:/var/lib/postgresql/data
         networks:
@@ -78,7 +97,7 @@ services:
             - POSTGRES_PASSWORD=${USERS_POSTGRES_DB_SHARD_2_PASSWORD}
             - POSTGRES_DB=${USERS_POSTGRES_DB_SHARD_2_NAME}
         ports:
-            - '${USERS_POSTGRES_DB_SHARD_2_PORT}:${USERS_POSTGRES_DB_SHARD_2_PORT_INTERNAL}'
+            - '${USERS_POSTGRES_DB_SHARD_2_PORT}:5432'
         volumes:
             - db_data_users_shard_2:/var/lib/postgresql/data
         networks:
@@ -104,7 +123,7 @@ services:
             - DB_REPLICA_USER=${VIDEOS_POSTGRES_DB_REPLICA_USER}
             - DB_REPLICA_PASSWORD=${VIDEOS_POSTGRES_DB_REPLICA_PASSWORD}
         ports:
-            - '${VIDEOS_POSTGRES_DB_PORT}:${VIDEOS_POSTGRES_DB_PORT_INTERNAL}'
+            - '${VIDEOS_POSTGRES_DB_PORT}:5432'
         volumes:
             - db_data_videos:/var/lib/postgresql/data
             - ./docker/postgres/replica-init.sh:/docker-entrypoint-initdb.d/replica-init.sh:ro
@@ -132,7 +151,7 @@ services:
             - DB_REPLICA_PASSWORD=${VIDEOS_POSTGRES_DB_REPLICA_PASSWORD}
             - PGDATA=/var/lib/postgresql/data/pgdata
         ports:
-            - '${VIDEOS_POSTGRES_DB_REPLICA_PORT}:${VIDEOS_POSTGRES_DB_REPLICA_PORT_INTERNAL}'
+            - '${VIDEOS_POSTGRES_DB_REPLICA_PORT}:5432'
         volumes:
             - db_data_videos_replica:/var/lib/postgresql/data/pgdata
             - ./docker/postgres/replica-setup.sh:/docker/replica-setup.sh:ro
@@ -214,7 +233,7 @@ services:
             - MONGO_DB_NAME=${VIDEOS_COMMENT_MONGO_DB_NAME}
             - MONGO_COLLECTION_NAME=${VIDEOS_COMMENT_MONGO_DB_COLLECTION_NAME}
         ports:
-            - '${VIDEOS_COMMENT_MONGO_DB_PORT_INTERNAL}:${VIDEOS_COMMENT_MONGO_DB_PORT}'
+            - '${VIDEOS_COMMENT_MONGO_DB_PORT}:27017'
         volumes:
             - ./docker/mongo/mongo-init-rs.js:/mongo-init-rs.js:ro
             - ./docker/mongo/mongo-init-sharding.js:/mongo-init-sharding.js:ro
@@ -232,7 +251,7 @@ services:
         container_name: redis
         restart: unless-stopped
         ports:
-            - '${REDIS_PORT_INTERNAL}:${REDIS_PORT}'
+            - '${REDIS_PORT}:6379'
         volumes:
             - redis_data:/data
         networks:

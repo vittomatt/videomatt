@@ -5,7 +5,6 @@ dist
 # Environment variables
 .env*
 !.env.example
-!.env.docker.example
 
 # Terraform
 .terraform/

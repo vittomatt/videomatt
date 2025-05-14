@@ -18,7 +18,6 @@ export const envSchema = z.object({
     USERS_POSTGRES_DB_SHARD_1_PASSWORD: nonEmptyStr('USERS_POSTGRES_DB_SHARD_1_PASSWORD'),
     USERS_POSTGRES_DB_SHARD_1_NAME: nonEmptyStr('USERS_POSTGRES_DB_SHARD_1_NAME'),
     USERS_POSTGRES_DB_SHARD_1_PORT: z.coerce.number().min(1),
-    USERS_POSTGRES_DB_SHARD_1_PORT_INTERNAL: z.coerce.number().min(1),
 
     USERS_POSTGRES_DB_SHARD_2_SHARD_NAME: nonEmptyStr('USERS_POSTGRES_DB_SHARD_2_SHARD_NAME'),
     USERS_POSTGRES_DB_SHARD_2_HOST: nonEmptyStr('USERS_POSTGRES_DB_SHARD_2_HOST'),
@@ -26,28 +25,24 @@ export const envSchema = z.object({
     USERS_POSTGRES_DB_SHARD_2_PASSWORD: nonEmptyStr('USERS_POSTGRES_DB_SHARD_2_PASSWORD'),
     USERS_POSTGRES_DB_SHARD_2_NAME: nonEmptyStr('USERS_POSTGRES_DB_SHARD_2_NAME'),
     USERS_POSTGRES_DB_SHARD_2_PORT: z.coerce.number().min(1),
-    USERS_POSTGRES_DB_SHARD_2_PORT_INTERNAL: z.coerce.number().min(1),
 
     VIDEOS_POSTGRES_DB_HOST: nonEmptyStr('VIDEOS_POSTGRES_DB_HOST'),
     VIDEOS_POSTGRES_DB_USER: nonEmptyStr('VIDEOS_POSTGRES_DB_USER'),
     VIDEOS_POSTGRES_DB_PASSWORD: nonEmptyStr('VIDEOS_POSTGRES_DB_PASSWORD'),
     VIDEOS_POSTGRES_DB_NAME: nonEmptyStr('VIDEOS_POSTGRES_DB_NAME'),
     VIDEOS_POSTGRES_DB_PORT: z.coerce.number().min(1),
-    VIDEOS_POSTGRES_DB_PORT_INTERNAL: z.coerce.number().min(1),
 
     VIDEOS_POSTGRES_DB_REPLICA_HOST: nonEmptyStr('VIDEOS_POSTGRES_DB_REPLICA_HOST'),
     VIDEOS_POSTGRES_DB_REPLICA_USER: nonEmptyStr('VIDEOS_POSTGRES_DB_REPLICA_USER'),
     VIDEOS_POSTGRES_DB_REPLICA_PASSWORD: nonEmptyStr('VIDEOS_POSTGRES_DB_REPLICA_PASSWORD'),
     VIDEOS_POSTGRES_DB_REPLICA_NAME: nonEmptyStr('VIDEOS_POSTGRES_DB_REPLICA_NAME'),
     VIDEOS_POSTGRES_DB_REPLICA_PORT: z.coerce.number().min(1),
-    VIDEOS_POSTGRES_DB_REPLICA_PORT_INTERNAL: z.coerce.number().min(1),
 
     VIDEOS_COMMENT_MONGO_DB_HOST: nonEmptyStr('VIDEOS_COMMENT_MONGO_DB_HOST'),
     VIDEOS_COMMENT_CONFIG_SERVER_HOST: nonEmptyStr('VIDEOS_COMMENT_CONFIG_SERVER_HOST'),
     VIDEOS_COMMENT_MONGO_DB_NAME: nonEmptyStr('VIDEOS_COMMENT_MONGO_DB_NAME'),
     VIDEOS_COMMENT_MONGO_DB_COLLECTION_NAME: nonEmptyStr('VIDEOS_COMMENT_MONGO_DB_COLLECTION_NAME'),
     VIDEOS_COMMENT_MONGO_DB_PORT: z.coerce.number().min(1),
-    VIDEOS_COMMENT_MONGO_DB_PORT_INTERNAL: z.coerce.number().min(1),
     VIDEOS_COMMENT_MONGO_DB_CONFIG_SERVER_PORT: z.coerce.number().min(1),
 
     VIDEOS_COMMENT_MONGO_DB_SHARD_1_HOST: nonEmptyStr('VIDEOS_COMMENT_MONGO_DB_SHARD_1_HOST'),
@@ -58,7 +53,6 @@ export const envSchema = z.object({
 
     REDIS_HOST: nonEmptyStr('REDIS_HOST'),
     REDIS_PORT: z.coerce.number().min(1),
-    REDIS_PORT_INTERNAL: z.coerce.number().min(1),
 
     AWS_REGION: nonEmptyStr('AWS_REGION'),
     AWS_PROFILE: nonEmptyStr('AWS_PROFILE'),
@@ -80,12 +74,11 @@ let envConfig: EnvVars | null = null;
 export function initEnvs() {
     const env = process.env.NODE_ENV ?? 'dev';
     const path = {
-        docker: '.env.docker',
         dev: '.env',
         prod: '.env.prod',
     }[env];
 
-    dotenv.config({ path, override: true });
+    dotenv.config({ path });
 
     if (process.env.NODE_ENV !== 'prod') {
         dotenvSafeConfig({

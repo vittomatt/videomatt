@@ -4,7 +4,7 @@
 
 # To run the project with docker
 
-- Copy `.env.docker.example` as `.env.docker`
+- Copy `.env.example` as `.env`
 - Run: `make run-all`
 
 # To run the project locally
@@ -38,7 +38,7 @@ terraform -chdir=terraform apply -var-file=local.tfvars -auto-approve
 
 ```
 unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY
-export AWS_PROFILE=videomatt
+export AWS_PROFILE=videomatt-local
 
 terraform -chdir=terraform init -backend=false
 terraform -chdir=terraform plan -var-file=aws.tfvars
