@@ -1,6 +1,10 @@
 version: '3.8'
 
 services:
+    ############
+    # Services #
+    ############
+
     app-users:
         build:
             context: .
@@ -24,15 +28,17 @@ services:
             - /app/node_modules
             - /app/dist
             - ${HOME}/.aws:/root/.aws:ro
+        networks:
+            - videonet
         depends_on:
             db-users-shard-1:
                 condition: service_healthy
             db-users-shard-2:
                 condition: service_healthy
+            redis:
+                condition: service_healthy
             localstack:
                 condition: service_healthy
-        networks:
-            - videonet
     app-videos:
         build:
             context: .
@@ -57,13 +63,22 @@ services:
             - /app/node_modules
             - /app/dist
             - ${HOME}/.aws:/root/.aws:ro
+        networks:
+            - videonet
         depends_on:
             db-videos:
                 condition: service_healthy
+            db-video-comments-router:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
             localstack:
                 condition: service_healthy
-        networks:
-            - videonet
+
+    ############
+    # Users DB #
+    ############
+
     db-users-shard-1:
         image: postgres:15-alpine
         container_name: postgres-users-shard-1
@@ -112,6 +127,11 @@ services:
             timeout: 3s
             retries: 3
             start_period: 30s
+
+    #############
+    # Videos DB #
+    #############
+
     db-videos:
         image: postgres:15-alpine
         container_name: postgres-videos
@@ -143,6 +163,7 @@ services:
         image: postgres:15-alpine
         container_name: postgres-videos-replica
         restart: unless-stopped
+        command: ['/bin/sh', '-c', './docker/replica-setup.sh && docker-entrypoint.sh postgres']
         environment:
             - POSTGRES_USER=${VIDEOS_POSTGRES_DB_REPLICA_USER}
             - POSTGRES_PASSWORD=${VIDEOS_POSTGRES_DB_REPLICA_PASSWORD}
@@ -155,12 +176,11 @@ services:
         volumes:
             - db_data_videos_replica:/var/lib/postgresql/data/pgdata
             - ./docker/postgres/replica-setup.sh:/docker/replica-setup.sh:ro
+        networks:
+            - videonet
         depends_on:
             db-videos:
                 condition: service_healthy
-        networks:
-            - videonet
-        command: ['/bin/sh', '-c', './docker/replica-setup.sh && docker-entrypoint.sh postgres']
         healthcheck:
             test: >
                 CMD-SHELL
@@ -171,6 +191,11 @@ services:
             timeout: 3s
             retries: 3
             start_period: 30s
+
+    ##########
+    # Others #
+    ##########
+
     redis:
         image: redis:alpine
         container_name: redis
@@ -196,6 +221,11 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock
         networks:
             - videonet
+
+    ###############
+    # Comments DB #
+    ###############
+
     db-mongo-config-server:
         image: mongo:7.0
         container_name: db-mongo-config-server
@@ -234,6 +264,9 @@ services:
             - '27019:27019'
         networks:
             - videonet
+        depends_on:
+            db-mongo-config-server:
+                condition: service_healthy
     db-mongo-shard-2:
         image: mongo:7.0
         container_name: db-mongo-shard-2
@@ -250,6 +283,9 @@ services:
             - '27020:27020'
         networks:
             - videonet
+        depends_on:
+            db-mongo-config-server:
+                condition: service_healthy
     db-video-comments-router:
         image: mongo:7.0
         container_name: db-video-comments-router
@@ -270,6 +306,10 @@ services:
             - videonet
         depends_on:
             db-mongo-config-server:
+                condition: service_healthy
+            db-mongo-shard-1:
+                condition: service_healthy
+            db-mongo-shard-2:
                 condition: service_healthy
         healthcheck:
             test:
