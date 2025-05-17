@@ -3,8 +3,13 @@ set -euo pipefail
 
 DATA_DIR=/data/db
 KEYFILE=/etc/mongo-keyfile
-RS_NAME=${RS_NAME:-shard1ReplSet}
-PORT=${PORT:-27019}
+RS_NAME=${RS_NAME}
+PORT=${PORT}
+
+# Create keyfile from environment variable
+echo "$VIDEO_COMMENTS_MONGO_KEY_FILE" > /etc/mongo-keyfile
+chmod 600 /etc/mongo-keyfile
+chown mongodb:mongodb /etc/mongo-keyfile
 
 if [ -f "$DATA_DIR/.rs-initialized" ]; then
   echo "🔒 Already initialized ($RS_NAME) — starting with auth"
@@ -48,8 +53,8 @@ done
 echo "✅ Creating root user in $RS_NAME"
 mongosh --host localhost --port "$PORT" --eval "
   db.getSiblingDB('admin').createUser({
-    user: 'root',
-    pwd: 'password',
+    user: '${MONGO_DB_USER}',
+    pwd: '${MONGO_DB_PASSWORD}',
     roles: [{ role: 'root', db: 'admin' }]
   });
 "

@@ -239,9 +239,12 @@ services:
         container_name: db-mongo-config-server
         hostname: db-mongo-config-server
         entrypoint: ['bash', '/docker/mongo/mongo-entrypoint.sh']
+        environment:
+            - MONGO_DB_USER=${VIDEOS_COMMENT_MONGO_DB_USER}
+            - MONGO_DB_PASSWORD=${VIDEOS_COMMENT_MONGO_DB_PASSWORD}
+            - VIDEO_COMMENTS_MONGO_KEY_FILE=${VIDEO_COMMENTS_MONGO_KEY_FILE}
         volumes:
             - db_mongo_config_server:/data/configdb
-            - ./docker/mongo/mongo-keyfile:/etc/mongo-keyfile:ro
             - ./docker/mongo/mongo-entrypoint.sh:/docker/mongo/mongo-entrypoint.sh:ro
         ports:
             - '27018:27018'
@@ -264,9 +267,11 @@ services:
         environment:
             - RS_NAME=shard1ReplSet
             - PORT=27019
+            - MONGO_DB_USER=${VIDEOS_COMMENT_MONGO_DB_USER}
+            - MONGO_DB_PASSWORD=${VIDEOS_COMMENT_MONGO_DB_PASSWORD}
+            - VIDEO_COMMENTS_MONGO_KEY_FILE=${VIDEO_COMMENTS_MONGO_KEY_FILE}
         volumes:
             - db_mongo_shard_1:/data/db
-            - ./docker/mongo/mongo-keyfile:/etc/mongo-keyfile:ro
             - ./docker/mongo/mongo-entrypoint-shard.sh:/docker/mongo/mongo-entrypoint-shard.sh:ro
         ports:
             - '27019:27019'
@@ -282,10 +287,12 @@ services:
         environment:
             - RS_NAME=shard2ReplSet
             - PORT=27020
+            - MONGO_DB_USER=${VIDEOS_COMMENT_MONGO_DB_USER}
+            - MONGO_DB_PASSWORD=${VIDEOS_COMMENT_MONGO_DB_PASSWORD}
+            - VIDEO_COMMENTS_MONGO_KEY_FILE=${VIDEO_COMMENTS_MONGO_KEY_FILE}
         entrypoint: ['bash', '/docker/mongo/mongo-entrypoint-shard.sh']
         volumes:
             - db_mongo_shard_2:/data/db
-            - ./docker/mongo/mongo-keyfile:/etc/mongo-keyfile:ro
             - ./docker/mongo/mongo-entrypoint-shard.sh:/docker/mongo/mongo-entrypoint-shard.sh:ro
         ports:
             - '27020:27020'
@@ -298,16 +305,21 @@ services:
         image: mongo:7.0
         container_name: db-video-comments-router
         hostname: db-video-comments-router
+        environment:
+            - VIDEO_COMMENTS_MONGO_KEY_FILE=${VIDEO_COMMENTS_MONGO_KEY_FILE}
         entrypoint:
             - bash
             - -c
             - |
+                echo "$VIDEO_COMMENTS_MONGO_KEY_FILE" > /etc/mongo-keyfile
+                chmod 600 /etc/mongo-keyfile
+
                 until mongosh --host db-mongo-config-server --port 27018 -u ${VIDEOS_COMMENT_MONGO_DB_USER} -p ${VIDEOS_COMMENT_MONGO_DB_PASSWORD} --authenticationDatabase admin --eval 'db.adminCommand("ping")' --quiet;
                 do echo '⏳ Waiting for Config Server...'; sleep 2; done;
+
                 echo '✅ Config Server ready, starting mongos...';
+
                 exec mongos --port 27017 --bind_ip_all --keyFile /etc/mongo-keyfile --configdb configReplSet/db-mongo-config-server:27018
-        volumes:
-            - ./docker/mongo/mongo-keyfile:/etc/mongo-keyfile:ro
         ports:
             - '${VIDEOS_COMMENT_MONGO_DB_PORT}:27017'
         networks:
@@ -328,6 +340,17 @@ services:
         image: mongo:7.0
         container_name: db-video-comments-router-init
         entrypoint: ['bash', '/docker/mongo/mongo-init-router.sh']
+        environment:
+            - MONGO_DB_USER=${VIDEOS_COMMENT_MONGO_DB_USER}
+            - MONGO_DB_PASSWORD=${VIDEOS_COMMENT_MONGO_DB_PASSWORD}
+            - ROUTER_HOST=db-video-comments-router
+            - ROUTER_PORT=27017
+            - SHARD1_HOST=db-mongo-shard-1
+            - SHARD1_PORT=27019
+            - SHARD1_RS=shard1ReplSet
+            - SHARD2_HOST=db-mongo-shard-2
+            - SHARD2_PORT=27020
+            - SHARD2_RS=shard2ReplSet
         volumes:
             - ./docker/mongo/mongo-init-router.sh:/docker/mongo/mongo-init-router.sh:ro
         networks:
