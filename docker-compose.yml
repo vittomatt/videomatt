@@ -251,7 +251,7 @@ services:
             test:
                 [
                     'CMD-SHELL',
-                    "mongosh --host localhost --port 27018 -u root -p password --authenticationDatabase admin --eval 'rs.status().myState' --quiet | grep 1",
+                    "mongosh --host localhost --port 27018 -u ${VIDEOS_COMMENT_MONGO_DB_USER} -p ${VIDEOS_COMMENT_MONGO_DB_PASSWORD} --authenticationDatabase admin --eval 'rs.status().myState' --quiet | grep 1",
                 ]
             interval: 5s
             timeout: 5s
@@ -302,14 +302,14 @@ services:
             - bash
             - -c
             - |
-                until mongosh --host db-mongo-config-server --port 27018 -u root -p password --authenticationDatabase admin --eval 'db.adminCommand("ping")' --quiet;
+                until mongosh --host db-mongo-config-server --port 27018 -u ${VIDEOS_COMMENT_MONGO_DB_USER} -p ${VIDEOS_COMMENT_MONGO_DB_PASSWORD} --authenticationDatabase admin --eval 'db.adminCommand("ping")' --quiet;
                 do echo '⏳ Waiting for Config Server...'; sleep 2; done;
                 echo '✅ Config Server ready, starting mongos...';
                 exec mongos --port 27017 --bind_ip_all --keyFile /etc/mongo-keyfile --configdb configReplSet/db-mongo-config-server:27018
         volumes:
             - ./docker/mongo/mongo-keyfile:/etc/mongo-keyfile:ro
         ports:
-            - '27017:27017'
+            - '${VIDEOS_COMMENT_MONGO_DB_PORT}:27017'
         networks:
             - videonet
         depends_on:
