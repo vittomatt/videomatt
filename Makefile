@@ -7,6 +7,7 @@ run-all:
 	$(MAKE) down
 	$(MAKE) localstack
 	$(MAKE) terraform
+	$(MAKE) build
 	$(MAKE) load-all
 
 run-no-apps:
@@ -30,8 +31,23 @@ terraform:
 	terraform -chdir=terraform init -backend=false
 	env -u AWS_PROFILE AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test terraform -chdir=terraform apply -var-file=local.tfvars -auto-approve
 
+build:
+	docker rmi events-app-users:latest events-app-videos:latest
+	docker compose build app-users app-videos
+
 load-all:
-	docker compose up --build --no-recreate
+	docker compose up
 
 load-infra:
-	docker compose up redis localstack db-users-shard-1 db-users-shard-2 db-videos db-videos-replica db-mongo-config-server db-mongo-shard-1 db-mongo-shard-2 db-video-comments-router db-video-comments-router-init
+	docker compose up \
+		localstack \
+		redis \
+		db-users-shard-1 \
+		db-users-shard-2 \
+		db-videos \
+		db-videos-replica \
+		db-mongo-config-server \
+		db-mongo-shard-1 \
+		db-mongo-shard-2 \
+		db-video-comments-router \
+		db-video-comments-router-init

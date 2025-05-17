@@ -6,6 +6,7 @@ services:
     ############
 
     app-users:
+        image: events-app-users:latest
         build:
             context: .
             dockerfile: docker/users-dockerfile
@@ -40,6 +41,7 @@ services:
             localstack:
                 condition: service_healthy
     app-videos:
+        image: events-app-videos:latest
         build:
             context: .
             dockerfile: docker/videos-dockerfile
@@ -146,7 +148,7 @@ services:
             - '${VIDEOS_POSTGRES_DB_PORT}:5432'
         volumes:
             - db_data_videos:/var/lib/postgresql/data
-            - ./docker/postgres/replica-init.sh:/docker-entrypoint-initdb.d/replica-init.sh:ro
+            - ./docker/postgres/postgres-replica-init.sh:/docker-entrypoint-initdb.d/postgres-replica-init.sh:ro
         networks:
             - videonet
         healthcheck:
@@ -163,7 +165,7 @@ services:
         image: postgres:15-alpine
         container_name: postgres-videos-replica
         restart: unless-stopped
-        command: ['/bin/sh', '-c', './docker/replica-setup.sh && docker-entrypoint.sh postgres']
+        command: ['/bin/sh', '-c', './docker/postgres/postgres-replica-setup.sh && docker-entrypoint.sh postgres']
         environment:
             - POSTGRES_USER=${VIDEOS_POSTGRES_DB_REPLICA_USER}
             - POSTGRES_PASSWORD=${VIDEOS_POSTGRES_DB_REPLICA_PASSWORD}
@@ -175,7 +177,7 @@ services:
             - '${VIDEOS_POSTGRES_DB_REPLICA_PORT}:5432'
         volumes:
             - db_data_videos_replica:/var/lib/postgresql/data/pgdata
-            - ./docker/postgres/replica-setup.sh:/docker/replica-setup.sh:ro
+            - ./docker/postgres/postgres-replica-setup.sh:/docker/postgres/postgres-replica-setup.sh:ro
         networks:
             - videonet
         depends_on:
@@ -206,6 +208,12 @@ services:
             - redis_data:/data
         networks:
             - videonet
+        healthcheck:
+            test: ['CMD', 'redis-cli', 'ping']
+            interval: 10s
+            timeout: 5s
+            retries: 5
+            start_period: 5s
     localstack:
         container_name: localstack
         image: localstack/localstack
@@ -230,11 +238,11 @@ services:
         image: mongo:7.0
         container_name: db-mongo-config-server
         hostname: db-mongo-config-server
-        entrypoint: ['bash', '/docker/mongo/entrypoint.sh']
+        entrypoint: ['bash', '/docker/mongo/mongo-entrypoint.sh']
         volumes:
             - db_mongo_config_server:/data/configdb
             - ./docker/mongo/mongo-keyfile:/etc/mongo-keyfile:ro
-            - ./docker/mongo/entrypoint.sh:/docker/mongo/entrypoint.sh:ro
+            - ./docker/mongo/mongo-entrypoint.sh:/docker/mongo/mongo-entrypoint.sh:ro
         ports:
             - '27018:27018'
         networks:
@@ -252,14 +260,14 @@ services:
         image: mongo:7.0
         container_name: db-mongo-shard-1
         hostname: db-mongo-shard-1
-        entrypoint: ['bash', '/docker/mongo/entrypoint-shard.sh']
+        entrypoint: ['bash', '/docker/mongo/mongo-entrypoint-shard.sh']
         environment:
             - RS_NAME=shard1ReplSet
             - PORT=27019
         volumes:
             - db_mongo_shard_1:/data/db
             - ./docker/mongo/mongo-keyfile:/etc/mongo-keyfile:ro
-            - ./docker/mongo/entrypoint-shard.sh:/docker/mongo/entrypoint-shard.sh:ro
+            - ./docker/mongo/mongo-entrypoint-shard.sh:/docker/mongo/mongo-entrypoint-shard.sh:ro
         ports:
             - '27019:27019'
         networks:
@@ -274,11 +282,11 @@ services:
         environment:
             - RS_NAME=shard2ReplSet
             - PORT=27020
-        entrypoint: ['bash', '/docker/mongo/entrypoint-shard.sh']
+        entrypoint: ['bash', '/docker/mongo/mongo-entrypoint-shard.sh']
         volumes:
             - db_mongo_shard_2:/data/db
             - ./docker/mongo/mongo-keyfile:/etc/mongo-keyfile:ro
-            - ./docker/mongo/entrypoint-shard.sh:/docker/mongo/entrypoint-shard.sh:ro
+            - ./docker/mongo/mongo-entrypoint-shard.sh:/docker/mongo/mongo-entrypoint-shard.sh:ro
         ports:
             - '27020:27020'
         networks:
@@ -307,10 +315,6 @@ services:
         depends_on:
             db-mongo-config-server:
                 condition: service_healthy
-            db-mongo-shard-1:
-                condition: service_healthy
-            db-mongo-shard-2:
-                condition: service_healthy
         healthcheck:
             test:
                 [
@@ -323,9 +327,9 @@ services:
     db-video-comments-router-init:
         image: mongo:7.0
         container_name: db-video-comments-router-init
-        entrypoint: ['bash', '/docker/mongo/init-router.sh']
+        entrypoint: ['bash', '/docker/mongo/mongo-init-router.sh']
         volumes:
-            - ./docker/mongo/init-router.sh:/docker/mongo/init-router.sh:ro
+            - ./docker/mongo/mongo-init-router.sh:/docker/mongo/mongo-init-router.sh:ro
         networks:
             - videonet
         depends_on:
