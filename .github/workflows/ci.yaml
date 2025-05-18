@@ -1,0 +1,108 @@
+name: Build, Push Docker Images & Update Helm Charts + ArgoCD Apps
+
+on:
+    push:
+        branches: [master]
+        paths:
+            - '.github/workflows/ci.yaml'
+            - 'docker/**'
+            - '**/src/**'
+            - 'package.json'
+            - 'package-lock.json'
+            - 'deploy/**'
+    workflow_dispatch:
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code repo
+              uses: actions/checkout@v3
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v2
+
+            - name: Login to GitHub Container Registry
+              uses: docker/login-action@v2
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.CR_PAT }}
+
+            - name: Set version tag
+              run: |
+                  SHORT_SHA=${GITHUB_SHA::7}
+                  VERSION_TAG=$(date -u +'%Y%m%d-%H%M')-${SHORT_SHA}
+                  echo "VERSION_TAG=$VERSION_TAG" >> $GITHUB_ENV
+                  echo "VERSION_TAG=$VERSION_TAG"
+
+            - name: Build and push Docker images for all services
+              run: |
+                  for SERVICE in users videos; do
+                    echo "Building $SERVICE..."
+                    docker buildx build \
+                      --platform linux/arm64/v8 \
+                      --file ./docker/${SERVICE}-dockerfile \
+                      --tag ghcr.io/vittomatt/videomatt-${SERVICE}:latest \
+                      --tag ghcr.io/vittomatt/videomatt-${SERVICE}:${VERSION_TAG} \
+                      --push \
+                      .
+                  done
+
+            - name: Install Helm and tools
+              run: |
+                  curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+                  sudo apt-get update && sudo apt-get install -y jq
+
+            - name: Update Helm chart versions
+              run: |
+                  for SERVICE in users videos; do
+                    echo "Updating Helm chart for $SERVICE..."
+                    sed -i "s/^version:.*/version: $VERSION_TAG/" deploy/$SERVICE/Chart.yaml
+                    sed -i "s/^appVersion:.*/appVersion: $VERSION_TAG/" deploy/$SERVICE/Chart.yaml
+                    sed -i "s/^releaseVersion:.*/releaseVersion: $VERSION_TAG/" deploy/$SERVICE/values.yaml
+                  done
+
+            - name: Package Helm charts
+              run: |
+                  for SERVICE in users videos; do
+                    echo "Packaging chart for $SERVICE..."
+                    helm package deploy/$SERVICE --destination .
+                  done
+
+            - name: Checkout rpi-charts repo
+              uses: actions/checkout@v3
+              with:
+                  repository: vittomatt/rpi-charts
+                  path: rpi-charts
+                  token: ${{ secrets.CR_PAT }}
+
+            - name: Move packaged charts and update Helm repo index
+              run: |
+                  for SERVICE in users videos; do
+                    echo "Processing chart for $SERVICE..."
+                    mkdir -p rpi-charts/charts/videomatt-${SERVICE}
+                    mv videomatt-${SERVICE}-${VERSION_TAG}.tgz rpi-charts/charts/videomatt-${SERVICE}/
+                    helm repo index rpi-charts/charts/videomatt-${SERVICE} \
+                      --url https://vittomatt.github.io/rpi-charts/charts/videomatt-${SERVICE} \
+                      --merge rpi-charts/charts/videomatt-${SERVICE}/index.yaml
+                  done
+
+            - name: Update ArgoCD Application manifests
+              run: |
+                  for SERVICE in users videos; do
+                    echo "Updating ArgoCD app for $SERVICE..."
+                    sed -i "s/targetRevision:.*/targetRevision: $VERSION_TAG/" rpi-charts/apps/videomatt-${SERVICE}-app.yaml
+                    cat rpi-charts/apps/videomatt-${SERVICE}-app.yaml
+                  done
+
+            - name: Commit and push changes
+              run: |
+                  cd rpi-charts
+                  git config user.name github-actions
+                  git config user.email github-actions@github.com
+                  git add .
+                  git commit -m "chart version $VERSION_TAG + updated ArgoCD apps"
+                  git pull --rebase origin master || true
+                  git push

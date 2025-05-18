@@ -1,0 +1,18 @@
+releaseVersion: '0.0.0' # Updated by CI/CD pipeline
+
+app:
+    name: videomatt-users
+    containerName: videomatt-users-container
+    namespace: vittospace
+    port: 3000
+
+deployment:
+    name: videomatt-users-deployment
+    replicas: 3
+
+service:
+    name: videomatt-users-service
+    blue: videomatt-users-active
+    green: videomatt-users-preview
+    type: LoadBalancer
+    port: 3000
