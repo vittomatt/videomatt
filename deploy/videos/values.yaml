@@ -19,3 +19,6 @@ service:
 
 configmap:
     name: videomatt-videos-configmap
+
+secret:
+    name: videomatt-videos-secret
