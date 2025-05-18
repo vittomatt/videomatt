@@ -19,6 +19,7 @@ export class InMemoryDeferredDomainEventBus implements DomainEventBus {
     registerRemoteProducer(producer: RemoteEventProducer): void {
         this.eventBus.registerRemoteProducer(producer);
     }
+
     async publish(events: DomainEvent[]) {
         this.events.push(...events);
         return Promise.resolve();

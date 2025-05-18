@@ -32,7 +32,7 @@ terraform:
 	env -u AWS_PROFILE AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test terraform -chdir=terraform apply -var-file=local.tfvars -auto-approve
 
 build:
-	docker rmi events-app-users:latest events-app-videos:latest
+	docker rmi videomatt-app-users:latest videomatt-app-videos:latest
 	docker compose build app-users app-videos
 
 load-all:

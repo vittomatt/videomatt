@@ -1,6 +1,6 @@
 # Structure
 
-![Events Architecture](events.jpg)
+![Videomatt Architecture](videomatt.jpg)
 
 # To run the project with docker
 

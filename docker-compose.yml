@@ -6,7 +6,7 @@ services:
     ############
 
     app-users:
-        image: events-app-users:latest
+        image: videomatt-app-users:latest
         build:
             context: .
             dockerfile: docker/users-dockerfile
@@ -41,7 +41,7 @@ services:
             localstack:
                 condition: service_healthy
     app-videos:
-        image: events-app-videos:latest
+        image: videomatt-app-videos:latest
         build:
             context: .
             dockerfile: docker/videos-dockerfile
