@@ -82,11 +82,11 @@ jobs:
               run: |
                   for SERVICE in users videos; do
                     echo "Processing chart for $SERVICE..."
-                    mkdir -p rpi-charts/charts/videomatt-${SERVICE}
-                    mv videomatt-${SERVICE}-${VERSION_TAG}.tgz rpi-charts/charts/videomatt-${SERVICE}/
-                    helm repo index rpi-charts/charts/videomatt-${SERVICE} \
-                      --url https://vittomatt.github.io/rpi-charts/charts/videomatt-${SERVICE} \
-                      --merge rpi-charts/charts/videomatt-${SERVICE}/index.yaml
+                    mkdir -p rpi-charts/charts/videomatt/videomatt-${SERVICE}
+                    mv videomatt-${SERVICE}-${VERSION_TAG}.tgz rpi-charts/charts/videomatt/videomatt-${SERVICE}/
+                    helm repo index rpi-charts/charts/videomatt/videomatt-${SERVICE} \
+                      --url https://vittomatt.github.io/rpi-charts/charts/videomatt/videomatt-${SERVICE} \
+                      --merge rpi-charts/charts/videomatt/videomatt-${SERVICE}/index.yaml
                   done
 
             - name: Update ArgoCD Application manifests
