@@ -1,4 +1,4 @@
-name: Build, Push Docker Images & Update Helm Charts + ArgoCD Apps
+name: Deploy to RPI
 
 on:
     push:
@@ -93,8 +93,8 @@ jobs:
               run: |
                   for SERVICE in users videos; do
                     echo "Updating ArgoCD app for $SERVICE..."
-                    sed -i "s/targetRevision:.*/targetRevision: $VERSION_TAG/" rpi-charts/apps/videomatt-${SERVICE}-app.yaml
-                    cat rpi-charts/apps/videomatt-${SERVICE}-app.yaml
+                    sed -i "s/targetRevision:.*/targetRevision: $VERSION_TAG/" rpi-charts/apps/videomatt/videomatt-${SERVICE}-app.yaml
+                    cat rpi-charts/apps/videomatt/videomatt-${SERVICE}-app.yaml
                   done
 
             - name: Commit and push changes
