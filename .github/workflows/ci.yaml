@@ -80,14 +80,17 @@ jobs:
 
             - name: Move packaged charts and update Helm repo index
               run: |
+                  mkdir -p rpi-charts/charts/videomatt
                   for SERVICE in users videos; do
                     echo "Processing chart for $SERVICE..."
-                    mkdir -p rpi-charts/charts/videomatt/videomatt-${SERVICE}
-                    mv videomatt-${SERVICE}-${VERSION_TAG}.tgz rpi-charts/charts/videomatt/videomatt-${SERVICE}/
-                    helm repo index rpi-charts/charts/videomatt/videomatt-${SERVICE} \
-                      --url https://vittomatt.github.io/rpi-charts/charts/videomatt/videomatt-${SERVICE} \
-                      --merge rpi-charts/charts/videomatt/videomatt-${SERVICE}/index.yaml
+                    mv videomatt-${SERVICE}-${VERSION_TAG}.tgz rpi-charts/charts/videomatt/
                   done
+
+                  helm repo index rpi-charts/charts/videomatt \
+                    --url https://vittomatt.github.io/rpi-charts/charts/videomatt \
+                    --merge rpi-charts/index.yaml
+
+                  mv rpi-charts/charts/videomatt/index.yaml rpi-charts/index.yaml
 
             - name: Update ArgoCD Application manifests
               run: |
