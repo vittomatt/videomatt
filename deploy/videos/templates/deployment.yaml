@@ -1,25 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: { { .Values.deployment.name } }
-    namespace: { { .Values.app.namespace } }
+  name: {{ .Values.deployment.name }}
+  namespace: {{ .Values.app.namespace }}
 spec:
-    replicas: { { .Values.deployment.replicas } }
-    selector:
-        matchLabels:
-            app: { { .Values.app.name } }
-    template:
-        metadata:
-            labels:
-                app: { { .Values.app.name } }
-            annotations:
-                release: '{{ .Values.releaseVersion }}'
-                linkerd.io/inject: 'enabled'
-        spec:
-            containers:
-                - name: { { .Values.app.containerName } }
-                  image: 'ghcr.io/vittomatt/videomatt-videos:{{ .Chart.AppVersion }}'
-                  ports:
-                      - containerPort: { { .Values.app.port } }
-            imagePullSecrets:
-                - name: ghcr-secret
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.app.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app.name }}
+      annotations:
+        release: '{{ .Values.releaseVersion }}'
+        linkerd.io/inject: 'enabled'
+    spec:
+      containers:
+        - name: {{ .Values.app.containerName }}
+          image: 'ghcr.io/vittomatt/videomatt-videos:{{ .Chart.AppVersion }}'
+          ports:
+            - containerPort: {{ .Values.app.port }}
+      imagePullSecrets:
+        - name: ghcr-secret
