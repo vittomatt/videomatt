@@ -16,3 +16,6 @@ service:
     green: videomatt-users-preview
     type: LoadBalancer
     port: 3000
+
+configmap:
+    name: videomatt-users-configmap

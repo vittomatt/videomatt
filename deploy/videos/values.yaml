@@ -16,3 +16,6 @@ service:
     green: videomatt-videos-preview
     type: LoadBalancer
     port: 3001
+
+configmap:
+    name: videomatt-videos-configmap

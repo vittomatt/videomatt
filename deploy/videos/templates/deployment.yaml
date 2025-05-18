@@ -21,5 +21,8 @@ spec:
           image: 'ghcr.io/vittomatt/videomatt-videos:{{ .Chart.AppVersion }}'
           ports:
             - containerPort: {{ .Values.app.port }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.configmap.name }}
       imagePullSecrets:
         - name: ghcr-secret
