@@ -1,13 +1,12 @@
 import { Logger } from '@shared/domain/logger/logger';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
-import { getEnvs, initEnvs } from '@shared/infrastructure/envs/init-envs';
 import { PinoLogger } from '@shared/infrastructure/logger/pino';
-import { RedisDB } from '@shared/infrastructure/persistence/redis-db';
 import { Worker } from '@shared/worker';
 import { DI } from '@users/infrastructure/di/user.di';
 import { PostgresUserDB } from '@users/infrastructure/persistence/sequelize-user.db';
 import { ShardingSequelizeUserDB } from '@users/infrastructure/persistence/sharding-sequelize-user.db';
 import { initRoutes } from '@users/infrastructure/routes/init-routes';
+import { getEnvs, initEnvs } from '@users/users.envs';
 import { swaggerSpec } from '@users/users.swagger';
 
 import express, { Express } from 'express';
@@ -25,7 +24,6 @@ export class App {
     async init(): Promise<{
         logger: Logger;
         shardingSequelizeUserDB: ShardingSequelizeUserDB;
-        redis: RedisDB;
         worker: Worker;
         app: Express;
     }> {
@@ -77,11 +75,8 @@ export class App {
 
             await shardingSequelizeUserDB.initShards();
 
-            const redis = new RedisDB();
-            await redis.connect();
-
             // Init DI
-            const di = new DI(shardingSequelizeUserDB, redis);
+            const di = new DI(shardingSequelizeUserDB);
             di.initDI();
 
             // Init routes
@@ -96,7 +91,7 @@ export class App {
                 process.exit(1);
             });
 
-            return { logger, shardingSequelizeUserDB, redis, worker, app: this.expressApp };
+            return { logger, shardingSequelizeUserDB, worker, app: this.expressApp };
         } catch (error) {
             console.error('❌ Error initializing application:', error);
             process.exit(1);

@@ -4,27 +4,16 @@ import dotenv from 'dotenv';
 import { config as dotenvSafeConfig } from 'dotenv-safe';
 import { z } from 'zod';
 
-const nonEmptyStr = (name: string) => z.string().min(1, `${name} is required`);
+function nonEmptyStr(name: string) {
+    return z.string().min(1, `${name} is required`);
+}
+
+let envConfig: EnvVars | null = null;
 
 export const envSchema = z.object({
     NODE_ENV: z.enum(['docker', 'dev', 'prod']).default('dev'),
 
-    USERS_PORT: z.coerce.number().min(1),
     VIDEOS_PORT: z.coerce.number().min(1),
-
-    USERS_POSTGRES_DB_SHARD_1_SHARD_NAME: nonEmptyStr('USERS_POSTGRES_DB_SHARD_1_SHARD_NAME'),
-    USERS_POSTGRES_DB_SHARD_1_HOST: nonEmptyStr('USERS_POSTGRES_DB_SHARD_1_HOST'),
-    USERS_POSTGRES_DB_SHARD_1_USER: nonEmptyStr('USERS_POSTGRES_DB_SHARD_1_USER'),
-    USERS_POSTGRES_DB_SHARD_1_PASSWORD: nonEmptyStr('USERS_POSTGRES_DB_SHARD_1_PASSWORD'),
-    USERS_POSTGRES_DB_SHARD_1_NAME: nonEmptyStr('USERS_POSTGRES_DB_SHARD_1_NAME'),
-    USERS_POSTGRES_DB_SHARD_1_PORT: z.coerce.number().min(1),
-
-    USERS_POSTGRES_DB_SHARD_2_SHARD_NAME: nonEmptyStr('USERS_POSTGRES_DB_SHARD_2_SHARD_NAME'),
-    USERS_POSTGRES_DB_SHARD_2_HOST: nonEmptyStr('USERS_POSTGRES_DB_SHARD_2_HOST'),
-    USERS_POSTGRES_DB_SHARD_2_USER: nonEmptyStr('USERS_POSTGRES_DB_SHARD_2_USER'),
-    USERS_POSTGRES_DB_SHARD_2_PASSWORD: nonEmptyStr('USERS_POSTGRES_DB_SHARD_2_PASSWORD'),
-    USERS_POSTGRES_DB_SHARD_2_NAME: nonEmptyStr('USERS_POSTGRES_DB_SHARD_2_NAME'),
-    USERS_POSTGRES_DB_SHARD_2_PORT: z.coerce.number().min(1),
 
     VIDEOS_POSTGRES_DB_HOST: nonEmptyStr('VIDEOS_POSTGRES_DB_HOST'),
     VIDEOS_POSTGRES_DB_USER: nonEmptyStr('VIDEOS_POSTGRES_DB_USER'),
@@ -61,8 +50,6 @@ export const envSchema = z.object({
 });
 
 export type EnvVars = z.infer<typeof envSchema>;
-
-let envConfig: EnvVars | null = null;
 
 export function initEnvs() {
     const env = process.env.NODE_ENV ?? 'dev';

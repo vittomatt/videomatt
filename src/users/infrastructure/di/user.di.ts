@@ -4,24 +4,20 @@ import { SQSClient } from '@aws-sdk/client-sqs';
 import { fromIni } from '@aws-sdk/credential-provider-ini';
 import { ErrorController } from '@shared/infrastructure/controllers/error.controller';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
-import { getEnvs } from '@shared/infrastructure/envs/init-envs';
 import { InMemoryCommandEventBus } from '@shared/infrastructure/event-bus/in-memory-command.event-bus';
 import { InMemoryDomainEventBus } from '@shared/infrastructure/event-bus/in-memory-domain.event-bus';
 import { InMemoryQueryEventBus } from '@shared/infrastructure/event-bus/in-memory-query.event-bus';
 import { DomainEventFailover } from '@shared/infrastructure/events/failover-domain-event';
 import { PinoLogger } from '@shared/infrastructure/logger/pino';
-import { RedisDB } from '@shared/infrastructure/persistence/redis-db';
 import { DIUsers } from '@users/infrastructure/di/user-modules.di';
 import { ShardingSequelizeUserDB } from '@users/infrastructure/persistence/sharding-sequelize-user.db';
+import { getEnvs } from '@users/users.envs';
 import { SQSWorker } from '@users/users.worker';
 
 import { container } from 'tsyringe';
 
 export class DI {
-    constructor(
-        private readonly ShardingSequelizeUserDB: ShardingSequelizeUserDB,
-        private readonly redis: RedisDB
-    ) {}
+    constructor(private readonly ShardingSequelizeUserDB: ShardingSequelizeUserDB) {}
 
     public initDI() {
         this.initDBDependencies();
@@ -36,9 +32,6 @@ export class DI {
     private initDBDependencies() {
         container.register(TOKEN.DB, {
             useValue: this.ShardingSequelizeUserDB,
-        });
-        container.register(TOKEN.REDIS, {
-            useValue: this.redis,
         });
     }
 

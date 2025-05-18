@@ -2,11 +2,11 @@ import { UnexpectedError } from '@shared/domain/errors/unexpected.error';
 import { Logger } from '@shared/domain/logger/logger';
 import { Criteria } from '@shared/domain/repositories/criteria';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
-import { RedisDB } from '@shared/infrastructure/persistence/redis-db';
 import { VideoAlreadyExistsError } from '@videos/videos/domain/errors/video-already-exists.error';
 import { Video, VideoPrimitives } from '@videos/videos/domain/models/video';
 import { VideoRepository } from '@videos/videos/domain/repositories/video.repository';
 import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
+import { RedisDB } from '@videos/videos/infrastructure/persistence/redis-db';
 import { SequelizeVideoRepository } from '@videos/videos/infrastructure/repositories/sequelize-video.repository';
 
 import { Result, err, ok } from 'neverthrow';
@@ -15,7 +15,7 @@ import { inject, injectable } from 'tsyringe';
 @injectable()
 export class RedisVideoRepository implements VideoRepository<Video> {
     constructor(
-        @inject(TOKEN.REDIS) private readonly redis: RedisDB,
+        @inject(VIDEO_TOKEN.REDIS) private readonly redis: RedisDB,
         @inject(VIDEO_TOKEN.DB_REPOSITORY) private readonly videoRepository: SequelizeVideoRepository,
         @inject(TOKEN.LOGGER) private readonly logger: Logger
     ) {}

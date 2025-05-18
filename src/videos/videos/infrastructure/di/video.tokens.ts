@@ -2,6 +2,7 @@ export const VIDEO_TOKEN = {
     // Storage
     DB_MODEL: Symbol('VIDEO_DB_MODEL'),
     VIDEO_PROJECTION_DB_MODEL: Symbol('VIDEO_VIDEO_PROJECTION_DB_MODEL'),
+    REDIS: Symbol('REDIS'),
 
     // SNS
     SNS_TOPIC_ARN: Symbol('SNS_VIDEO_TOPIC_ARN'),

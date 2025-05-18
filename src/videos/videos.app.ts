@@ -1,12 +1,12 @@
 import { Logger } from '@shared/domain/logger/logger';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
-import { getEnvs, initEnvs } from '@shared/infrastructure/envs/init-envs';
 import { PinoLogger } from '@shared/infrastructure/logger/pino';
-import { RedisDB } from '@shared/infrastructure/persistence/redis-db';
 import { Worker } from '@shared/worker';
+import { getEnvs, initEnvs } from '@videos/videos.envs';
 import { swaggerSpec } from '@videos/videos.swagger';
 import { DI } from '@videos/videos/infrastructure/di/video.di';
 import { MongoVideosCommentDB } from '@videos/videos/infrastructure/persistence/mongoose-video-comment.db';
+import { RedisDB } from '@videos/videos/infrastructure/persistence/redis-db';
 import { PostgresVideosDB } from '@videos/videos/infrastructure/persistence/sequelize-videos.db';
 import { initRoutes } from '@videos/videos/infrastructure/routes/init-routes';
 

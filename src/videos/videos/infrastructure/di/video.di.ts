@@ -4,18 +4,19 @@ import { SQSClient } from '@aws-sdk/client-sqs';
 import { fromIni } from '@aws-sdk/credential-provider-ini';
 import { ErrorController } from '@shared/infrastructure/controllers/error.controller';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
-import { getEnvs } from '@shared/infrastructure/envs/init-envs';
 import { InMemoryCommandEventBus } from '@shared/infrastructure/event-bus/in-memory-command.event-bus';
 import { InMemoryDeferredDomainEventBus } from '@shared/infrastructure/event-bus/in-memory-deferred-domain.event-bus';
 import { InMemoryDomainEventBus } from '@shared/infrastructure/event-bus/in-memory-domain.event-bus';
 import { InMemoryQueryEventBus } from '@shared/infrastructure/event-bus/in-memory-query.event-bus';
 import { DomainEventFailover } from '@shared/infrastructure/events/failover-domain-event';
 import { PinoLogger } from '@shared/infrastructure/logger/pino';
-import { RedisDB } from '@shared/infrastructure/persistence/redis-db';
 import { DIVideoComments } from '@videos/video-comment/infrastructure/di/video-comment.di';
+import { getEnvs } from '@videos/videos.envs';
 import { SQSWorker } from '@videos/videos.worker';
 import { DIVideos } from '@videos/videos/infrastructure/di/video-modules.di';
+import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 import { MongoVideosCommentDB } from '@videos/videos/infrastructure/persistence/mongoose-video-comment.db';
+import { RedisDB } from '@videos/videos/infrastructure/persistence/redis-db';
 import { PostgresVideosDB } from '@videos/videos/infrastructure/persistence/sequelize-videos.db';
 
 import { container } from 'tsyringe';
@@ -41,7 +42,7 @@ export class DI {
         container.register(TOKEN.DB, {
             useValue: this.db,
         });
-        container.register(TOKEN.REDIS, {
+        container.register(VIDEO_TOKEN.REDIS, {
             useValue: this.redis,
         });
         container.register(TOKEN.MONGO_DB, {

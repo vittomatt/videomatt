@@ -2,7 +2,6 @@ export const TOKEN = {
     DB: Symbol('DB'),
     MONGO_DB: Symbol('MONGO_DB'),
     FAILOVER_DOMAIN_EVENTS: Symbol('FAILOVER_DOMAIN_EVENTS'),
-    REDIS: Symbol('REDIS'),
     LOGGER: Symbol('LOGGER'),
     ERROR_CONTROLLER: Symbol('ERROR_CONTROLLER'),
     DOMAIN_EVENT_BUS: Symbol('DOMAIN_EVENT_BUS'),

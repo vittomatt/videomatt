@@ -1,4 +1,4 @@
-import { getEnvs } from '@shared/infrastructure/envs/init-envs';
+import { getEnvs } from '@videos/videos.envs';
 
 import { RedisClientType, createClient } from 'redis';
 

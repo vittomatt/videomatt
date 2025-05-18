@@ -1,4 +1,3 @@
-import { getEnvs } from '@shared/infrastructure/envs/init-envs';
 import { CreateUserUseCase } from '@users/application/create-user/create-user.use-case';
 import { GetUsersUseCase } from '@users/application/get-users/get-users.use-case';
 import { IncreaseAmountOfVideosUseCase } from '@users/application/increase-amount-of-videos/increase-amount-of-videos.use-case';
@@ -13,6 +12,7 @@ import { IncreaseAmountOfVideosHandler } from '@users/infrastructure/handlers/do
 import { UserCreatedHandler } from '@users/infrastructure/handlers/domain/user-created.handler';
 import { GetUsersQueryHandler } from '@users/infrastructure/handlers/query/get-users.query-handler';
 import { SequelizeUserRepository } from '@users/infrastructure/repositories/sequelize-user.repository';
+import { getEnvs } from '@users/users.envs';
 
 import { container } from 'tsyringe';
 

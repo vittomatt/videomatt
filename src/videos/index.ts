@@ -1,10 +1,10 @@
 import 'reflect-metadata';
 
 import { Logger } from '@shared/domain/logger/logger';
-import { getEnvs } from '@shared/infrastructure/envs/init-envs';
-import { RedisDB } from '@shared/infrastructure/persistence/redis-db';
 import { Worker } from '@shared/worker';
 import { App } from '@videos/videos.app';
+import { getEnvs } from '@videos/videos.envs';
+import { RedisDB } from '@videos/videos/infrastructure/persistence/redis-db';
 import { PostgresVideosDB } from '@videos/videos/infrastructure/persistence/sequelize-videos.db';
 
 async function bootstrap() {

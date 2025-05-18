@@ -1,5 +1,5 @@
-import { getEnvs } from '@shared/infrastructure/envs/init-envs';
 import { MongoDBVideoCommentRepository } from '@videos/video-comment/infrastructure/repositories/mongoose-video-comment.repository';
+import { getEnvs } from '@videos/videos.envs';
 import { CreateVideoProjection } from '@videos/videos/application/create-video/create-video-projection.use-case';
 import { CreateVideoUseCase } from '@videos/videos/application/create-video/create-video.use-case';
 import { GetVideosUseCase } from '@videos/videos/application/get-videos/get-videos.use-case';
