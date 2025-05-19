@@ -31,8 +31,8 @@ export class SQSWorker extends Worker {
                 await Promise.allSettled(this.consumers.map((consumer) => consumer.consume()));
             } catch (error) {
                 this.logger.error(`Error with consume(): ${error}`);
-                await this.sleep(2000);
             }
+            await this.sleep(60000);
         }
     }
 }
