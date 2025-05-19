@@ -8,7 +8,7 @@ app:
 
 deployment:
     name: videomatt-users-deployment
-    replicas: 3
+    replicas: 1
 
 service:
     name: videomatt-users-service
