@@ -220,7 +220,6 @@ services:
         restart: unless-stopped
         ports:
             - '4566:4566'
-            - '4510-4559:4510-4559'
         environment:
             - SERVICES=events,sqs,sns
             - DEBUG=true
