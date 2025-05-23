@@ -1,3 +1,7 @@
+# Prerequisites
+
+You need `Docker`and `terraform` to run this project
+
 # Structure
 
 ![Videomatt Architecture](videomatt.jpg)

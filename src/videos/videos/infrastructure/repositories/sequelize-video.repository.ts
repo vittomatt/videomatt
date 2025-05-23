@@ -7,7 +7,6 @@ import { Video, VideoPrimitives } from '@videos/videos/domain/models/video';
 import { VideoRepository } from '@videos/videos/domain/repositories/video.repository';
 import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 import { VideoDBModel } from '@videos/videos/infrastructure/models/video.db-model';
-import { RedisDB } from '@videos/videos/infrastructure/persistence/redis-db';
 
 import { Result, errAsync, okAsync } from 'neverthrow';
 import { inject, injectable } from 'tsyringe';
@@ -16,8 +15,7 @@ import { inject, injectable } from 'tsyringe';
 export class SequelizeVideoRepository implements VideoRepository<Video> {
     constructor(
         @inject(VIDEO_TOKEN.DB_MODEL) private readonly dbVideo: typeof VideoDBModel,
-        @inject(TOKEN.LOGGER) private readonly logger: Logger,
-        @inject(VIDEO_TOKEN.REDIS) private readonly redis: RedisDB
+        @inject(TOKEN.LOGGER) private readonly logger: Logger
     ) {}
 
     async add(video: Video): Promise<Result<void, UnexpectedError>> {
