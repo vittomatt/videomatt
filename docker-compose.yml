@@ -16,7 +16,6 @@ services:
             - USERS_POSTGRES_DB_SHARD_1_PORT=5432
             - USERS_POSTGRES_DB_SHARD_2_HOST=db-users-shard-2
             - USERS_POSTGRES_DB_SHARD_2_PORT=5432
-            - REDIS_HOST=redis
             - AWS_SNS_ENDPOINT=http://localstack:4566
             - AWS_SQS_ENDPOINT=http://localstack:4566
             - AWS_EVENT_BRIDGE_ENDPOINT=http://localstack:4566

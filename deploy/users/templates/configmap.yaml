@@ -12,13 +12,11 @@ data:
     USERS_POSTGRES_DB_SHARD_2_HOST: postgres-shard-2-postgresql
     USERS_POSTGRES_DB_SHARD_2_PORT: '5432'
     USERS_POSTGRES_DB_SHARD_2_SHARD_NAME: shard2
-    REDIS_HOST: localhost
-    REDIS_PORT: '6379'
     AWS_REGION: us-east-1
-    AWS_SNS_ENDPOINT: http://localhost:4566
-    AWS_SQS_ENDPOINT: http://localhost:4566
-    AWS_EVENT_BRIDGE_ENDPOINT: http://localhost:4566
-    SQS_USER_CREATED_QUEUE_URL: http://localhost:4566/000000000000/videomatt_users_1_event_user_created
-    SQS_VIDEO_CREATED_QUEUE_URL: http://localhost:4566/000000000000/videomatt_videos_1_event_video_created
+    AWS_SNS_ENDPOINT: http://videomatt-localstack:4566
+    AWS_SQS_ENDPOINT: http://videomatt-localstack:4566
+    AWS_EVENT_BRIDGE_ENDPOINT: http://videomatt-localstack:4566
+    SQS_USER_CREATED_QUEUE_URL: http://videomatt-localstack:4566/000000000000/videomatt_users_1_event_user_created
+    SQS_VIDEO_CREATED_QUEUE_URL: http://videomatt-localstack:4566/000000000000/videomatt_videos_1_event_video_created
     SNS_VIDEO_TOPIC_ARN: arn:aws:sns:us-east-1:000000000000:videomatt_videos
     EVENT_BRIDGE_USER_TOPIC_ARN: arn:aws:sns:us-east-1:000000000000:videomatt_users
