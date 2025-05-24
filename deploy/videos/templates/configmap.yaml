@@ -6,13 +6,13 @@ metadata:
 data:
     NODE_ENV: prod
     VIDEOS_PORT: '3001'
-    VIDEOS_POSTGRES_DB_HOST: videomatt-videos-postgresql-primary
+    VIDEOS_POSTGRES_DB_HOST: videomatt-videos-postgres-postgresql-primary
     VIDEOS_POSTGRES_DB_PORT: '5432'
-    VIDEOS_POSTGRES_DB_REPLICA_HOST: videomatt-videos-postgresql-read
+    VIDEOS_POSTGRES_DB_REPLICA_HOST: videomatt-videos-postgres-postgresql-read
     VIDEOS_POSTGRES_DB_REPLICA_PORT: '5432'
-    VIDEOS_COMMENT_MONGO_DB_HOST: localhost
+    VIDEOS_COMMENT_MONGO_DB_HOST: videomatt-videos-mongo
     VIDEOS_COMMENT_MONGO_DB_PORT: '27017'
-    REDIS_HOST: videomatt-videos-redis
+    REDIS_HOST: videomatt-videos-redis-master
     REDIS_PORT: '6379'
     AWS_REGION: us-east-1
     AWS_SNS_ENDPOINT: http://videomatt-localstack:4566

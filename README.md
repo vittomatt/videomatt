@@ -174,7 +174,7 @@ aws events put-events \
     {
       "Source": "videomatt.user",
       "DetailType": "user.created",
-      "Detail": "{\"id\": \"550e8400-e29b-41d4-a716-446655440000\", \"firstName\": \"Vitto\", \"lastName\": \"Matt\", \"name\": \"videomatt.users.1.event.user.created\"}",
+      "Detail": "{\"id\": \"11111111-1111-1111-1111-111111111111\", \"firstName\": \"Vitto\", \"lastName\": \"Matt\", \"name\": \"videomatt.users.1.event.user.created\"}",
       "EventBusName": "default"
     }
   ]'
@@ -187,7 +187,7 @@ aws sns publish \
   --endpoint-url http://localhost:4566 \
   --region us-east-1 \
   --topic-arn arn:aws:sns:us-east-1:000000000000:videomatt_videos \
-  --message '{"id": "150e8400-e29b-41d4-a716-446655440001", "title": "First Video", "userId": "550e8400-e29b-41d4-a716-446655440000"}' \
+  --message '{"id": "22222222-2222-2222-2222-222222222222", "title": "First Video", "userId": "11111111-1111-1111-1111-111111111111"}' \
   --message-attributes '{
     "EventType": {
       "DataType": "String",
