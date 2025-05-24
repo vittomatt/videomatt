@@ -30,7 +30,10 @@ export const envSchema = z.object({
     USERS_POSTGRES_DB_SHARD_2_PORT: z.coerce.number().min(1),
 
     AWS_REGION: nonEmptyStr('AWS_REGION'),
-    AWS_PROFILE: nonEmptyStr('AWS_PROFILE'),
+    AWS_PROFILE: z.string().optional(),
+    AWS_ACCESS_KEY_ID: z.string().optional(),
+    AWS_SECRET_ACCESS_KEY: z.string().optional(),
+
     AWS_SNS_ENDPOINT: nonEmptyStr('AWS_SNS_ENDPOINT').url(),
     AWS_SQS_ENDPOINT: nonEmptyStr('AWS_SQS_ENDPOINT').url(),
     AWS_EVENT_BRIDGE_ENDPOINT: nonEmptyStr('AWS_EVENT_BRIDGE_ENDPOINT').url(),
@@ -57,7 +60,7 @@ export function initEnvs() {
         dotenvSafeConfig({
             path,
             example: '.env.example',
-            allowEmptyValues: false,
+            allowEmptyValues: true,
         });
     }
 

@@ -52,13 +52,33 @@ export class DI {
     }
 
     private initBrokerDependencies() {
-        const { AWS_REGION, AWS_PROFILE, AWS_SQS_ENDPOINT, AWS_SNS_ENDPOINT, AWS_EVENT_BRIDGE_ENDPOINT } = getEnvs();
+        const {
+            AWS_REGION,
+            AWS_PROFILE,
+            AWS_ACCESS_KEY_ID,
+            AWS_SECRET_ACCESS_KEY,
+            AWS_SQS_ENDPOINT,
+            AWS_SNS_ENDPOINT,
+            AWS_EVENT_BRIDGE_ENDPOINT,
+        } = getEnvs();
+
+        if (AWS_ACCESS_KEY_ID && AWS_SECRET_ACCESS_KEY && AWS_PROFILE) {
+            throw new Error('AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, and AWS_PROFILE cannot be used together');
+        }
+
+        const useCredentials = AWS_ACCESS_KEY_ID && AWS_SECRET_ACCESS_KEY;
+        const credentials = useCredentials
+            ? {
+                  accessKeyId: AWS_ACCESS_KEY_ID,
+                  secretAccessKey: AWS_SECRET_ACCESS_KEY,
+              }
+            : fromIni({
+                  profile: AWS_PROFILE,
+              });
 
         const awsConfig = {
             region: AWS_REGION,
-            credentials: fromIni({
-                profile: AWS_PROFILE,
-            }),
+            credentials,
             useQueueUrlAsEndpoint: false,
         };
 
