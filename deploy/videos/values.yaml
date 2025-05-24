@@ -14,8 +14,9 @@ service:
     name: videomatt-videos-service
     blue: videomatt-videos-active
     green: videomatt-videos-preview
-    type: LoadBalancer
+    type: NodePort
     port: 3001
+    nodePort: 30001
 
 configmap:
     name: videomatt-videos-configmap
