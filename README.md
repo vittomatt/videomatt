@@ -161,3 +161,37 @@ aws events put-targets \
 --rule videomatt_users \
 --targets Id=UserCreatedTarget,Arn=arn:aws:sqs:us-east-1:000000000000:videomatt_users_1_event_user_created
 ```
+
+#### Send messages
+
+##### Create user
+
+```
+aws events put-events \
+  --endpoint-url http://localhost:4566 \
+  --region us-east-1 \
+  --entries '[
+    {
+      "Source": "videomatt.user",
+      "DetailType": "user.created",
+      "Detail": "{\"id\": \"550e8400-e29b-41d4-a716-446655440000\", \"firstName\": \"Vitto\", \"lastName\": \"Matt\", \"name\": \"videomatt.users.1.event.user.created\"}",
+      "EventBusName": "default"
+    }
+  ]'
+```
+
+##### Create video
+
+```
+aws sns publish \
+  --endpoint-url http://localhost:4566 \
+  --region us-east-1 \
+  --topic-arn arn:aws:sns:us-east-1:000000000000:videomatt_videos \
+  --message '{"id": "150e8400-e29b-41d4-a716-446655440001", "title": "First Video", "userId": "550e8400-e29b-41d4-a716-446655440000"}' \
+  --message-attributes '{
+    "EventType": {
+      "DataType": "String",
+      "StringValue": "videomatt.videos.1.event.video.created"
+    }
+  }'
+```
