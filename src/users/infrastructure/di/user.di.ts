@@ -76,6 +76,13 @@ export class DI {
                   profile: AWS_PROFILE,
               });
 
+        console.log('fitu');
+        console.log(JSON.stringify(credentials));
+        console.log(AWS_REGION);
+        console.log(AWS_ACCESS_KEY_ID);
+        console.log(AWS_SECRET_ACCESS_KEY);
+        console.log(AWS_PROFILE);
+
         const awsConfig = {
             region: AWS_REGION,
             credentials,
