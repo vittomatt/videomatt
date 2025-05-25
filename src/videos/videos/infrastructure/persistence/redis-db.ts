@@ -7,10 +7,10 @@ export class RedisDB {
 
     constructor() {
         const envs = getEnvs();
-        const { REDIS_HOST, REDIS_PORT } = envs;
+        const { REDIS_HOST, REDIS_PORT, REDIS_PASSWORD } = envs;
 
         this.client = createClient({
-            url: `redis://${REDIS_HOST}:${REDIS_PORT}`,
+            url: `redis://:${REDIS_PASSWORD}@${REDIS_HOST}:${REDIS_PORT}`,
         });
 
         this.client.on('error', (err) => console.error('Redis Client Error', err));

@@ -35,6 +35,7 @@ export const envSchema = z.object({
 
     REDIS_HOST: nonEmptyStr('REDIS_HOST'),
     REDIS_PORT: z.coerce.number().min(1),
+    REDIS_PASSWORD: nonEmptyStr('REDIS_PASSWORD'),
 
     AWS_REGION: nonEmptyStr('AWS_REGION'),
     AWS_PROFILE: z.string().optional(),
