@@ -1,5 +1,6 @@
 import { DomainEvent } from '@shared/domain/event-bus/domain.event';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
+import { FailoverDomainEvents } from '@shared/infrastructure/events/failover-domain-events';
 import { ShardingSequelizeUserDB } from '@users/infrastructure/persistence/sharding-sequelize-user.db';
 
 import { Logger } from 'pino';
@@ -9,7 +10,7 @@ import { inject, injectable } from 'tsyringe';
 export const FAILOVER_DOMAIN_EVENTS_TOTAL = 10;
 
 @injectable()
-export class DomainEventFailover {
+export class UserDomainEventFailover implements FailoverDomainEvents {
     constructor(
         @inject(TOKEN.DB) private readonly db: ShardingSequelizeUserDB,
         @inject(TOKEN.LOGGER) private readonly logger: Logger

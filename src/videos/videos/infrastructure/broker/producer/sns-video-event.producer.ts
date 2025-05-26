@@ -4,8 +4,8 @@ import { DomainEvent } from '@shared/domain/event-bus/domain.event';
 import { Logger } from '@shared/domain/logger/logger';
 import { SNSEventProducer } from '@shared/infrastructure/broker/sns-event.producer';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
-import { DomainEventFailover } from '@shared/infrastructure/events/failover-domain-event';
 import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
+import { VideoDomainEventFailover } from '@videos/videos/infrastructure/events/videos-failover-domain-event';
 
 import { inject, injectable } from 'tsyringe';
 
@@ -15,7 +15,7 @@ export class SNSVideoEventProducer extends SNSEventProducer {
         @inject(TOKEN.DOMAIN_EVENT_BUS) protected readonly eventBus: DomainEventBus,
         @inject(TOKEN.SNS_CLIENT) protected readonly sns: SNSClient,
         @inject(TOKEN.LOGGER) protected readonly logger: Logger,
-        @inject(TOKEN.FAILOVER_DOMAIN_EVENTS) protected readonly failover: DomainEventFailover,
+        @inject(VIDEO_TOKEN.FAILOVER_DOMAIN_EVENTS) protected readonly failover: VideoDomainEventFailover,
         @inject(VIDEO_TOKEN.SNS_TOPIC_ARN) private readonly topicArn: string
     ) {
         super(eventBus, sns, logger, failover);

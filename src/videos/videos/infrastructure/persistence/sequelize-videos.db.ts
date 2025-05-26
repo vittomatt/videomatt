@@ -8,7 +8,8 @@ import { Sequelize } from 'sequelize';
 export class PostgresVideosDB {
     private readonly instance: Sequelize;
     private videoModel!: typeof VideoDBModel;
-    private VideoProjectionModel!: typeof VideoProjectionDBModel;
+    private videoProjectionModel!: typeof VideoProjectionDBModel;
+    private failoverDomainEventsModel!: ReturnType<typeof defineFailOverDomainEventsModel>;
 
     constructor({
         dbHost,
@@ -81,8 +82,8 @@ export class PostgresVideosDB {
             `🔄 syncDB() for ${this.instance.config.database} at ${this.instance.config.host}:${this.instance.config.port}`
         );
         this.videoModel = VideoDBModel.initModel(this.instance);
-        this.VideoProjectionModel = VideoProjectionDBModel.initModel(this.instance);
-        defineFailOverDomainEventsModel(this.instance);
+        this.videoProjectionModel = VideoProjectionDBModel.initModel(this.instance);
+        this.failoverDomainEventsModel = defineFailOverDomainEventsModel(this.instance);
     }
 
     private initAssociations() {}
@@ -118,9 +119,16 @@ export class PostgresVideosDB {
     }
 
     public getVideoProjectionModel(): typeof VideoProjectionDBModel {
-        if (!this.VideoProjectionModel) {
+        if (!this.videoProjectionModel) {
             throw new UnexpectedError('Video projection model not initialized');
         }
-        return this.VideoProjectionModel;
+        return this.videoProjectionModel;
+    }
+
+    public getFailoverDomainEventsModel(): ReturnType<typeof defineFailOverDomainEventsModel> {
+        if (!this.failoverDomainEventsModel) {
+            throw new UnexpectedError('Failover domain events model not initialized');
+        }
+        return this.failoverDomainEventsModel;
     }
 }

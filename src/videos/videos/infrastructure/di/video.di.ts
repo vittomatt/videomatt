@@ -8,13 +8,13 @@ import { InMemoryCommandEventBus } from '@shared/infrastructure/event-bus/in-mem
 import { InMemoryDeferredDomainEventBus } from '@shared/infrastructure/event-bus/in-memory-deferred-domain.event-bus';
 import { InMemoryDomainEventBus } from '@shared/infrastructure/event-bus/in-memory-domain.event-bus';
 import { InMemoryQueryEventBus } from '@shared/infrastructure/event-bus/in-memory-query.event-bus';
-import { DomainEventFailover } from '@shared/infrastructure/events/failover-domain-event';
 import { PinoLogger } from '@shared/infrastructure/logger/pino';
 import { DIVideoComments } from '@videos/video-comment/infrastructure/di/video-comment.di';
 import { getEnvs } from '@videos/videos.envs';
 import { SQSWorker } from '@videos/videos.worker';
 import { DIVideos } from '@videos/videos/infrastructure/di/video-modules.di';
 import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
+import { VideoDomainEventFailover } from '@videos/videos/infrastructure/events/videos-failover-domain-event';
 import { MongoVideosCommentDB } from '@videos/videos/infrastructure/persistence/mongoose-video-comment.db';
 import { RedisDB } from '@videos/videos/infrastructure/persistence/redis-db';
 import { PostgresVideosDB } from '@videos/videos/infrastructure/persistence/sequelize-videos.db';
@@ -62,8 +62,8 @@ export class DI {
         container.register(TOKEN.LOGGER, {
             useClass: PinoLogger,
         });
-        container.register(TOKEN.FAILOVER_DOMAIN_EVENTS, {
-            useClass: DomainEventFailover,
+        container.register(VIDEO_TOKEN.FAILOVER_DOMAIN_EVENTS, {
+            useClass: VideoDomainEventFailover,
         });
     }
 

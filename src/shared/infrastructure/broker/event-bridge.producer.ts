@@ -4,14 +4,14 @@ import { DomainEventBus } from '@shared/domain/event-bus/domain-event-bus';
 import { DomainEvent } from '@shared/domain/event-bus/domain.event';
 import { Logger } from '@shared/domain/logger/logger';
 import { SQSSerializer } from '@shared/infrastructure/broker/sqs.serializer';
-import { DomainEventFailover } from '@shared/infrastructure/events/failover-domain-event';
+import { FailoverDomainEvents } from '@shared/infrastructure/events/failover-domain-events';
 
 export abstract class EventBridgeEventProducer implements RemoteEventProducer {
     protected constructor(
         protected readonly eventBus: DomainEventBus,
         protected readonly eventBridgeClient: EventBridgeClient,
         protected readonly logger: Logger,
-        protected readonly failover: DomainEventFailover
+        protected readonly failover: FailoverDomainEvents
     ) {
         this.eventBus.registerRemoteProducer(this);
     }

@@ -7,9 +7,10 @@ import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { InMemoryCommandEventBus } from '@shared/infrastructure/event-bus/in-memory-command.event-bus';
 import { InMemoryDomainEventBus } from '@shared/infrastructure/event-bus/in-memory-domain.event-bus';
 import { InMemoryQueryEventBus } from '@shared/infrastructure/event-bus/in-memory-query.event-bus';
-import { DomainEventFailover } from '@shared/infrastructure/events/failover-domain-event';
 import { PinoLogger } from '@shared/infrastructure/logger/pino';
 import { DIUsers } from '@users/infrastructure/di/user-modules.di';
+import { USER_TOKEN } from '@users/infrastructure/di/user.tokens';
+import { UserDomainEventFailover } from '@users/infrastructure/events/user-failover-domain-event';
 import { ShardingSequelizeUserDB } from '@users/infrastructure/persistence/sharding-sequelize-user.db';
 import { getEnvs } from '@users/users.envs';
 import { SQSWorker } from '@users/users.worker';
@@ -46,8 +47,8 @@ export class DI {
         container.register(TOKEN.LOGGER, {
             useClass: PinoLogger,
         });
-        container.register(TOKEN.FAILOVER_DOMAIN_EVENTS, {
-            useClass: DomainEventFailover,
+        container.register(USER_TOKEN.FAILOVER_DOMAIN_EVENTS, {
+            useClass: UserDomainEventFailover,
         });
     }
 
