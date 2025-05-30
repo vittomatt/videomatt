@@ -47,10 +47,6 @@ export class App {
                 VIDEOS_POSTGRES_DB_NAME,
                 VIDEOS_POSTGRES_DB_PORT,
                 VIDEOS_POSTGRES_DB_REPLICA_HOST,
-                VIDEOS_POSTGRES_DB_REPLICA_USER,
-                VIDEOS_POSTGRES_DB_REPLICA_PASSWORD,
-                VIDEOS_POSTGRES_DB_REPLICA_NAME,
-                VIDEOS_POSTGRES_DB_REPLICA_PORT,
                 VIDEOS_COMMENT_MONGO_DB_HOST,
                 VIDEOS_COMMENT_MONGO_DB_PORT,
                 VIDEOS_COMMENT_MONGO_DB_NAME,
@@ -64,10 +60,6 @@ export class App {
                 dbName: VIDEOS_POSTGRES_DB_NAME,
                 dbPort: VIDEOS_POSTGRES_DB_PORT,
                 dbReplicaHost: VIDEOS_POSTGRES_DB_REPLICA_HOST,
-                dbReplicaUser: VIDEOS_POSTGRES_DB_REPLICA_USER,
-                dbReplicaPassword: VIDEOS_POSTGRES_DB_REPLICA_PASSWORD,
-                dbReplicaName: VIDEOS_POSTGRES_DB_REPLICA_NAME,
-                dbReplicaPort: VIDEOS_POSTGRES_DB_REPLICA_PORT,
             });
             await db.initDB();
 

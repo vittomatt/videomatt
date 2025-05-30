@@ -18,10 +18,6 @@ export class PostgresVideosDB {
         dbName,
         dbPort,
         dbReplicaHost,
-        dbReplicaUser,
-        dbReplicaPassword,
-        dbReplicaName,
-        dbReplicaPort,
     }: {
         dbHost: string;
         dbUser: string;
@@ -29,10 +25,6 @@ export class PostgresVideosDB {
         dbName: string;
         dbPort: number;
         dbReplicaHost: string;
-        dbReplicaUser: string;
-        dbReplicaPassword: string;
-        dbReplicaName: string;
-        dbReplicaPort: number;
     }) {
         this.instance = new Sequelize(dbName, dbUser, dbPassword, {
             replication: {
@@ -46,10 +38,10 @@ export class PostgresVideosDB {
                 read: [
                     {
                         host: dbReplicaHost,
-                        port: dbReplicaPort,
-                        database: dbReplicaName,
-                        username: dbReplicaUser,
-                        password: dbReplicaPassword,
+                        port: dbPort,
+                        database: dbName,
+                        username: dbUser,
+                        password: dbPassword,
                     },
                 ],
             },
