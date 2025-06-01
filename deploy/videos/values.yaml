@@ -4,7 +4,7 @@ app:
     name: videomatt-videos
     containerName: videomatt-videos-container
     namespace: vittospace
-    port: 3001
+    port: 3002
 
 deployment:
     name: videomatt-videos-deployment
@@ -15,8 +15,8 @@ service:
     blue: videomatt-videos-active
     green: videomatt-videos-preview
     type: NodePort
-    port: 3001
-    nodePort: 30001
+    port: 3002
+    nodePort: 30002
 
 configmap:
     name: videomatt-videos-configmap

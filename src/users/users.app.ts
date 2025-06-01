@@ -9,6 +9,7 @@ import { initRoutes } from '@users/infrastructure/routes/init-routes';
 import { getEnvs, initEnvs } from '@users/users.envs';
 import { swaggerSpec } from '@users/users.swagger';
 
+import cors from 'cors';
 import express, { Express } from 'express';
 import helmet from 'helmet';
 import swaggerUi from 'swagger-ui-express';
@@ -32,6 +33,7 @@ export class App {
 
             // Init middlewares
             this.expressApp.use(helmet());
+            this.expressApp.use(cors());
             this.expressApp.use(express.json());
             this.expressApp.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 

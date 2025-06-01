@@ -5,7 +5,7 @@ metadata:
     namespace: {{ .Values.app.namespace }}
 data:
     NODE_ENV: prod
-    VIDEOS_PORT: '3001'
+    VIDEOS_PORT: '3002'
     VIDEOS_POSTGRES_DB_HOST: videomatt-videos-postgres-postgresql-primary
     VIDEOS_POSTGRES_DB_PORT: '5432'
     VIDEOS_POSTGRES_DB_REPLICA_HOST: videomatt-videos-postgres-postgresql-read

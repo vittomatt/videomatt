@@ -6,15 +6,17 @@ WORKDIR /app
 
 COPY package*.json ./
 
-# Install husky globally to prevent prepare script failure
-RUN npm install -g husky
+# Install dependencies
 RUN npm ci
+
+# Run prepare to install husky hooks
+RUN npm run prepare
 
 COPY . .
 
 RUN mkdir -p dist
 RUN npm run build
 
-EXPOSE 3001
+EXPOSE 3002
 
 CMD ["npm", "run", "start:videos"]

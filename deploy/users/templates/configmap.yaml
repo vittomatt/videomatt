@@ -5,7 +5,7 @@ metadata:
     namespace: {{ .Values.app.namespace }}
 data:
     NODE_ENV: prod
-    USERS_PORT: '3000'
+    USERS_PORT: '3001'
     USERS_POSTGRES_DB_SHARD_1_HOST: videomatt-users-postgres-shard-1-postgresql
     USERS_POSTGRES_DB_SHARD_1_PORT: '5432'
     USERS_POSTGRES_DB_SHARD_1_SHARD_NAME: shard1
