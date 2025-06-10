@@ -53,10 +53,7 @@ import { inject, injectable } from 'tsyringe';
  */
 @injectable()
 export class CreateUserController {
-    constructor(
-        @inject(TOKEN.COMMAND_EVENT_BUS)
-        private readonly eventBus: InMemoryCommandEventBus
-    ) {}
+    constructor(@inject(InMemoryCommandEventBus) private readonly eventBus: InMemoryCommandEventBus) {}
 
     async execute(req: Request, res: Response) {
         const { userId } = req.params;

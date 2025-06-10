@@ -3,9 +3,11 @@ import { PostgresUserDB } from './sequelize-user.db';
 import { UnexpectedError } from '@shared/domain/errors/unexpected.error';
 
 import * as crypto from 'crypto';
+import { injectable } from 'tsyringe';
 
 const USER_DB_SHARD_NAMES = ['shard1', 'shard2'];
 
+@injectable()
 export class ShardingSequelizeUserDB {
     private readonly SHARDS: Record<string, PostgresUserDB> = {};
 

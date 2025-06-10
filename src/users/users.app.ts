@@ -8,6 +8,7 @@ import { ShardingSequelizeUserDB } from '@users/infrastructure/persistence/shard
 import { initRoutes } from '@users/infrastructure/routes/init-routes';
 import { getEnvs, initEnvs } from '@users/users.envs';
 import { swaggerSpec } from '@users/users.swagger';
+import { SQSWorker } from '@users/users.worker';
 
 import compression from 'compression';
 import cors from 'cors';
@@ -91,7 +92,7 @@ export class App {
             initRoutes(this.expressApp);
 
             // Init workers
-            const worker = container.resolve<Worker>(TOKEN.WORKER_USER);
+            const worker = container.resolve<Worker>(SQSWorker);
             worker.start().catch((error) => {
                 logger.error(`Worker fatal error: ${error}`);
                 process.exit(1);

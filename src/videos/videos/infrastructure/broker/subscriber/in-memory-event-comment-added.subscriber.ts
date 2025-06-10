@@ -4,7 +4,6 @@ import { Logger } from '@shared/domain/logger/logger';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { VideoCommentAddedEvent } from '@videos/video-comment/domain/events/video-comment-added.event';
 import { InMemoryVideoEventPublisher } from '@videos/videos/infrastructure/broker/publishers/in-memory-video-event.publisher';
-import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 import { IncreaseAmountOfCommentsHandler } from '@videos/videos/infrastructure/handlers/domain/increase-amount-of-comments.handler';
 
 import { inject, injectable } from 'tsyringe';
@@ -12,9 +11,9 @@ import { inject, injectable } from 'tsyringe';
 @injectable()
 export class InMemoryEventCommentAddedSubscriber implements LocalEventSubscriber {
     constructor(
-        @inject(VIDEO_TOKEN.INCREASE_AMOUNT_OF_COMMENTS_HANDLER)
+        @inject(IncreaseAmountOfCommentsHandler)
         private readonly handler: IncreaseAmountOfCommentsHandler,
-        @inject(VIDEO_TOKEN.IN_MEMORY_EVENT_PUBLISHER)
+        @inject(InMemoryVideoEventPublisher)
         private readonly publisher: InMemoryVideoEventPublisher,
         @inject(TOKEN.LOGGER)
         private readonly logger: Logger

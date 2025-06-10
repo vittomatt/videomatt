@@ -4,7 +4,9 @@ import { VideoProjectionDBModel } from '@videos/videos/infrastructure/models/vid
 import { VideoDBModel } from '@videos/videos/infrastructure/models/video.db-model';
 
 import { Sequelize } from 'sequelize';
+import { injectable } from 'tsyringe';
 
+@injectable()
 export class PostgresVideosDB {
     private readonly instance: Sequelize;
     private videoModel!: typeof VideoDBModel;

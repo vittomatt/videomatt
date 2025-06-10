@@ -1,5 +1,4 @@
 import { HttpResponse } from '@shared/infrastructure/controllers/http-response';
-import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { InMemoryCommandEventBus } from '@shared/infrastructure/event-bus/in-memory-command.event-bus';
 import { CreateVideoDTO } from '@videos/videos/domain/dtos/create-video.dto';
 import { VideoAlreadyExistsError } from '@videos/videos/domain/errors/video-already-exists.error';
@@ -62,7 +61,7 @@ import { inject, injectable } from 'tsyringe';
 @injectable()
 export class CreateVideoController {
     constructor(
-        @inject(TOKEN.COMMAND_EVENT_BUS)
+        @inject(InMemoryCommandEventBus)
         private readonly eventBus: InMemoryCommandEventBus
     ) {}
 

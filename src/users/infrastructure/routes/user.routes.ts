@@ -5,7 +5,6 @@ import {
     CreateUserParamValidatorDto,
 } from '@users/infrastructure/controllers/create-user/create-user.validator';
 import { GetUsersController } from '@users/infrastructure/controllers/get-users/get-users.controller';
-import { USER_TOKEN } from '@users/infrastructure/di/user.tokens';
 
 import { Express } from 'express';
 import expressAsyncHandler from 'express-async-handler';
@@ -14,8 +13,8 @@ import { inject, injectable } from 'tsyringe';
 @injectable()
 export class UserRoutes {
     constructor(
-        @inject(USER_TOKEN.CREATE_USER_CONTROLLER) private readonly controller: CreateUserController,
-        @inject(USER_TOKEN.GET_USERS_CONTROLLER) private readonly getUsersController: GetUsersController
+        @inject(CreateUserController) private readonly controller: CreateUserController,
+        @inject(GetUsersController) private readonly getUsersController: GetUsersController
     ) {}
 
     public initRoutes(app: Express) {

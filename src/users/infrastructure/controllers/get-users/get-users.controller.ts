@@ -31,7 +31,7 @@ import { inject, injectable } from 'tsyringe';
  */
 @injectable()
 export class GetUsersController {
-    constructor(@inject(TOKEN.QUERY_EVENT_BUS) private readonly eventBus: InMemoryQueryEventBus) {}
+    constructor(@inject(InMemoryQueryEventBus) private readonly eventBus: InMemoryQueryEventBus) {}
 
     async execute(req: Request, res: Response) {
         const event = GetUsersDTO.create();

@@ -4,7 +4,6 @@ import {
     AddCommentToVideoBodyValidatorDto,
     AddCommentToVideoParamValidatorDto,
 } from '@videos/video-comment/infrastructure/controllers/add-comment-to-video/add-comment-to-video.validator';
-import { VIDEO_COMMENT_TOKENS } from '@videos/video-comment/infrastructure/di/video-comment.tokens';
 import { CreateVideoController } from '@videos/videos/infrastructure/controllers/create-video/create-video.controller';
 import {
     CreateVideoBodyValidatorDto,
@@ -12,7 +11,6 @@ import {
 } from '@videos/videos/infrastructure/controllers/create-video/create-video.validator';
 import { GetVideosController } from '@videos/videos/infrastructure/controllers/get-videos/get-videos.controller';
 import { GetVideosParamValidatorDto } from '@videos/videos/infrastructure/controllers/get-videos/get-videos.validator';
-import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 
 import { Express } from 'express';
 import expressAsyncHandler from 'express-async-handler';
@@ -21,9 +19,9 @@ import { inject, injectable } from 'tsyringe';
 @injectable()
 export class VideoRoutes {
     constructor(
-        @inject(VIDEO_TOKEN.GET_VIDEOS_CONTROLLER) private readonly getVideosController: GetVideosController,
-        @inject(VIDEO_TOKEN.PUBLISH_VIDEO_CONTROLLER) private readonly createVideoController: CreateVideoController,
-        @inject(VIDEO_COMMENT_TOKENS.ADD_COMMENT_TO_VIDEO_CONTROLLER)
+        @inject(GetVideosController) private readonly getVideosController: GetVideosController,
+        @inject(CreateVideoController) private readonly createVideoController: CreateVideoController,
+        @inject(AddCommentToVideoController)
         private readonly addCommentToVideoController: AddCommentToVideoController
     ) {}
 

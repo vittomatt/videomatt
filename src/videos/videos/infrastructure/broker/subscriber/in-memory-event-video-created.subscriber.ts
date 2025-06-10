@@ -4,7 +4,6 @@ import { VideoCreatedEvent } from '@shared/domain/events/video-created.event';
 import { Logger } from '@shared/domain/logger/logger';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { InMemoryVideoEventPublisher } from '@videos/videos/infrastructure/broker/publishers/in-memory-video-event.publisher';
-import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
 import { CreateVideoProjectionHandler } from '@videos/videos/infrastructure/handlers/domain/create-video-projection.handler';
 
 import { inject, injectable } from 'tsyringe';
@@ -12,9 +11,9 @@ import { inject, injectable } from 'tsyringe';
 @injectable()
 export class InMemoryEventVideoCreatedSubscriber implements LocalEventSubscriber {
     constructor(
-        @inject(VIDEO_TOKEN.CREATE_PROJECTION_HANDLER)
+        @inject(CreateVideoProjectionHandler)
         private readonly handler: CreateVideoProjectionHandler,
-        @inject(VIDEO_TOKEN.IN_MEMORY_EVENT_PUBLISHER)
+        @inject(InMemoryVideoEventPublisher)
         private readonly publisher: InMemoryVideoEventPublisher,
         @inject(TOKEN.LOGGER)
         private readonly logger: Logger

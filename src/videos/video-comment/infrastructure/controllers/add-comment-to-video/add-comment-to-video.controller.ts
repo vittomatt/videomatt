@@ -61,7 +61,7 @@ import { inject, injectable } from 'tsyringe';
 @injectable()
 export class AddCommentToVideoController {
     constructor(
-        @inject(TOKEN.COMMAND_EVENT_BUS)
+        @inject(InMemoryCommandEventBus)
         private readonly eventBus: InMemoryCommandEventBus,
         @inject(TOKEN.DEFERRED_DOMAIN_EVENT_BUS) private readonly domainEventBus: InMemoryDeferredDomainEventBus
     ) {}

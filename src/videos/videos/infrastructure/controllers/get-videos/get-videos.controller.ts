@@ -1,4 +1,3 @@
-import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { InMemoryQueryEventBus } from '@shared/infrastructure/event-bus/in-memory-query.event-bus';
 import { GetVideosDTO } from '@videos/videos/domain/dtos/get-videos.dto';
 
@@ -38,7 +37,7 @@ import { inject, injectable } from 'tsyringe';
  */
 @injectable()
 export class GetVideosController {
-    constructor(@inject(TOKEN.QUERY_EVENT_BUS) private readonly eventBus: InMemoryQueryEventBus) {}
+    constructor(@inject(InMemoryQueryEventBus) private readonly eventBus: InMemoryQueryEventBus) {}
 
     async execute(req: Request, res: Response) {
         const userId = req.params.userId;

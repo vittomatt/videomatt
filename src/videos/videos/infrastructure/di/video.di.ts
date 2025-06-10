@@ -2,19 +2,15 @@ import { EventBridgeClient } from '@aws-sdk/client-eventbridge';
 import { SNSClient } from '@aws-sdk/client-sns';
 import { SQSClient } from '@aws-sdk/client-sqs';
 import { fromIni } from '@aws-sdk/credential-provider-ini';
-import { ErrorController } from '@shared/infrastructure/controllers/error.controller';
 import { TOKEN } from '@shared/infrastructure/di/tokens';
-import { InMemoryCommandEventBus } from '@shared/infrastructure/event-bus/in-memory-command.event-bus';
 import { InMemoryDeferredDomainEventBus } from '@shared/infrastructure/event-bus/in-memory-deferred-domain.event-bus';
 import { InMemoryDomainEventBus } from '@shared/infrastructure/event-bus/in-memory-domain.event-bus';
-import { InMemoryQueryEventBus } from '@shared/infrastructure/event-bus/in-memory-query.event-bus';
 import { PinoLogger } from '@shared/infrastructure/logger/pino';
 import { DIVideoComments } from '@videos/video-comment/infrastructure/di/video-comment.di';
 import { getEnvs } from '@videos/videos.envs';
 import { SQSWorker } from '@videos/videos.worker';
 import { DIVideos } from '@videos/videos/infrastructure/di/video-modules.di';
 import { VIDEO_TOKEN } from '@videos/videos/infrastructure/di/video.tokens';
-import { VideoDomainEventFailover } from '@videos/videos/infrastructure/events/videos-failover-domain-event';
 import { MongoVideosCommentDB } from '@videos/videos/infrastructure/persistence/mongoose-video-comment.db';
 import { RedisDB } from '@videos/videos/infrastructure/persistence/redis-db';
 import { PostgresVideosDB } from '@videos/videos/infrastructure/persistence/sequelize-videos.db';
@@ -33,7 +29,6 @@ export class DI {
         this.initSingletonDependencies();
         this.initSharedDependencies();
         this.initBrokerDependencies();
-        this.initControllersDependencies();
         this.initModules();
         this.initSingletons();
     }
@@ -53,17 +48,12 @@ export class DI {
     private initSingletonDependencies() {
         container.registerSingleton(TOKEN.DOMAIN_EVENT_BUS, InMemoryDomainEventBus);
         container.registerSingleton(TOKEN.DEFERRED_DOMAIN_EVENT_BUS, InMemoryDeferredDomainEventBus);
-        container.registerSingleton(TOKEN.COMMAND_EVENT_BUS, InMemoryCommandEventBus);
-        container.registerSingleton(TOKEN.QUERY_EVENT_BUS, InMemoryQueryEventBus);
-        container.registerSingleton(TOKEN.WORKER_VIDEO, SQSWorker);
+        container.registerSingleton(SQSWorker);
     }
 
     private initSharedDependencies() {
         container.register(TOKEN.LOGGER, {
             useClass: PinoLogger,
-        });
-        container.register(VIDEO_TOKEN.FAILOVER_DOMAIN_EVENTS, {
-            useClass: VideoDomainEventFailover,
         });
     }
 
@@ -109,12 +99,6 @@ export class DI {
         });
         container.register(TOKEN.EVENT_BRIDGE_CLIENT, {
             useValue: new EventBridgeClient({ ...awsConfig, endpoint: AWS_EVENT_BRIDGE_ENDPOINT }),
-        });
-    }
-
-    private initControllersDependencies() {
-        container.register(TOKEN.ERROR_CONTROLLER, {
-            useClass: ErrorController,
         });
     }
 

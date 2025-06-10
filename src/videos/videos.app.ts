@@ -4,6 +4,7 @@ import { PinoLogger } from '@shared/infrastructure/logger/pino';
 import { Worker } from '@shared/worker';
 import { getEnvs, initEnvs } from '@videos/videos.envs';
 import { swaggerSpec } from '@videos/videos.swagger';
+import { SQSWorker } from '@videos/videos.worker';
 import { DI } from '@videos/videos/infrastructure/di/video.di';
 import { MongoVideosCommentDB } from '@videos/videos/infrastructure/persistence/mongoose-video-comment.db';
 import { RedisDB } from '@videos/videos/infrastructure/persistence/redis-db';
@@ -91,7 +92,7 @@ export class App {
             initRoutes(this.expressApp);
 
             // Init workers
-            const worker = container.resolve<Worker>(TOKEN.WORKER_VIDEO);
+            const worker = container.resolve<Worker>(SQSWorker);
             worker.start().catch((error) => {
                 logger.error(`Worker fatal error: ${error}`);
                 process.exit(1);

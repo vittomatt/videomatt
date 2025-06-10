@@ -1,7 +1,9 @@
 import { getEnvs } from '@videos/videos.envs';
 
 import { RedisClientType, createClient } from 'redis';
+import { injectable } from 'tsyringe';
 
+@injectable()
 export class RedisDB {
     private readonly client: RedisClientType;
 

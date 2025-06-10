@@ -1,11 +1,9 @@
 import { CommandHandler } from '@shared/domain/event-bus/command.handler';
 import { DomainEvent } from '@shared/domain/event-bus/domain.event';
-import { TOKEN } from '@shared/infrastructure/di/tokens';
 import { InMemoryCommandEventBus } from '@shared/infrastructure/event-bus/in-memory-command.event-bus';
 import { AddCommentToVideoUseCase } from '@videos/video-comment/application/add-comment-to-video/add-comment-to-video.use-case';
 import { AddCommentToVideoDTO } from '@videos/video-comment/domain/dtos/add-comment-to-video.dto';
 import { VideoCommentAddedEvent } from '@videos/video-comment/domain/events/video-comment-added.event';
-import { VIDEO_COMMENT_TOKENS } from '@videos/video-comment/infrastructure/di/video-comment.tokens';
 import { VideoNotFoundError } from '@videos/videos/domain/errors/video-not-found.error';
 
 import { inject, injectable } from 'tsyringe';
@@ -13,9 +11,9 @@ import { inject, injectable } from 'tsyringe';
 @injectable()
 export class AddCommentToVideoCommandHandler implements CommandHandler<VideoNotFoundError> {
     constructor(
-        @inject(VIDEO_COMMENT_TOKENS.ADD_COMMENT_TO_VIDEO_USE_CASE)
+        @inject(AddCommentToVideoUseCase)
         private readonly useCase: AddCommentToVideoUseCase,
-        @inject(TOKEN.COMMAND_EVENT_BUS)
+        @inject(InMemoryCommandEventBus)
         private readonly eventBus: InMemoryCommandEventBus
     ) {
         this.eventBus.registerHandler(AddCommentToVideoDTO.type, this);
