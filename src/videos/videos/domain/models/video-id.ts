@@ -1,17 +1,7 @@
-import { InvalidUUIDError } from '@shared/domain/errors/invalid-uuid.error';
-import { BaseValueObject } from '@shared/domain/value-object';
+import { UUID } from '@shared/domain/uuid-value-object';
 
-import { validate } from 'uuid';
-
-export class VideoId extends BaseValueObject {
+export class VideoId extends UUID {
     constructor(public readonly value: string) {
-        super();
-        this.ensureUUID(value);
-    }
-
-    private ensureUUID(value: string) {
-        if (!validate(value)) {
-            throw new InvalidUUIDError();
-        }
+        super(value);
     }
 }
