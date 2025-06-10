@@ -4,10 +4,10 @@ import { NegativeAmountOfVideosError } from '@users/domain/errors/negative-amoun
 export class UserAmountOfVideo extends BaseValueObject {
     constructor(public readonly value: number) {
         super();
-        this.ensureNotEmpty(value);
+        this.ensureNotNegative(value);
     }
 
-    private ensureNotEmpty(value: number) {
+    private ensureNotNegative(value: number) {
         if (value < 0) {
             throw new NegativeAmountOfVideosError();
         }

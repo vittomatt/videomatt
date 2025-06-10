@@ -1,6 +1,8 @@
 import { InvalidUUIDError } from '@shared/domain/errors/invalid-uuid.error';
 import { BaseValueObject } from '@shared/domain/value-object';
 
+import { validate } from 'uuid';
+
 export class VideoCommentId extends BaseValueObject {
     constructor(public readonly value: string) {
         super();
@@ -8,8 +10,7 @@ export class VideoCommentId extends BaseValueObject {
     }
 
     private ensureUUID(value: string) {
-        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-        if (!uuidRegex.test(value)) {
+        if (!validate(value)) {
             throw new InvalidUUIDError();
         }
     }
