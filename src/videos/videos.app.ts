@@ -10,6 +10,7 @@ import { RedisDB } from '@videos/videos/infrastructure/persistence/redis-db';
 import { PostgresVideosDB } from '@videos/videos/infrastructure/persistence/sequelize-videos.db';
 import { initRoutes } from '@videos/videos/infrastructure/routes/init-routes';
 
+import compression from 'compression';
 import cors from 'cors';
 import express, { Express } from 'express';
 import helmet from 'helmet';
@@ -35,10 +36,13 @@ export class App {
             initEnvs();
 
             // Init middlewares
-            this.expressApp.use(helmet());
-            this.expressApp.use(cors());
             this.expressApp.use(express.json());
+            this.expressApp.use(
+                helmet({ xssFilter: true, noSniff: true, hidePoweredBy: true, frameguard: { action: 'deny' } })
+            );
+            this.expressApp.use(cors());
             this.expressApp.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+            this.expressApp.use(compression());
 
             // Init DB
             const envs = getEnvs();

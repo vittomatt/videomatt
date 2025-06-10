@@ -9,6 +9,7 @@ import { initRoutes } from '@users/infrastructure/routes/init-routes';
 import { getEnvs, initEnvs } from '@users/users.envs';
 import { swaggerSpec } from '@users/users.swagger';
 
+import compression from 'compression';
 import cors from 'cors';
 import express, { Express } from 'express';
 import helmet from 'helmet';
@@ -32,10 +33,13 @@ export class App {
             initEnvs();
 
             // Init middlewares
-            this.expressApp.use(helmet());
-            this.expressApp.use(cors());
             this.expressApp.use(express.json());
+            this.expressApp.use(
+                helmet({ xssFilter: true, noSniff: true, hidePoweredBy: true, frameguard: { action: 'deny' } })
+            );
+            this.expressApp.use(cors());
             this.expressApp.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+            this.expressApp.use(compression());
 
             const envs = getEnvs();
             const {
