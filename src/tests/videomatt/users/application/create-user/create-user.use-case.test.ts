@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 
-import { faker } from '@faker-js/faker';
 import { DomainEventBus } from '@shared/domain/event-bus/domain-event-bus';
+import { PrimitivesMother } from '@tests/shared/primitives.mother';
 import { UserMother } from '@tests/shared/users/domain/user.mother';
 import { CreateUserUseCase } from '@users/application/create-user/create-user.use-case';
 import { UserAlreadyExistsError } from '@users/domain/errors/user-already-exists.error';
@@ -39,10 +39,11 @@ describe('CreateUserUseCase', () => {
 
     it('should return UserAlreadyExistsError if the user already exists', async () => {
         // Given
-        const userId = faker.string.uuid();
+        const userId = PrimitivesMother.randomUUID();
         const existingUser = UserMother.create({ id: userId });
 
-        vi.mocked(repository.searchById).mockResolvedValue(ok(existingUser.toPrimitives()));
+        const foundUser = ok(existingUser.toPrimitives());
+        vi.mocked(repository.searchById).mockResolvedValue(foundUser);
 
         // When
         try {
@@ -58,10 +59,11 @@ describe('CreateUserUseCase', () => {
 
     it('should create a new user if it does not exist', async () => {
         // Given
-        const userId = faker.string.uuid();
+        const userId = PrimitivesMother.randomUUID();
         const newUser = UserMother.create({ id: userId });
 
-        vi.mocked(repository.searchById).mockResolvedValue(ok(null));
+        const notFoundUser = ok(null);
+        vi.mocked(repository.searchById).mockResolvedValue(notFoundUser);
         vi.mocked(repository.add).mockResolvedValue(ok());
 
         // When
