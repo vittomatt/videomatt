@@ -1,11 +1,11 @@
 import { InvalidUUIDError } from '@shared/domain/errors/invalid-uuid.error';
-import { BaseValueObject } from '@shared/domain/value-object';
+import { ValueObject } from '@shared/domain/value-object';
 
 import { validate } from 'uuid';
 
-export class UUID extends BaseValueObject {
-    constructor(public readonly value: string) {
-        super();
+export class UUID extends ValueObject<string> {
+    constructor(value: string) {
+        super(value);
         this.ensureUUID(value);
     }
 

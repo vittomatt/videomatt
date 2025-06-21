@@ -1,12 +1,12 @@
-import { BaseValueObject } from '@shared/domain/value-object';
+import { ValueObject } from '@shared/domain/value-object';
 import { CommentIsEmptyError } from '@videos/videos/domain/errors/comment-is-empty.error';
 import { CommentIsTooLongError } from '@videos/videos/domain/errors/comment-is-too-long.error';
 
-export class VideoCommentText extends BaseValueObject {
+export class VideoCommentText extends ValueObject<string> {
     private static readonly MAX_LENGTH = 255;
 
-    constructor(public readonly value: string) {
-        super();
+    constructor(value: string) {
+        super(value);
         this.ensureNotEmpty(value);
         this.ensureNotTooLong(value);
     }

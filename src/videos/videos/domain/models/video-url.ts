@@ -1,9 +1,9 @@
-import { BaseValueObject } from '@shared/domain/value-object';
+import { ValueObject } from '@shared/domain/value-object';
 import { InvalidURLFormatError } from '@videos/videos/domain/errors/invalid-url.error';
 
-export class VideoURL extends BaseValueObject {
-    constructor(public readonly value: string) {
-        super();
+export class VideoURL extends ValueObject<string> {
+    constructor(value: string) {
+        super(value);
         this.ensureValidURL(value);
     }
 

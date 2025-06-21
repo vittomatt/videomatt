@@ -1,9 +1,9 @@
 import { EmptyTextError } from '@shared/domain/errors/empty-text.error';
-import { BaseValueObject } from '@shared/domain/value-object';
+import { ValueObject } from '@shared/domain/value-object';
 
-export class UserLastName extends BaseValueObject {
-    constructor(public readonly value: string) {
-        super();
+export class UserLastName extends ValueObject<string> {
+    constructor(value: string) {
+        super(value);
         this.ensureNotEmpty(value);
     }
 

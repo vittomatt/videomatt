@@ -1,9 +1,9 @@
-import { BaseValueObject } from '@shared/domain/value-object';
+import { ValueObject } from '@shared/domain/value-object';
 import { NegativeAmountOfVideosError } from '@users/domain/errors/negative-amount-of-videos.error';
 
-export class UserAmountOfVideo extends BaseValueObject {
-    constructor(public readonly value: number) {
-        super();
+export class UserAmountOfVideo extends ValueObject<number> {
+    constructor(value: number) {
+        super(value);
         this.ensureNotNegative(value);
     }
 
