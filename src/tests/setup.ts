@@ -1,4 +1,6 @@
-import chai from 'chai';
-import sinonChai from 'sinon-chai';
+import { beforeAll } from 'vitest';
 
-chai.use(sinonChai);
+// Global setup for all tests
+beforeAll(() => {
+    // Any global setup can go here
+});
