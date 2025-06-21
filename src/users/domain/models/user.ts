@@ -1,15 +1,14 @@
-import { UserAmountOfVideo } from './user-amount-of-videos';
-import { UserFirstName } from './user-first-name';
-import { UserLastName } from './user-last-name';
-
 import { AggregateRoot } from '@shared/domain/aggregate-root';
 import { ExtractOptionalPrimitives, ExtractPrimitives } from '@shared/domain/models/extract-primitives';
 import { UserId } from '@shared/domain/models/user-id';
 import { UserCreatedEvent } from '@users/domain/events/user-created.event';
+import { UserAmountOfVideo } from '@users/domain/models/user-amount-of-videos';
+import { UserFirstName } from '@users/domain/models/user-first-name';
+import { UserLastName } from '@users/domain/models/user-last-name';
 
 export type UserPrimitives = ExtractOptionalPrimitives<User>;
 
-export class User extends AggregateRoot {
+export class User extends AggregateRoot<User> {
     constructor(
         public readonly id: UserId,
         public readonly firstName: UserFirstName,

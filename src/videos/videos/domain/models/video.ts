@@ -1,20 +1,19 @@
-import { VideoDescription } from './video-description';
-import { VideoId } from './video-id';
-import { VideoTitle } from './video-title';
-import { VideoURL } from './video-url';
-
 import { AggregateRoot } from '@shared/domain/aggregate-root';
 import { VideoCreatedEvent } from '@shared/domain/events/video-created.event';
 import { ExtractOptionalPrimitives, ExtractPrimitives } from '@shared/domain/models/extract-primitives';
 import { UserId } from '@shared/domain/models/user-id';
 import { VideoCommentAddedEvent } from '@videos/video-comment/domain/events/video-comment-added.event';
 import { VideoComment, VideoCommentPrimitives } from '@videos/video-comment/domain/models/video-comment';
+import { VideoDescription } from '@videos/videos/domain/models/video-description';
+import { VideoId } from '@videos/videos/domain/models/video-id';
+import { VideoTitle } from '@videos/videos/domain/models/video-title';
+import { VideoURL } from '@videos/videos/domain/models/video-url';
 
 export type VideoPrimitives = ExtractOptionalPrimitives<Video> & {
     comments: VideoCommentPrimitives[];
 };
 
-export class Video extends AggregateRoot {
+export class Video extends AggregateRoot<Video> {
     constructor(
         public readonly id: VideoId,
         public readonly title: VideoTitle,

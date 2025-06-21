@@ -1,4 +1,4 @@
-import { InvalidArgumentError } from './errors/invalid-argument.error';
+import { InvalidArgumentError } from '@shared/domain/errors/invalid-argument.error';
 
 type Primitive = string | number | boolean | Date;
 

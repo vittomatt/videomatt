@@ -1,8 +1,7 @@
-import { VideoCommentId } from './video-comment-id';
-import { VideoCommentText } from './video-comment-text';
-
 import { ExtractOptionalPrimitives, ExtractPrimitives } from '@shared/domain/models/extract-primitives';
 import { UserId } from '@shared/domain/models/user-id';
+import { VideoCommentId } from '@videos/video-comment/domain/models/video-comment-id';
+import { VideoCommentText } from '@videos/video-comment/domain/models/video-comment-text';
 import { VideoId } from '@videos/videos/domain/models/video-id';
 
 export type VideoCommentPrimitives = ExtractOptionalPrimitives<VideoComment>;

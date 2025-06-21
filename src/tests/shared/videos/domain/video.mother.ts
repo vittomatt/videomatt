@@ -1,11 +1,10 @@
-import { VideoCommentMother } from './video-comment.mother';
-import { VideoDescriptionMother } from './video-description.mother';
-import { VideoIdMother } from './video-id.mother';
-import { VideoTitleMother } from './video-title.mother';
-import { VideoUrlMother } from './video-url.mother';
-
 import { ExtractPrimitives } from '@shared/domain/models/extract-primitives';
 import { UserIdMother } from '@tests/shared/users/domain/user-id.mother';
+import { VideoCommentMother } from '@tests/shared/videos/domain/video-comment.mother';
+import { VideoDescriptionMother } from '@tests/shared/videos/domain/video-description.mother';
+import { VideoIdMother } from '@tests/shared/videos/domain/video-id.mother';
+import { VideoTitleMother } from '@tests/shared/videos/domain/video-title.mother';
+import { VideoUrlMother } from '@tests/shared/videos/domain/video-url.mother';
 import { VideoCommentPrimitives } from '@videos/video-comment/domain/models/video-comment';
 import { Video, VideoPrimitives } from '@videos/videos/domain/models/video';
 

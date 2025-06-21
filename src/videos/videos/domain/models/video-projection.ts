@@ -1,11 +1,10 @@
-import { VideoAmountOfComments } from './video-amount-of-comments';
-import { VideoDescription } from './video-description';
-import { VideoId } from './video-id';
-import { VideoTitle } from './video-title';
-import { VideoURL } from './video-url';
-
 import { ExtractOptionalPrimitives, ExtractPrimitives } from '@shared/domain/models/extract-primitives';
 import { UserId } from '@shared/domain/models/user-id';
+import { VideoAmountOfComments } from '@videos/videos/domain/models/video-amount-of-comments';
+import { VideoDescription } from '@videos/videos/domain/models/video-description';
+import { VideoId } from '@videos/videos/domain/models/video-id';
+import { VideoTitle } from '@videos/videos/domain/models/video-title';
+import { VideoURL } from '@videos/videos/domain/models/video-url';
 
 export type VideoProjectionPrimitives = ExtractOptionalPrimitives<VideoProjection>;
 

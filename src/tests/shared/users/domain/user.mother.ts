@@ -1,9 +1,8 @@
-import { UserAmountOfVideosMother } from './user-amount-of-videos.mother';
-import { UserFirstNameMother } from './user-first-name.mother';
-import { UserIdMother } from './user-id.mother';
-import { UserLastNameMother } from './user-last-name.mother';
-
 import { ExtractPrimitives } from '@shared/domain/models/extract-primitives';
+import { UserAmountOfVideosMother } from '@tests/shared/users/domain/user-amount-of-videos.mother';
+import { UserFirstNameMother } from '@tests/shared/users/domain/user-first-name.mother';
+import { UserIdMother } from '@tests/shared/users/domain/user-id.mother';
+import { UserLastNameMother } from '@tests/shared/users/domain/user-last-name.mother';
 import { User, UserPrimitives } from '@users/domain/models/user';
 
 export class UserMother {
