@@ -2,7 +2,6 @@ import { DomainEvent } from '@shared/domain/event-bus/domain.event';
 
 export class VideoCreatedEvent extends DomainEvent {
     static readonly eventName = 'videomatt.videos.1.event.video.created';
-    public readonly eventName = VideoCreatedEvent.eventName;
 
     private constructor(
         public readonly id: string,

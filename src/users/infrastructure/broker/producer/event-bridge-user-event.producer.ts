@@ -27,6 +27,6 @@ export class EventBridgeUserEventProducer extends EventBridgeEventProducer {
     }
 
     isValidEvent(event: DomainEvent): boolean {
-        return event.getEntity() === 'users';
+        return event.getService() === 'users';
     }
 }

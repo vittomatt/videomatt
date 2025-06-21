@@ -25,7 +25,8 @@ export class InMemoryEventVideoCreatedSubscriber implements LocalEventSubscriber
         try {
             await this.handler.handle(event);
         } catch (error) {
-            this.logger.error(`Error consuming event ${event.eventName}:`);
+            const eventName = (event.constructor as typeof DomainEvent).eventName;
+            this.logger.error(`Error consuming event ${eventName}:`);
         }
     }
 }

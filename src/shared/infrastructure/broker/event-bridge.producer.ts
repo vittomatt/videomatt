@@ -17,6 +17,8 @@ export abstract class EventBridgeEventProducer implements RemoteEventProducer {
     }
 
     async publish(event: DomainEvent) {
+        const eventName = (event.constructor as typeof DomainEvent).eventName;
+
         try {
             if (!this.isValidEvent(event)) {
                 return;
@@ -25,9 +27,9 @@ export abstract class EventBridgeEventProducer implements RemoteEventProducer {
             const command = this.createCommand(event);
             await this.eventBridgeClient.send(command);
 
-            this.logger.info(`Event ${event.eventName} sent to EventBridge`);
+            this.logger.info(`Event ${eventName} sent to EventBridge`);
         } catch (error) {
-            this.logger.error(`Error publishing event ${event.eventName}:`);
+            this.logger.error(`Error publishing event ${eventName}:`);
             await this.failover.publish(event);
         }
     }
@@ -40,13 +42,14 @@ export abstract class EventBridgeEventProducer implements RemoteEventProducer {
     }
 
     private createCommand(event: DomainEvent): PutEventsCommand {
+        const eventName = (event.constructor as typeof DomainEvent).eventName;
         const payload = SQSSerializer.serialize(event);
 
         const command = new PutEventsCommand({
             Entries: [
                 {
                     Source: 'videomatt',
-                    DetailType: event.eventName,
+                    DetailType: eventName,
                     EventBusName: 'default',
                     Detail: payload,
                 },

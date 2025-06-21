@@ -17,6 +17,8 @@ export abstract class SNSEventProducer implements RemoteEventProducer {
     }
 
     async publish(event: DomainEvent) {
+        const eventName = (event.constructor as typeof DomainEvent).eventName;
+
         try {
             if (!this.isValidEvent(event)) {
                 return;
@@ -25,9 +27,9 @@ export abstract class SNSEventProducer implements RemoteEventProducer {
             const command = this.createCommand(event);
             await this.snsClient.send(command);
 
-            this.logger.info(`Event ${event.eventName} sent to SNS`);
+            this.logger.info(`Event ${eventName} sent to SNS`);
         } catch (error) {
-            this.logger.error(`Error publishing event ${event.eventName}: ${error}`);
+            this.logger.error(`Error publishing event ${eventName}: ${error}`);
             await this.failover.publish(event);
         }
     }
@@ -40,16 +42,17 @@ export abstract class SNSEventProducer implements RemoteEventProducer {
     }
 
     private createCommand(event: DomainEvent): PublishCommand {
+        const eventName = (event.constructor as typeof DomainEvent).eventName;
         const payload = SQSSerializer.serialize(event);
 
         const command = new PublishCommand({
             TopicArn: this.getTopic(),
             Message: payload,
-            Subject: event.eventName,
+            Subject: eventName,
             MessageAttributes: {
                 EventType: {
                     DataType: 'String',
-                    StringValue: event.eventName,
+                    StringValue: eventName,
                 },
             },
         });

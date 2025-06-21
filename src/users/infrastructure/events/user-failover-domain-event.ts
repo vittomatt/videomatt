@@ -22,11 +22,12 @@ export class UserDomainEventFailover implements FailoverDomainEvents {
                 INSERT INTO failover_domain_events ("eventId", "eventName", "eventBody")
                 VALUES (?, ?, ?)
             `;
+            const eventName = (event.constructor as typeof DomainEvent).eventName;
             const shardName = this.db.getShardName(event.userId);
             const shard = this.db.getShardByName(shardName);
             await shard.getDB().query(query, {
                 type: QueryTypes.INSERT,
-                replacements: [event.id, event.eventName, JSON.stringify(event)],
+                replacements: [event.id, eventName, JSON.stringify(event)],
             });
         } catch (error) {
             this.logger.error(error);

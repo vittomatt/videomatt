@@ -23,12 +23,14 @@ export class InMemoryVideoEventPublisher implements LocalEventPublisher {
     }
 
     async publish(event: DomainEvent) {
+        const eventName = (event.constructor as typeof DomainEvent).eventName;
+
         try {
-            const handlers = this.handlers[event.eventName];
+            const handlers = this.handlers[eventName];
             await this.consume(event, handlers || []);
-            this.logger.info(`Event ${event.eventName} sent`);
+            this.logger.info(`Event ${eventName} sent`);
         } catch (error) {
-            this.logger.error(`Error publishing event ${event.eventName}:`);
+            this.logger.error(`Error publishing event ${eventName}:`);
         }
     }
 
